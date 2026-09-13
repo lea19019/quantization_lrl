@@ -23,7 +23,7 @@ The four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), their th
 - Venue: preprint, arXiv:2106.08295v1 (Qualcomm AI Research, June 2021; no venue printed)
 - Does: A tutorial. Uniform affine (asymmetric) quantization x_int = clamp(round(x / s) + z, 0, 2^b - 1), x_hat = s (x_int - z) (Eq. 4-7); symmetric as the z = 0 case (Sect. 2.2.1); per-tensor vs per-channel granularity (Sect. 2.2.3, 2.4.2); simulated (fake) quantization (Sect. 2.3); PTQ range setting by min-max vs MSE (Sect. 3.1), cross-layer equalization (3.2), bias correction (3.3), AdaRound (3.4), a standard PTQ pipeline (3.5) and a debugging guide (3.7); QAT (Sect. 4).
 - Finds: No new results; recommends symmetric per-channel weights with MSE range setting, asymmetric activations, and AdaRound as the step that makes 4-bit weight PTQ work on ImageNet CNNs (Sect. 3.5-3.6).
-- Use here: The reference for the grid in `qlrl/quant/rtn.py`: Eq. 7 is the rounding, Sect. 2.4.1 the symmetric vs asymmetric trade-off, Sect. 2.3 fake quantization. Cross-layer equalization (Sect. 3.2) is the ancestor of the per-channel scaling in AWQ and SmoothQuant.
+- Use here: The reference for the RTN grid: Eq. 7 is the rounding, Sect. 2.4.1 the symmetric vs asymmetric trade-off, Sect. 2.3 fake quantization. Cross-layer equalization (Sect. 3.2) is the ancestor of the per-channel scaling in AWQ and SmoothQuant.
 - Note: Computer-vision era, no LLMs and no grouping; GPTQ/AWQ "group size" is per-channel scaling applied along the input dimension in blocks.
 
 ### Frantar 2022. GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers
