@@ -1,1 +1,2 @@
-date,hours,category,description
+start,end,hours,category,description
+2026-09-09 19:00,2026-09-10 01:30,6.5,design;reading,Read papers; designed the problem and question; built the first version of this repo and its docs; set the working conventions

@@ -1,6 +1,7 @@
 # Papers: index of everything in `papers/`
 
-77 PDFs, all read (first 12 pages, more where a table was needed) on 2026-09-09. One
+80 PDFs: 77 read (first 12 pages, more where a table was needed) on 2026-09-09, three
+method-background papers added and read on 2026-09-13. One
 line per paper here; full entries (venue as printed, what it does, what it finds, how
 this project uses it, caveats) are in the theme files in this folder. Codes E1–E7 refer to the explanations in
 [../concepts/explanations.md](../concepts/explanations.md). Venues
@@ -94,6 +95,9 @@ The nine the proposal rests on, in order:
 
 | Paper | Venue | One line |
 |---|---|---|
+| [Hassibi 1993](../../papers/Hassibi-1993-Optimal-Brain-Surgeon.pdf) | NeurIPS 1992 | Optimal Brain Surgeon: saliency w^2 / (2 [H^-1]_qq) and the weight update GPTQ applies at every column |
+| [Frantar 2022 (OBC)](../../papers/Frantar-2022-Optimal-Brain-Compression.pdf) | NeurIPS 2022 | Optimal Brain Compression: exact per-layer OBS with H = 2 X X^T; its OBQ (Eq. 7) is GPTQ's parent |
+| [Nagel 2021](../../papers/Nagel-2021-White-Paper-Neural-Network-Quantization.pdf) | preprint | Qualcomm white paper: the affine grid (Eq. 4-7), fake quantization, per-channel scaling; the reference for RTN |
 | [Frantar 2023 (file: 2022)](../../papers/Frantar-2022-GPTQ.pdf) | ICLR 2023 | GPTQ: column-by-column rounding with inverse-Hessian error compensation; act-order is in the code, not the paper |
 | [Lin 2024 (file: 2023)](../../papers/Lin-2023-AWQ.pdf) | MLSys 2024 | AWQ: scale salient input channels by activation magnitude before rounding; Table 4 is the Llama-2-7B validation target |
 | [Shao 2024](../../papers/Shao-2024-OmniQuant.pdf) | ICLR 2024 | OmniQuant; Table 1 is the best RTN/GPTQ/AWQ cross-check grid for Llama-1/2 |

@@ -85,12 +85,14 @@ the request in front of you.
 ## 6. Hours log
 
 The project form requires a log of hours by category. It lives in
-[docs/workflow/hours.csv](docs/workflow/hours.csv), one row per block of work:
-`date,hours,category,description`. Categories: `design`, `coding`, `experiments`,
-`reading`, `writing`. Dates are absolute (2026-09-11). Adrian's hours only.
+[docs/workflow/hours.csv](docs/workflow/hours.csv), one row per work session:
+`start,end,hours,category,description`. `start` and `end` are `YYYY-MM-DD HH:MM` in
+Mountain Time; `hours` is their difference in decimal hours. Categories: `design`,
+`coding`, `experiments`, `reading`, `writing`; a session that mixes them lists all,
+separated by `;`, main one first. Adrian's hours only.
 
-- At the end of every session, ask Adrian how long he worked and on what, and append the
-  row(s). Never invent, estimate or backfill hours; if he does not answer, add nothing.
+- At the end of every session, ask Adrian when he started, when he stopped and what he did,
+  and append the row(s). Never invent, estimate or backfill; if he does not answer, add nothing.
 - Never edit or delete existing rows unless he asks.
 
 ## 7. How to reply

@@ -1,6 +1,30 @@
 # Quantization methods
 
-The four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), the outlier-handling methods that followed, the published perplexities to validate against, and plain-language algorithm sketches. Back to [../papers.md](index.md).
+The four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), their three parents (OBS, OBC, the Qualcomm white paper), the outlier-handling methods that followed, the published perplexities to validate against, and plain-language algorithm sketches. Back to [../papers.md](index.md).
+
+### Hassibi 1993. Second order derivatives for network pruning: Optimal Brain Surgeon
+- File: `papers/Hassibi-1993-Optimal-Brain-Surgeon.pdf`
+- Venue: NeurIPS 1992 (Advances in Neural Information Processing Systems 5, 1993; proceedings scan from proceedings.neurips.cc, no venue line printed)
+- Does: Expands the loss at a trained minimum to second order, dE = 1/2 dw^T H dw (Eq. 1), and removes the weight whose removal costs least under the exact constrained optimum (Eq. 3-4): saliency L_q = w_q^2 / (2 [H^-1]_qq) and update dw = -(w_q / [H^-1]_qq) H^-1 e_q (Eq. 5), so every other weight is adjusted without gradient descent. Gives a recursion for H^-1 from training data (Eq. 15-17).
+- Finds: On XOR and the MONK problems OBS prunes 90%, 76% and 62% of the weights where magnitude pruning and Optimal Brain Damage remove the wrong weights (abstract, Sect. 6).
+- Use here: The origin of the update GPTQ applies at every column: Frantar 2022 GPTQ Eq. 3 is Eq. 5 here with w_q replaced by w_q - quant(w_q). Read Sect. 2 only.
+- Note: Scanned PDF; extracted text garbles the equations, read them on the page.
+
+### Frantar 2022. Optimal Brain Compression: A Framework for Accurate Post-Training Quantization and Pruning
+- File: `papers/Frantar-2022-Optimal-Brain-Compression.pdf`
+- Venue: NeurIPS 2022 (printed "36th Conference on Neural Information Processing Systems (NeurIPS 2022)"; arXiv:2208.11580v2)
+- Does: Makes OBS exact and cheap per layer: the layer reconstruction loss ||W X - W_hat X||^2 has Hessian H = 2 X X^T shared by every row, so weights are removed one at a time with exact OBS updates and a rank-one update of H^-1 (ExactOBS, Algorithm 1, Sect. 4). Sect. 5 turns it into a quantizer, OBQ: the constraint target becomes quant(w_p) - w_p, giving the selection rule (quant(w_p) - w_p)^2 / [H^-1]_pp and the update delta_p = -(w_p - quant(w_p)) / [H^-1]_pp * H^-1_{:,p} (Eq. 7). Weights with error above half a step are quantized first (Sect. 5, "Quantization Outliers").
+- Finds: ResNet18/50, YOLOv5, BERT. Asymmetric per-channel weight quantization, each layer optimised independently: ResNet50 4-bit 75.72 vs BRECQ 75.88 and AdaRound 75.84 (FP 76.13); 3-bit 75.24 vs 75.32 (Table 4). Pruning: ExactOBS best at 2x-4x FLOP reduction on all three models (Table 1).
+- Use here: The direct parent of GPTQ. GPTQ is OBQ with a fixed column order for all rows at once, lazy block updates and a Cholesky factor in place of the H^-1 recursion. Read Sect. 3 and 5 before Frantar 2022 GPTQ Sect. 3-4.
+- Note: Same first author and year as the GPTQ file; the two are distinguished by title in the file name.
+
+### Nagel 2021. A White Paper on Neural Network Quantization
+- File: `papers/Nagel-2021-White-Paper-Neural-Network-Quantization.pdf`
+- Venue: preprint, arXiv:2106.08295v1 (Qualcomm AI Research, June 2021; no venue printed)
+- Does: A tutorial. Uniform affine (asymmetric) quantization x_int = clamp(round(x / s) + z, 0, 2^b - 1), x_hat = s (x_int - z) (Eq. 4-7); symmetric as the z = 0 case (Sect. 2.2.1); per-tensor vs per-channel granularity (Sect. 2.2.3, 2.4.2); simulated (fake) quantization (Sect. 2.3); PTQ range setting by min-max vs MSE (Sect. 3.1), cross-layer equalization (3.2), bias correction (3.3), AdaRound (3.4), a standard PTQ pipeline (3.5) and a debugging guide (3.7); QAT (Sect. 4).
+- Finds: No new results; recommends symmetric per-channel weights with MSE range setting, asymmetric activations, and AdaRound as the step that makes 4-bit weight PTQ work on ImageNet CNNs (Sect. 3.5-3.6).
+- Use here: The reference for the grid in `qlrl/quant/rtn.py`: Eq. 7 is the rounding, Sect. 2.4.1 the symmetric vs asymmetric trade-off, Sect. 2.3 fake quantization. Cross-layer equalization (Sect. 3.2) is the ancestor of the per-channel scaling in AWQ and SmoothQuant.
+- Note: Computer-vision era, no LLMs and no grouping; GPTQ/AWQ "group size" is per-channel scaling applied along the input dimension in blocks.
 
 ### Frantar 2022. GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers
 - File: `papers/Frantar-2022-GPTQ.pdf`
