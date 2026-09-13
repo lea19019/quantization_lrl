@@ -1,22 +1,24 @@
 # Quantization methods
 
-The four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), their three parents (OBS, OBC, the Qualcomm white paper), the outlier-handling methods that followed, the published perplexities to validate against, and plain-language algorithm sketches. Back to [../papers.md](index.md).
+The sources for the four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), in
+the order to read them, then the background papers, the published perplexities to validate
+against, and the algorithm sketches. Back to [index.md](index.md).
 
-### Hassibi 1993. Second order derivatives for network pruning: Optimal Brain Surgeon
-- File: `papers/Hassibi-1993-Optimal-Brain-Surgeon.pdf`
-- Venue: NeurIPS 1992 (Advances in Neural Information Processing Systems 5, 1993; proceedings scan from proceedings.neurips.cc, no venue line printed)
-- Does: Expands the loss at a trained minimum to second order, dE = 1/2 dw^T H dw (Eq. 1), and removes the weight whose removal costs least under the exact constrained optimum (Eq. 3-4): saliency L_q = w_q^2 / (2 [H^-1]_qq) and update dw = -(w_q / [H^-1]_qq) H^-1 e_q (Eq. 5), so every other weight is adjusted without gradient descent. Gives a recursion for H^-1 from training data (Eq. 15-17).
-- Finds: On XOR and the MONK problems OBS prunes 90%, 76% and 62% of the weights where magnitude pruning and Optimal Brain Damage remove the wrong weights (abstract, Sect. 6).
-- Use here: The origin of the update GPTQ applies at every column: Frantar 2022 GPTQ Eq. 3 is Eq. 5 here with w_q replaced by w_q - quant(w_q). Read Sect. 2 only.
-- Note: Scanned PDF; extracted text garbles the equations, read them on the page.
+## Reading order, per method
 
-### Frantar 2022. Optimal Brain Compression: A Framework for Accurate Post-Training Quantization and Pruning
-- File: `papers/Frantar-2022-Optimal-Brain-Compression.pdf`
-- Venue: NeurIPS 2022 (printed "36th Conference on Neural Information Processing Systems (NeurIPS 2022)"; arXiv:2208.11580v2)
-- Does: Makes OBS exact and cheap per layer: the layer reconstruction loss ||W X - W_hat X||^2 has Hessian H = 2 X X^T shared by every row, so weights are removed one at a time with exact OBS updates and a rank-one update of H^-1 (ExactOBS, Algorithm 1, Sect. 4). Sect. 5 turns it into a quantizer, OBQ: the constraint target becomes quant(w_p) - w_p, giving the selection rule (quant(w_p) - w_p)^2 / [H^-1]_pp and the update delta_p = -(w_p - quant(w_p)) / [H^-1]_pp * H^-1_{:,p} (Eq. 7). Weights with error above half a step are quantized first (Sect. 5, "Quantization Outliers").
-- Finds: ResNet18/50, YOLOv5, BERT. Asymmetric per-channel weight quantization, each layer optimised independently: ResNet50 4-bit 75.72 vs BRECQ 75.88 and AdaRound 75.84 (FP 76.13); 3-bit 75.24 vs 75.32 (Table 4). Pruning: ExactOBS best at 2x-4x FLOP reduction on all three models (Table 1).
-- Use here: The direct parent of GPTQ. GPTQ is OBQ with a fixed column order for all rows at once, lazy block updates and a Cholesky factor in place of the H^-1 recursion. Read Sect. 3 and 5 before Frantar 2022 GPTQ Sect. 3-4.
-- Note: Same first author and year as the GPTQ file; the two are distinguished by title in the file name.
+Read the paper sections named here, then the matching sketch at the bottom of this file.
+
+1. **RTN.** Nagel 2021, Sect. 2.2 (Eq. 4-7, the affine grid), 2.3 (fake quantization),
+   2.4 (symmetric vs asymmetric, per-channel). RTN has no paper of its own; the affine
+   scheme originates in Jacob et al. 2018 (CVPR), not in the folder.
+2. **GPTQ.** Frantar 2022 GPTQ, Sect. 3 (the OBQ baseline), Sect. 4 and Algorithm 1. If the
+   update rule feels unmotivated, first Hassibi 1993 Sect. 2, then Frantar 2022 Optimal
+   Brain Compression Sect. 3 and 5. Act-order is not in the paper; see the sketch, step 6.
+3. **AWQ.** Lin 2023, Sect. 3 (Eq. 2-5). Table 4 is the validation target.
+4. **SmoothQuant.** Xiao 2023, Sect. 4 (Eq. 3-4) and Fig. 10 for alpha. Table 7 is the
+   validation target.
+
+## The four methods
 
 ### Nagel 2021. A White Paper on Neural Network Quantization
 - File: `papers/Nagel-2021-White-Paper-Neural-Network-Quantization.pdf`
@@ -42,14 +44,6 @@ The four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), their th
 - Use here: Defines the AWQ method to implement; Table 4 is the primary Llama-1/Llama-2 validation target for RTN, GPTQ, GPTQ-R and AWQ at 3/4-bit g128.
 - Note: Filename says 2023 (first arXiv version) but the PDF is the 2024 MLSys version (v6). The paper writes the quantizer in symmetric form (Delta = max|w| / 2^(N-1)).
 
-### Shao 2024. OmniQuant: Omnidirectionally Calibrated Quantization for Large Language Models
-- File: `papers/Shao-2024-OmniQuant.pdf`
-- Venue: ICLR 2024 (printed "Published as a conference paper at ICLR 2024"; arXiv:2308.13137v3)
-- Does: Learns quantization parameters instead of hand-setting them: Learnable Weight Clipping (sigmoid-parameterised clip strengths gamma, beta on the min-max range) and a Learnable Equivalent Transformation (channel-wise scale + shift, initialised from SmoothQuant / OS+), optimised block-by-block with AdamW on 128 WikiText2 samples; 1-16 h on one A100 for LLaMA-2 7B-70B.
-- Finds: Table 1 gives the full RTN / GPTQ / AWQ / OmniQuant WikiText2 grid for LLaMA-1 7B-65B and LLaMA-2 7B-70B at W2/W3/W4, per-channel and g128 (numbers copied into the table below). OmniQuant beats GPTQ/AWQ everywhere, most at low bits (LLaMA-13B W2A16: 13.21 vs GPTQ 3832). W8A8 is explicitly skipped because SmoothQuant is already near-lossless there.
-- Use here: Background method (not implemented), but Table 1 is the single best cross-check table for the project's RTN/GPTQ/AWQ implementations on Llama-2-7B.
-- Note: OmniQuant reproduces SmoothQuant/OS+ with per-channel weight + per-token activation quantization; the GPTQ entries in Table 1 do not say whether act-order was used.
-
 ### Xiao 2023. SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models
 - File: `papers/Xiao-2023-SmoothQuant.pdf`
 - Venue: ICML 2023 (printed "Proceedings of the 40th International Conference on Machine Learning, PMLR 202, 2023"; arXiv:2211.10438v7)
@@ -57,6 +51,34 @@ The four methods this project implements (RTN, GPTQ, AWQ, SmoothQuant), their th
 - Finds: alpha = 0.5 works for OPT/BLOOM, 0.75 for GLM-130B; the usable band is 0.4-0.6 on OPT-175B (Fig. 10). OPT-175B WikiText: FP16 10.99 -> 11.11/11.14/11.17 for O1/O2/O3, while naive W8A8, ZeroQuant and Outlier Suppression give ~1e5 (Table 3). Llama-2-7B W8A8 (per-token act, per-channel weight, seq 2048): FP16 5.474 -> 5.515 at alpha = 0.85; 13B 4.950 -> 4.929 (alpha 0.85); 70B 3.320 -> 3.359 (alpha 0.9) (Table 7). LLaMA-1 7B at seq 512: 11.51 -> 11.56 with alpha = 0.8 (Table 6).
 - Use here: Defines the SmoothQuant method to implement (W8A8); validate against Table 7 (Llama-2-7B 5.515 at alpha 0.85).
 - Note: Llama numbers use higher alpha (0.8-0.9) than the OPT default 0.5; Table 6 uses sequence length 512 so its FP16 value (11.51) is not comparable to the usual 5.68.
+
+## Parents of GPTQ
+
+### Hassibi 1993. Second order derivatives for network pruning: Optimal Brain Surgeon
+- File: `papers/Hassibi-1993-Optimal-Brain-Surgeon.pdf`
+- Venue: NeurIPS 1992 (Advances in Neural Information Processing Systems 5, 1993; proceedings scan from proceedings.neurips.cc, no venue line printed)
+- Does: Expands the loss at a trained minimum to second order, dE = 1/2 dw^T H dw (Eq. 1), and removes the weight whose removal costs least under the exact constrained optimum (Eq. 3-4): saliency L_q = w_q^2 / (2 [H^-1]_qq) and update dw = -(w_q / [H^-1]_qq) H^-1 e_q (Eq. 5), so every other weight is adjusted without gradient descent. Gives a recursion for H^-1 from training data (Eq. 15-17).
+- Finds: On XOR and the MONK problems OBS prunes 90%, 76% and 62% of the weights where magnitude pruning and Optimal Brain Damage remove the wrong weights (abstract, Sect. 6).
+- Use here: The origin of the update GPTQ applies at every column: Frantar 2022 GPTQ Eq. 3 is Eq. 5 here with w_q replaced by w_q - quant(w_q). Read Sect. 2 only.
+- Note: Scanned PDF; extracted text garbles the equations, read them on the page.
+
+### Frantar 2022. Optimal Brain Compression: A Framework for Accurate Post-Training Quantization and Pruning
+- File: `papers/Frantar-2022-Optimal-Brain-Compression.pdf`
+- Venue: NeurIPS 2022 (printed "36th Conference on Neural Information Processing Systems (NeurIPS 2022)"; arXiv:2208.11580v2)
+- Does: Makes OBS exact and cheap per layer: the layer reconstruction loss ||W X - W_hat X||^2 has Hessian H = 2 X X^T shared by every row, so weights are removed one at a time with exact OBS updates and a rank-one update of H^-1 (ExactOBS, Algorithm 1, Sect. 4). Sect. 5 turns it into a quantizer, OBQ: the constraint target becomes quant(w_p) - w_p, giving the selection rule (quant(w_p) - w_p)^2 / [H^-1]_pp and the update delta_p = -(w_p - quant(w_p)) / [H^-1]_pp * H^-1_{:,p} (Eq. 7). Weights with error above half a step are quantized first (Sect. 5, "Quantization Outliers").
+- Finds: ResNet18/50, YOLOv5, BERT. Asymmetric per-channel weight quantization, each layer optimised independently: ResNet50 4-bit 75.72 vs BRECQ 75.88 and AdaRound 75.84 (FP 76.13); 3-bit 75.24 vs 75.32 (Table 4). Pruning: ExactOBS best at 2x-4x FLOP reduction on all three models (Table 1).
+- Use here: The direct parent of GPTQ. GPTQ is OBQ with a fixed column order for all rows at once, lazy block updates and a Cholesky factor in place of the H^-1 recursion. Read Sect. 3 and 5 before Frantar 2022 GPTQ Sect. 3-4.
+- Note: Same first author and year as the GPTQ file; the two are distinguished by title in the file name.
+
+## Background, not needed to implement
+
+### Shao 2024. OmniQuant: Omnidirectionally Calibrated Quantization for Large Language Models
+- File: `papers/Shao-2024-OmniQuant.pdf`
+- Venue: ICLR 2024 (printed "Published as a conference paper at ICLR 2024"; arXiv:2308.13137v3)
+- Does: Learns quantization parameters instead of hand-setting them: Learnable Weight Clipping (sigmoid-parameterised clip strengths gamma, beta on the min-max range) and a Learnable Equivalent Transformation (channel-wise scale + shift, initialised from SmoothQuant / OS+), optimised block-by-block with AdamW on 128 WikiText2 samples; 1-16 h on one A100 for LLaMA-2 7B-70B.
+- Finds: Table 1 gives the full RTN / GPTQ / AWQ / OmniQuant WikiText2 grid for LLaMA-1 7B-65B and LLaMA-2 7B-70B at W2/W3/W4, per-channel and g128 (numbers copied into the table below). OmniQuant beats GPTQ/AWQ everywhere, most at low bits (LLaMA-13B W2A16: 13.21 vs GPTQ 3832). W8A8 is explicitly skipped because SmoothQuant is already near-lossless there.
+- Use here: Background method (not implemented), but Table 1 is the single best cross-check table for the project's RTN/GPTQ/AWQ implementations on Llama-2-7B.
+- Note: OmniQuant reproduces SmoothQuant/OS+ with per-channel weight + per-token activation quantization; the GPTQ entries in Table 1 do not say whether act-order was used.
 
 ### Wei 2023. Outlier Suppression+: Accurate quantization of large language models by equivalent and effective shifting and scaling
 - File: `papers/Wei-2023-Outlier-Suppression-Plus.pdf`
@@ -139,7 +161,7 @@ Caveats: the AWQ and OmniQuant tables differ by up to 0.08 ppl for the same nomi
 
 ## Algorithm sketches
 
-### RTN (baseline used by all four papers)
+### RTN (Nagel 2021, Eq. 4-7; the baseline in all four papers)
 1. For each weight row (or each group of g=128 consecutive input columns within a row), take min and max.
 2. Asymmetric N-bit grid: scale = (max - min) / (2^N - 1), zero = round(-min / scale).
 3. q = clamp(round(w / scale) + zero, 0, 2^N - 1); dequantize w_hat = scale * (q - zero). Fake quantization keeps w_hat in FP16 and never stores integers.

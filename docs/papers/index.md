@@ -95,13 +95,13 @@ The nine the proposal rests on, in order:
 
 | Paper | Venue | One line |
 |---|---|---|
-| [Hassibi 1993](../../papers/Hassibi-1993-Optimal-Brain-Surgeon.pdf) | NeurIPS 1992 | Optimal Brain Surgeon: saliency w^2 / (2 [H^-1]_qq) and the weight update GPTQ applies at every column |
-| [Frantar 2022 (OBC)](../../papers/Frantar-2022-Optimal-Brain-Compression.pdf) | NeurIPS 2022 | Optimal Brain Compression: exact per-layer OBS with H = 2 X X^T; its OBQ (Eq. 7) is GPTQ's parent |
 | [Nagel 2021](../../papers/Nagel-2021-White-Paper-Neural-Network-Quantization.pdf) | preprint | Qualcomm white paper: the affine grid (Eq. 4-7), fake quantization, per-channel scaling; the reference for RTN |
 | [Frantar 2023 (file: 2022)](../../papers/Frantar-2022-GPTQ.pdf) | ICLR 2023 | GPTQ: column-by-column rounding with inverse-Hessian error compensation; act-order is in the code, not the paper |
 | [Lin 2024 (file: 2023)](../../papers/Lin-2023-AWQ.pdf) | MLSys 2024 | AWQ: scale salient input channels by activation magnitude before rounding; Table 4 is the Llama-2-7B validation target |
-| [Shao 2024](../../papers/Shao-2024-OmniQuant.pdf) | ICLR 2024 | OmniQuant; Table 1 is the best RTN/GPTQ/AWQ cross-check grid for Llama-1/2 |
 | [Xiao 2023](../../papers/Xiao-2023-SmoothQuant.pdf) | ICML 2023 | SmoothQuant: migrate activation outliers into weights; Llama-2-7B W8A8 5.515 at alpha 0.85 |
+| [Hassibi 1993](../../papers/Hassibi-1993-Optimal-Brain-Surgeon.pdf) | NeurIPS 1992 | Optimal Brain Surgeon: saliency w^2 / (2 [H^-1]_qq) and the weight update GPTQ applies at every column |
+| [Frantar 2022 (OBC)](../../papers/Frantar-2022-Optimal-Brain-Compression.pdf) | NeurIPS 2022 | Optimal Brain Compression: exact per-layer OBS with H = 2 X X^T; its OBQ (Eq. 7) is GPTQ's parent |
+| [Shao 2024](../../papers/Shao-2024-OmniQuant.pdf) | ICLR 2024 | OmniQuant; Table 1 is the best RTN/GPTQ/AWQ cross-check grid for Llama-1/2 |
 | [Wei 2023](../../papers/Wei-2023-Outlier-Suppression-Plus.pdf) | EMNLP 2023 | Outlier Suppression+: shift then scale |
 | [Bondarenko 2023](../../papers/Bondarenko-2023-Quantizable-Transformers.pdf) | NeurIPS 2023 | Outliers come from attention heads learning a no-op on delimiter tokens |
 | [Chen 2024](../../papers/Chen-2024-PrefixQuant.pdf) | preprint | PrefixQuant: two tokens carry 95% of per-token 4-bit error; prefix them |
