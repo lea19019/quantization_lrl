@@ -162,4 +162,4 @@ perplexities within a stated tolerance.
 - Dates are absolute (2026-09-09), never "yesterday".
 - A decision changes the file it touches. The dated record of decisions and progress is
   [progress.md](progress.md), history only, one line per entry.
-- Hours are logged by category from day one in [hours.csv](hours.csv).
+- Hours are logged by category from day one in [../project/hours.csv](../project/hours.csv).

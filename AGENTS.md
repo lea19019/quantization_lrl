@@ -85,7 +85,7 @@ the request in front of you.
 ## 6. Hours log
 
 The project form requires a log of hours by category. It lives in
-[docs/workflow/hours.csv](docs/workflow/hours.csv), one row per work session:
+[docs/project/hours.csv](docs/project/hours.csv), one row per work session:
 `start,end,hours,category,description`. `start` and `end` are `YYYY-MM-DD HH:MM` in
 Mountain Time; `hours` is their difference in decimal hours. Categories: `design`,
 `coding`, `experiments`, `reading`, `writing`; a session that mixes them lists all,

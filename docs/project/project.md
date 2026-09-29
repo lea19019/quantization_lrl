@@ -2,7 +2,7 @@
 
 Adrian Castillo, CS 698R Master's Project, Fall 2026. Advisor meetings Thursdays 2 pm.
 Week-9 draft report mid-semester. Final report and committee presentation finals week.
-Budget 125–150 hours; compute is not the constraint, hours are.
+Goal: 130 logged work hours by 2026-12-10; compute is not the constraint, hours are.
 
 This file is the single source of truth for scope, priority and decisions. The problem is
 in [problem.md](problem.md), the question and hypotheses in [question.md](question.md),
@@ -62,21 +62,28 @@ before any run.
 **Rule:** if core is not done by week 9, add-ons wait. A bug found on model four is a bug
 fixed four times. Get the pipeline right on one model first.
 
-## 4. Timeline (14 weeks, about 10 hours per week)
+## 4. Progress and remaining-hours plan
 
-| Weeks | Work |
-|---|---|
-| 1–2 | Conventions, coverage table, FLORES and calibration data, fragmentation measures. Settle GPT-2 corpora and shares with the advisor; start training as soon as they are set. Confirm lab text per language. |
-| 3–4 | RTN and GPTQ written and validated on WikiText-2; scorer with sanity checks; COMET pipeline. AWQ, SmoothQuant, NF4 follow. |
-| 5–6 | Phase 0 on Llama 3.1 8B: all methods, all bits, five draws, COMET. Null decision. Human evaluation subset fixed and raters lined up. |
-| 7–8 | Phase 1: gradient norms and curvature, per-module map, internal statistics. GPT-2 checkpoints quantized and scored. Human ratings collected. |
-| 9 | **Draft report.** Go/no-go on phase 3 and add-ons with the advisor. |
-| 10–12 | Phase 3: fine-tune and requantize, activation patching, logit lens. Add-ons in order if time. |
-| 13 | Freeze results; final analysis; figures. |
-| 14 | Final report and committee presentation. |
+As of 2026-09-28, [hours.csv](hours.csv) records **21.3 of 130 hours (16.4%)**.
+The work so far established the repository and research design, reviewed the literature,
+worked through RTN and GPTQ concepts and math, produced an initial RTN implementation
+and an early GPTQ implementation, and investigated the evaluation metrics.
 
-Track hours by category (design / coding / experiments / reading / writing) from day one
-in [../workflow/hours.csv](../workflow/hours.csv). The project form requires it.
+From 2026-09-29 through the 2026-12-10 deadline there are **10 weeks and 2 days**.
+That leaves **108.7 hours**, an average of **10.6 hours per week**. The allocation is:
+
+| Dates | Hours | Work |
+|---|---:|---|
+| 2026-09-29–2026-10-04 | 8.7 | Finish the method foundations; settle scorer and metric decisions; prepare validation. |
+| 2026-10-05–2026-10-18 | 20 | Validate RTN and GPTQ on WikiText-2; build scorer sanity checks, data and COMET pipeline; then AWQ, SmoothQuant and NF4. |
+| 2026-10-19–2026-11-01 | 20 | Phase 0 on Llama 3.1 8B; test the null; fix the human-evaluation subset and arrange raters. |
+| 2026-11-02–2026-11-15 | 20 | Phase 1 measurements; quantize and score GPT-2 checkpoints; collect human ratings. |
+| 2026-11-16–2026-11-22 | 10 | Write the draft report; make the phase-3 and add-on go/no-go decision with the advisor. |
+| 2026-11-23–2026-12-06 | 20 | Run approved phase-3 work or add-ons; freeze results; complete analysis and figures. |
+| 2026-12-07–2026-12-10 | 10 | Finish the report and committee presentation. |
+
+These are planning targets. Actual sessions remain recorded by category in
+[hours.csv](hours.csv), and the plan is recalculated from those entries.
 
 ## 5. Deliverables
 
