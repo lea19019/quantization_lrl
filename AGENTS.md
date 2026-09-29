@@ -51,7 +51,7 @@ Full rules in [docs/workflow/conventions.md](docs/workflow/conventions.md). The 
   "for later". If you think something is needed, say so and wait.
 - **Docs are held to the same limit.** Under 200 lines each; split by topic; link.
   `docs/project/` is the source of truth. Docs hold only what will be read again, never
-  a history of changes (that is `docs/workflow/progress.md` alone). Never add a doc,
+  a history of changes (that is `docs/course/progress.md` alone). Never add a doc,
   section or file that was not asked for.
 - **Tests before GPU time.** CPU-only tests plus fitness functions that enforce these
   rules; a `--test` tiny run of every script on CPU, then as a 10-minute cluster job,
@@ -79,13 +79,13 @@ the request in front of you.
 | Index of every PDF in `papers/` | [docs/papers/index.md](docs/papers/index.md) |
 | Coding, testing, results conventions | [docs/workflow/conventions.md](docs/workflow/conventions.md) |
 | Cluster rules | [docs/workflow/cluster.md](docs/workflow/cluster.md) |
-| Proposal draft | [docs/proposal/proposal_draft.md](docs/proposal/proposal_draft.md) |
+| Course records and report | [docs/course/progress.md](docs/course/progress.md) |
 | Map of all docs and reading order | [docs/README.md](docs/README.md) |
 
 ## 6. Hours log
 
 The project form requires a log of hours by category. It lives in
-[docs/project/hours.csv](docs/project/hours.csv), one row per work session:
+[docs/course/hours.csv](docs/course/hours.csv), one row per work session:
 `start,end,hours,category,description`. `start` and `end` are `YYYY-MM-DD HH:MM` in
 Mountain Time; `hours` is their difference in decimal hours. Categories: `design`,
 `coding`, `experiments`, `reading`, `writing`; a session that mixes them lists all,

@@ -5,4 +5,13 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 models/
+docs/course/report/report.pdf
+docs/course/report/*.aux
+docs/course/report/*.bbl
+docs/course/report/*.blg
+docs/course/report/*.fdb_latexmk
+docs/course/report/*.fls
+docs/course/report/*.log
+docs/course/report/*.out
+docs/course/report/*.synctex.gz
 .DS_Store

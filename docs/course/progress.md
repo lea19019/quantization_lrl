@@ -1,7 +1,17 @@
 # Progress
 
-A dated record of what was decided and done, kept for history only. The current state of
-every item lives in `docs/project/`; nothing here is needed to understand the project.
+## Time remaining
+
+As of 2026-09-29:
+
+- Goal: **130 hours by 2026-12-10**.
+- Logged through 2026-09-28: **21.3 hours**.
+- Remaining: **108.7 hours**.
+- Time to the deadline: **72 days (10 weeks and 2 days)**.
+- Required average: **10.6 hours per week**.
+
+The summary above is the current workload status. Below is the dated record of what was
+decided and completed; the current research design remains in `docs/project/`.
 
 - 2026-09-08: Languages fixed at en, fr, sw, yo, zu. Xhosa/Shona are substitutes if lab
   text for zu/yo is unusable.
@@ -26,3 +36,9 @@ every item lives in `docs/project/`; nothing here is needed to understand the pr
   bits.
 - 2026-09-10: GPT-2 arm: 124M parameters, about 5B tokens, trained once. Corpora and
   shares to be settled with the advisor.
+- 2026-09-21–2026-09-24: Studied RTN papers, math and algorithm; investigated and wrote
+  the initial implementation.
+- 2026-09-26: Studied the GPTQ paper, math and algorithm; began the implementation.
+- 2026-09-28: Investigated the research problem and compared evaluation metrics.
+- 2026-09-29: Fixed the goal at 130 hours with a 2026-12-10 deadline; consolidated course
+  records and started the LaTeX report scaffold.

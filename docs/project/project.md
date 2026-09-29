@@ -64,7 +64,7 @@ fixed four times. Get the pipeline right on one model first.
 
 ## 4. Progress and remaining-hours plan
 
-As of 2026-09-28, [hours.csv](hours.csv) records **21.3 of 130 hours (16.4%)**.
+As of 2026-09-28, [hours.csv](../course/hours.csv) records **21.3 of 130 hours (16.4%)**.
 The work so far established the repository and research design, reviewed the literature,
 worked through RTN and GPTQ concepts and math, produced an initial RTN implementation
 and an early GPTQ implementation, and investigated the evaluation metrics.
@@ -83,7 +83,7 @@ That leaves **108.7 hours**, an average of **10.6 hours per week**. The allocati
 | 2026-12-07–2026-12-10 | 10 | Finish the report and committee presentation. |
 
 These are planning targets. Actual sessions remain recorded by category in
-[hours.csv](hours.csv), and the plan is recalculated from those entries.
+[hours.csv](../course/hours.csv), and the plan is recalculated from those entries.
 
 ## 5. Deliverables
 

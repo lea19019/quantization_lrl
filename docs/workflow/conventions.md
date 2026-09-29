@@ -150,7 +150,7 @@ perplexities within a stated tolerance.
 - **Keep files in step.** When something is settled (the data, a model, a number), the
   files it touches are updated in the same turn, in this style, and nothing else is.
 - **One folder per line of thought** under `docs/` (`project`, `concepts`, `papers`,
-  `workflow`, `proposal`). A new doc goes into its folder and gets a line in
+  `workflow`, `course`). A new doc goes into its folder and gets a line in
   [../README.md](../README.md). A new line of thought gets a new folder, never a loose
   file at the top. No numbers or prefixes in names; order lives in the map.
 - **First line of every doc says what it is for.** If that cannot be said in one line,
@@ -161,5 +161,5 @@ perplexities within a stated tolerance.
   [../concepts/quantization.md](../concepts/quantization.md).
 - Dates are absolute (2026-09-09), never "yesterday".
 - A decision changes the file it touches. The dated record of decisions and progress is
-  [progress.md](progress.md), history only, one line per entry.
-- Hours are logged by category from day one in [../project/hours.csv](../project/hours.csv).
+  [../course/progress.md](../course/progress.md), one line per entry.
+- Hours are logged by category from day one in [../course/hours.csv](../course/hours.csv).
