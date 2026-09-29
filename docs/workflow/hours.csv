@@ -2,3 +2,8 @@ start,end,hours,category,description
 2026-09-09 19:00,2026-09-10 01:30,6.5,design;reading,Read papers; designed the problem and question; built the first version of this repo and its docs; set the working conventions
 2026-09-11 16:03,2026-09-11 16:23,0.3,design;reading,Reviewed project docs and status; evaluation metrics; research vs development and human evaluation explained; hours log and git set up
 2026-09-13 13:01,2026-09-13 13:31,0.5,design;reading,Research vs development doc saved; quantizer scaffold written then dropped for a bottom-up approach; OBS, OBC and Nagel white paper added; methods file put in implementation reading order
+2026-09-21 16:00,2026-09-21 19:00,3.0,reading;coding,Studied RTN papers; worked through the math and algorithm; investigated the implementation
+2026-09-22 16:00,2026-09-22 19:00,3.0,reading;coding,Studied RTN papers; worked through the math and algorithm; investigated the implementation
+2026-09-24 16:00,2026-09-24 19:00,3.0,reading;coding,Studied RTN papers; worked through the math and algorithm; investigated the implementation
+2026-09-26 13:00,2026-09-26 17:00,4.0,reading;coding,Studied the GPTQ paper; worked through the math and algorithm; began implementing it
+2026-09-28 12:30,2026-09-28 13:30,1.0,design;reading,Investigated the problem and compared evaluation metrics

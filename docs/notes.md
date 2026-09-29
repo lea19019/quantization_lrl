@@ -14,3 +14,9 @@ How are we evaluating the solution?
 What are the standard metrics we're using?
 Describe our experimentation and evaluation methodology
 What is the data we're using?
+
+----------------------
+
+Round to Nearest (RTN)
+This algorithm will break the weights of a LLM into groups of N values per row (typically 128 values, and honestly IDK why per row) and given the min and max values of the local group 
+
