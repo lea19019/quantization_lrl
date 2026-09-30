@@ -2,9 +2,9 @@
 
 | Completed | Remaining | Deadline | Time left | Weekly pace |
 |---:|---:|---:|---:|---:|
-| **21.3 / 130 hours** | **108.7 hours** | **2026-12-10** | **72 days**<br>10 weeks, 2 days | **10.6 hours** |
+| **24.3 / 130 hours** | **105.7 hours** | **2026-12-10** | **72 days**<br>10 weeks, 2 days | **10.3 hours** |
 
-*Status on 2026-09-29; logged hours run through 2026-09-28.*
+*Status on 2026-09-29; logged hours run through 2026-09-29.*
 
 ## Milestones
 

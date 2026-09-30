@@ -2,17 +2,21 @@
 
 This checklist orders the remaining project work by dependency, not by date.
 
-## Core project
+## Current work
 
-- [ ] Obtain the church corpus and the remaining language datasets.
-- [ ] Clean, deduplicate, split and inventory the multilingual data.
 - [ ] Finish the RTN implementation.
 - [ ] Run RTN correctness tests on small controlled inputs.
 - [ ] Validate RTN on WikiText-2.
 - [ ] Finish the GPTQ implementation.
 - [ ] Run GPTQ correctness tests on small controlled inputs.
 - [ ] Validate GPTQ on WikiText-2.
-- [ ] Build the translation and perplexity evaluation pipeline.
+
+## Core project
+
+- [ ] Obtain the church corpus and the remaining language datasets.
+- [ ] Clean, deduplicate, split and inventory the multilingual data.
+- [ ] Set up translation generation and automatic scoring.
+- [ ] Set up per-language perplexity evaluation.
 - [ ] Evaluate the full-precision Llama baseline.
 - [ ] Quantize the base Llama model with RTN and GPTQ.
 - [ ] Evaluate the quantized base models.

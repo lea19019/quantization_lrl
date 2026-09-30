@@ -7,3 +7,4 @@ start,end,hours,category,description
 2026-09-24 16:00,2026-09-24 19:00,3.0,reading;coding,Studied RTN papers; worked through the math and algorithm; investigated the implementation
 2026-09-26 13:00,2026-09-26 17:00,4.0,reading;coding,Studied the GPTQ paper; worked through the math and algorithm; began implementing it
 2026-09-28 12:30,2026-09-28 13:30,1.0,design;reading,Investigated the problem and compared evaluation metrics
+2026-09-29 15:45,2026-09-29 18:45,3.0,design;reading;writing,Selected languages and data sources; settled the evaluation metrics; documented the experiment roadmap
