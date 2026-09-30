@@ -51,7 +51,8 @@ Full rules in [docs/workflow/conventions.md](docs/workflow/conventions.md). The 
   "for later". If you think something is needed, say so and wait.
 - **Docs are held to the same limit.** Under 200 lines each; split by topic; link.
   `docs/project/` is the source of truth. Docs hold only what will be read again, never
-  a history of changes (that is `docs/course/progress.md` alone). Never add a doc,
+  a history of changes. Decisions are recorded in `docs/workflow/decisions.md`; completed
+  milestones are recorded in `docs/course/progress.md`. Never add a doc,
   section or file that was not asked for.
 - **Tests before GPU time.** CPU-only tests plus fitness functions that enforce these
   rules; a `--test` tiny run of every script on CPU, then as a 10-minute cluster job,
@@ -78,6 +79,7 @@ the request in front of you.
 | What the literature says and what nobody measured | [docs/concepts/literature.md](docs/concepts/literature.md) |
 | Index of every PDF in `papers/` | [docs/papers/index.md](docs/papers/index.md) |
 | Coding, testing, results conventions | [docs/workflow/conventions.md](docs/workflow/conventions.md) |
+| Decision history | [docs/workflow/decisions.md](docs/workflow/decisions.md) |
 | Cluster rules | [docs/workflow/cluster.md](docs/workflow/cluster.md) |
 | Course records and report | [docs/course/progress.md](docs/course/progress.md) |
 | Map of all docs and reading order | [docs/README.md](docs/README.md) |

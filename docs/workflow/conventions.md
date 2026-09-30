@@ -139,8 +139,9 @@ perplexities within a stated tolerance.
   can be deleted without losing a decision, a definition or an instruction, delete it.
 - **Only what sticks.** A doc holds information that will be read again: definitions,
   the current design, methods, results. Not what changed, not what was reversed, not
-  "we used to". The one place for history is [progress.md](progress.md). Do not create a
-  doc, section or file the author did not ask for; say it is missing and wait.
+  "we used to". Historical choices live in [decisions.md](decisions.md), and completed
+  milestones live in [../course/progress.md](../course/progress.md). Do not create a doc,
+  section or file the author did not ask for; say it is missing and wait.
 - **`project/` is the source of truth** and follows a paper's shape: problem, question,
   evaluation, design, data, and later `background.md`, `results.md`, `conclusion.md` as
   they are needed. Results there are the condensed numbers only. Full results live in a
@@ -160,6 +161,6 @@ perplexities within a stated tolerance.
 - Plain language. Explain a concept the first time it appears, or link to
   [../concepts/quantization.md](../concepts/quantization.md).
 - Dates are absolute (2026-09-09), never "yesterday".
-- A decision changes the file it touches. The dated record of decisions and progress is
-  [../course/progress.md](../course/progress.md), one line per entry.
+- A decision changes the file it touches and is recorded in [decisions.md](decisions.md).
+- Completed milestones are recorded in [../course/progress.md](../course/progress.md).
 - Hours are logged by category from day one in [../course/hours.csv](../course/hours.csv).

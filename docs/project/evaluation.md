@@ -1,93 +1,102 @@
 # Evaluation
 
-Quantities are defined in [problem.md](problem.md) §3; hypotheses in
-[question.md](question.md). Criteria for judging hypotheses come with the experiment design.
+What is reported as project evidence, what only supports interpretation, and what is used
+internally to explain quantization. Data and splits are in [data.md](data.md).
 
-## 1. Metrics
+## 1. Reported translation metrics
 
-| Metric | Role | What it measures | How |
+| Metric | Status | Languages | What the report uses it for |
 |---|---|---|---|
-| **Human score** | goal | translation quality as judged by speakers | direct assessment 0–100, §3 |
-| **COMET** | goal | translation quality, automatic | `Unbabel/wmt22-comet-da`, reference-based, × 100 |
-| **`D(L, c)`** | diagnostic | per-word next-word-prediction loss under quantization | problem.md §3 |
-| Per-byte damage | diagnostic | same, tokenizer-independent | sentence damage / UTF-8 bytes |
-| Flip rate, KL | diagnostic | argmax changes; distribution shift | per token |
-| Margin, entropy | control | full-model confidence per token | for H-level analysis |
-| Token premium, fertility | control | fragmentation per tokenizer | Petrov 2023; Rust 2021 |
-| chrF, spBLEU | extension | continuity with older tables | sacrebleu; `tokenize=flores200` |
-| Off-target rate | extension | wrong output language | NLLB `lid218e` |
+| Human direct assessment | primary outcome | all | Translation adequacy judged by qualified speakers, 0–100 |
+| chrF++ | primary automatic outcome | all | Reference overlap robust to inflection and spelling variation |
+| AfriCOMET 1.1 | primary automatic outcome | English, French, Yoruba, Zulu | Learned reference-based translation quality |
+| BLEU | secondary automatic outcome | all | Comparison with earlier machine-translation work |
 
-Every loss is `full − quantized`, reported with its full-precision baseline, and for the
-goal metrics also as relative, skill- and headroom-normalised drops with the floor gate
-(problem.md §3).
+Human evaluation carries the conclusion when it disagrees with an automatic metric.
+Raters also mark off-target, unintelligible and empty output; no automatic language-ID
+score substitutes for this because available classifiers do not cover every language.
 
-**Goal vs diagnostic.** Translation quality is what matters to a speaker. Damage is what
-we can measure at every token and explain mechanically. Low damage does not guarantee
-good translation (a model can lose little per word and still switch language or repeat),
-so the link is measured (§4), never assumed. Hypotheses are judged on damage; where damage
-and quality disagree, that is reported as a finding. Where COMET and human loss disagree,
-the human number carries the conclusion: Marchisio 2024 saw a 16% human drop where
-metrics saw 1.7% (p.2).
+Compute chrF++ and BLEU at corpus level with `sacrebleu==2.6.0` and save their complete
+signatures. chrF++ is case-sensitive with character order 6, word order 2, beta 2 and no
+whitespace characters. BLEU uses mixed case, `13a` tokenization and exponential smoothing.
 
-## 2. Gates before any result is read
+Use author-released [`masakhane/africomet-stl-1.1`](https://huggingface.co/masakhane/africomet-stl-1.1/tree/b4065f4424a962cf6e52373a9ec8a22a624fb278),
+pinned to revision `b4065f4424a962cf6e52373a9ec8a22a624fb278`. It scores `(source,
+translation, reference)` from 0 to 1; tables multiply it by 100. No different COMET model
+is substituted for unsupported languages.
 
-- Each quantizer reproduces the published WikiText-2 perplexity on Llama-2-7B within 0.1
-  ([../papers/methods.md](../papers/methods.md)). WikiText-2 is a small English Wikipedia
-  corpus every quantization paper reports on; it is the only public correctness check.
-- The full model scored against itself gives zero damage, KL and flips. Logits in float32.
-- RTN is bit-identical across runs. GPTQ and AWQ use five calibration draws; every number
-  from them is a mean with its standard deviation.
+For every metric, show the full-precision score, quantized score and absolute loss:
+`full score - quantized score`. A positive loss means quantization made translation worse.
 
-## 3. Protocol
+## 2. Supporting and internal measurements
 
-**Data.** FLORES-200 devtest, 1012 parallel sentences, eng_Latn, fra_Latn, swh_Latn,
-yor_Latn, zul_Latn. Dev supplies calibration text and prompt examples, never scores.
+These are not headline translation metrics. They appear in a supporting table, a
+mechanism analysis or an appendix only when they answer a stated question.
 
-**Translation.** X→en and en→X for the four non-English languages. Fixed 5-shot prompt
-from dev, same examples for every configuration of a pair; greedy; output capped at 256
-tokens; prompt stored with results.
+| Measurement | Status | Origin and purpose |
+|---|---|---|
+| Per-language perplexity | supporting result | Standard language-model measure used by Chimoto; compare full vs quantized within one language, never raw values across languages |
+| WikiText-2 perplexity | validation only | Pass/fail check that a quantizer reproduces published values; not a multilingual result |
+| Gold-token damage, `D(L,c)` | internal primary diagnostic | Project adaptation of token negative-log-likelihood change; localizes the loss caused by quantization |
+| Per-word damage | internal normalization | Project aggregation of token damage to reduce tokenizer-fragmentation bias |
+| Per-byte damage | exploratory normalization | Project proposal with no direct paper precedent; a robustness check, not a reported outcome metric |
+| Top-1 flip rate | internal diagnostic | Project disagreement check: whether the preferred next token changed |
+| KL divergence | internal diagnostic | Full-vs-quantized distribution shift following Lotfi 2026 |
+| Margin and entropy | internal controls | Full-model confidence controls motivated by Proskurina 2024 and Lotfi 2026 |
+| Token fertility | internal control | Tokens per word, following Rust 2021; tests tokenizer fragmentation |
 
-**Human evaluation.** Raters who speak Swahili, Yoruba or Zulu (French if available, as the
-high-resource control) rate translations into their language. 100 fixed devtest
-sentences per language; configurations: full precision and each core quantized one; two
-raters per language, each rating all sentences of all configurations, blind and shuffled.
-Reported: mean per configuration with interval, loss vs full precision, Krippendorff's
-alpha, per-sentence correlation with COMET loss. Minimum budget 100 × 3 × 2 ratings per
-language, planned before the runs.
+Perplexity and `D(L,c)` use the same gold-token probabilities. Perplexity summarizes how
+well one model predicts the corpus; `D(L,c)` subtracts full-model loss from quantized-model
+loss to isolate the change caused by quantization. Sources and their exact uses are in
+[mechanism.md](../papers/mechanism.md),
+[tokenizer_data_nmt.md](../papers/tokenizer_data_nmt.md) and
+[multilingual_gap.md](../papers/multilingual_gap.md).
 
-**Damage.** Each sentence alone after BOS, no prompt. A word is a maximal run of
-non-whitespace; tokens map to words by offset mapping, a token spanning two words goes to
-the first; word damage is the sum of `d_gold`; the first token of a word is word-initial,
-the rest continuation. `D(L, c)` is the mean word damage over the 1012 sentences.
+## 3. Metrics by language
 
-**Fragmentation.** Once per tokenizer: token premium against English on the same
-sentences, tokens per word, share of words split into more than one token.
+`Yes` marks report metrics. Per-language perplexity is supporting for every row; internal
+diagnostics are collected for every row when required by a mechanism analysis.
 
-## 4. Uncertainty and the damage-to-quality link
+| Language | Code used here | Final evaluation text | Human | chrF++ | BLEU | AfriCOMET |
+|---|---|---|:---:|:---:|:---:|:---:|
+| English | ISO `eng`; FLORES `eng_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
+| French | ISO `fra`; FLORES `fra_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
+| Yoruba | ISO `yor`; FLORES `yor_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
+| Zulu | ISO `zul`; FLORES `zul_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
+| Spanish | ISO `spa`; FLORES `spa_Latn` | Church and pair-specific test sets | Yes | Yes | Yes | No |
+| Portuguese | ISO `por`; FLORES `por_Latn` | Fixed church test | Yes | Yes | Yes | No |
+| Q'eqchi' | ISO/MayanV `kek` | MayanV test | Yes | Yes | Yes | No |
+| Guarani | ISO `grn`; AmericasNLP `gn` | AmericasNLP test | Yes | Yes | Yes | No |
+| Nahuatl | collective/AmericasNLP `nah` | AmericasNLP test | Yes | Yes | Yes | No |
+| Ecuadorian Quichua/Kichwa | Napo `qvo`; church variety unresolved | Fixed church test after variety audit | Yes | Yes | Yes | No |
+| Bribri | ISO/AmericasNLP `bzd` | AmericasNLP test | Yes | Yes | Yes | No |
 
-- **Sentence bootstrap.** 1000 resamples, 95% percentile interval, for every mean.
-- **Paired gap.** FLORES is parallel, so the gap between L and English is bootstrapped over
-  shared sentence indices. This interval backs any claim that a language loses "more".
-- **Noise gate.** A gap whose paired interval includes zero, or is smaller than the
-  between-draw SD, is unresolved.
-- **Does damage predict quality?** Per language and configuration: Spearman between
-  per-sentence damage and COMET loss, and with human loss on the rated subset; across
-  languages, whether the orderings by damage, COMET loss and human loss agree. In every
-  results table; disagreements flagged.
+Do not label Ecuadorian Kichwa as FLORES `quy_Latn`: that code is Ayacucho Quechua.
+AfriCOMET is restricted to the four-language core so every COMET comparison uses one
+checkpoint and the same parallel FLORES design. Portuguese AfriCOMET may be a separately
+labelled add-on, not part of the shared Latin-American evaluation.
 
-## 5. Comparing
+## 4. Protocol and uncertainty
 
-- **Across languages, one model.** Losses with intervals; paired gaps; the orderings.
-- **Across configurations, one model.** Same sentences; RTN is the floor, so a gap present
-  under RTN is not attributable to calibration.
-- **Across models.** Never raw `D`, since tokenizers differ: per-byte damage, ratio to
-  English, COMET and human loss, rank correlation of orderings. The core is one model;
-  others replicate the ordering or fail to.
-- **Against the literature.** Same model, method and language: our loss next to theirs
-  under their normalisation.
+- Score each translation direction separately. Never pool directions or test corpora.
+- African-core comparisons use the same 1,012 FLORES sentence indices. Latin-American
+  corpora differ in content and domain, so their raw scores do not establish a clean
+  cross-language ordering.
+- Human evaluation uses 100 fixed test sentences per direction, two qualified raters per
+  target language, blind and shuffled. Report the mean, 95% interval, loss from full
+  precision, off-target rate and Krippendorff's alpha.
+- Fix prompts, decoding and references before comparing precision configurations. No
+  evaluation sentence may appear in training or prompts.
+- Bootstrap 1,000 times over sentences for 95% percentile intervals. Full and quantized
+  models are paired on identical sentences. A loss whose interval includes zero, or is
+  smaller than calibration-draw variation, is unresolved.
+- Raw perplexity is not compared across languages because tokenizer fragmentation changes
+  its unit. Report each language's full and quantized perplexity and their change.
 
-## 6. Every results table
+## 5. Presentation in the report
 
-Per language: full-precision COMET and loss; human score and loss where rated; `D(L, c)`;
-per-byte damage; flip rate; KL; paired gap to English; between-draw SD; damage-to-COMET
-and damage-to-human correlation. All with intervals. No drop without its baseline.
+The main results table contains human, chrF++, BLEU and AfriCOMET where supported, always
+with the full baseline, quantized score, absolute loss and confidence interval. A separate
+supporting table contains per-language perplexity. WikiText-2 appears only in the method
+validation section. Internal diagnostics appear only in the experiments that use them to
+explain a result; they are not presented as translation-quality metrics.
