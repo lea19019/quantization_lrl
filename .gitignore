@@ -15,3 +15,5 @@ docs/course/report/*.log
 docs/course/report/*.out
 docs/course/report/*.synctex.gz
 .DS_Store
+data
+examples/

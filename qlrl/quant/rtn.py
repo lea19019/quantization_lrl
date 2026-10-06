@@ -27,6 +27,15 @@ from transformers import (
     PreTrainedModel,
     PreTrainedTokenizerBase,
 )
+from transformers.pytorch_utils import Conv1D
+
+
+def _is_quantized_module(module_name: str, module: torch.nn.Module) -> bool:
+    gpt2_weight = module_name.startswith("transformer.h.") and isinstance(module, Conv1D)
+    llama_weight = module_name.startswith("model.layers.") and isinstance(
+        module, torch.nn.Linear
+    )
+    return gpt2_weight or llama_weight
 
 
 def forward_pass(
@@ -67,9 +76,10 @@ def generate(
 
 def rtn( model: PreTrainedModel, bits: int = 4 ) -> PreTrainedModel:
     from copy import deepcopy
-    from transformers.pytorch_utils import Conv1D
+    # from transformers.pytorch_utils import Conv1D
 
-    quantized_model = deepcopy(model)
+    # quantized_model = deepcopy(model)
+    quantized_model = model if model.config.model_type == "llama" else deepcopy(model)
     number_of_levels = 2 ** bits
     # names = "\n".join(name for name, _ in model.named_parameters())
     # print(names)
@@ -77,11 +87,14 @@ def rtn( model: PreTrainedModel, bits: int = 4 ) -> PreTrainedModel:
         for name, param in quantized_model.named_parameters():
             if param.ndim != 2:
                 continue
-            if "weight" not in name:
-                continue
+            # if "weight" not in name:
+            #     continue
             # Code to check if it's Conv1D or whatever other format
             module_name = name.rsplit(".", 1)[0]
             module = quantized_model.get_submodule(module_name)
+
+            if not _is_quantized_module(module_name, module):
+                continue
 
             is_conv1d = isinstance(module, Conv1D)
 
@@ -89,58 +102,80 @@ def rtn( model: PreTrainedModel, bits: int = 4 ) -> PreTrainedModel:
                 matrix = param.T
             else:
                 matrix = param
+            matrix = matrix.float()
 
-            rounded_matrix = matrix.clone()
+            # rounded_matrix = matrix.clone()
 
             # Code to transpose the weight
             # This stays the same
-            for row_index in range(matrix.shape[0]):
-                row = matrix[row_index]
-                rounded_row = row.clone()
+            # for row_index in range(matrix.shape[0]):
+            #     row = matrix[row_index]
+            #     rounded_row = row.clone()
     
-                groups = torch.split(row, 128)
-                for group_number, group in enumerate(groups):
-                    group_min = group.min()
-                    group_max = group.max()
+            #     groups = torch.split(row, 128)
+            #     for group_number, group in enumerate(groups):
+            #         group_min = group.min()
+            #         group_max = group.max()
 
-                    if group_min == group_max: continue
+            #         if group_min == group_max: continue
 
-                    # Calculate the space we're going to have in between each value in the grid
-                    spacer = (group_max - group_min) / (number_of_levels - 1)
-                    #
-                    q = torch.round((group - group_min) / spacer)
-                    q = torch.clamp(q, 0, number_of_levels - 1)
-                    rounded_group = q * spacer + group_min
-                    '''
-                    Brute Force Approach
-                    grid = []
+            #         # Calculate the space we're going to have in between each value in the grid
+            #         spacer = (group_max - group_min) / (number_of_levels - 1)
+            #         #
+            #         q = torch.round((group - group_min) / spacer)
+            #         q = torch.clamp(q, 0, number_of_levels - 1)
+            #         rounded_group = q * spacer + group_min
+            #         '''
+            #         Brute Force Approach
+            #         grid = []
+            #
+            #         for i in range(number_of_levels):
+            #             grid_val = group_min + i*spacer
+            #             grid.append(grid_val)
+            #
+            #         rounded_group = torch.empty_like(group)
+            #
+            #         for index, p in enumerate(group):
+            #             idx = round((p-group_min)/spacer)
+            #             closest_val = grid[idx]
+            #             # BRUTE FORCE APPROACH
+            #             # curr_dif = float("inf")
+            #             # closest_val = 0
+            #             # for val_grid in grid:
+            #             #     # Get the absolute difference between p and val_grid
+            #             #     absolute_dif = torch.abs(p - val_grid)
+            #             #     if absolute_dif < curr_dif:
+            #             #         curr_dif = absolute_dif
+            #             #         closest_val = val_grid
+            #             # # Replace p with closest_val, don't know how to do it.
+            #
+            #             rounded_group[index] = closest_val
+            #         '''
+            #         start = group_number * 128
+            #         end = start + group.numel()
+            #         rounded_row[start:end] = rounded_group
+            #     rounded_matrix[row_index].copy_(rounded_row)
 
-                    for i in range(number_of_levels):
-                        grid_val = group_min + i*spacer
-                        grid.append(grid_val)
+            group_size = 128
+            rows, columns = matrix.shape
+            group_count = (columns + group_size - 1) // group_size
+            padded_width = group_count * group_size
+            padding = padded_width - columns
 
-                    rounded_group = torch.empty_like(group)
+            padded_matrix = torch.nn.functional.pad(matrix, (0, padding))
+            for_mins = torch.nn.functional.pad(matrix, (0, padding), value=float("inf"))
+            for_maxs = torch.nn.functional.pad(matrix, (0, padding), value=float("-inf"))
 
-                    for index, p in enumerate(group):
-                        idx = round((p-group_min)/spacer)
-                        closest_val = grid[idx]
-                        # BRUTE FORCE APPROACH
-                        # curr_dif = float("inf")
-                        # closest_val = 0
-                        # for val_grid in grid:
-                        #     # Get the absolute difference between p and val_grid
-                        #     absolute_dif = torch.abs(p - val_grid)
-                        #     if absolute_dif < curr_dif:
-                        #         curr_dif = absolute_dif
-                        #         closest_val = val_grid
-                        # # Replace p with closest_val, don't know how to do it.
+            grouped = padded_matrix.reshape(rows, group_count, group_size)
+            group_mins = for_mins.reshape(rows, group_count, group_size).amin(dim=2, keepdim=True)
+            group_maxs = for_maxs.reshape(rows, group_count, group_size).amax(dim=2, keepdim=True)
+            spacings = (group_maxs - group_mins) / (number_of_levels - 1)
+            safe_spacings = torch.where(spacings == 0, torch.ones_like(spacings), spacings)
 
-                        rounded_group[index] = closest_val
-                    '''
-                    start = group_number * 128
-                    end = start + group.numel()
-                    rounded_row[start:end] = rounded_group
-                rounded_matrix[row_index].copy_(rounded_row)
+            q = torch.round((grouped - group_mins) / safe_spacings)
+            q = torch.clamp(q, 0, number_of_levels - 1)
+            rounded_groups = torch.where(spacings == 0, group_mins, q * spacings + group_mins)
+            rounded_matrix = rounded_groups.reshape(rows, padded_width)[:, :columns]
             # Perform operations on param.data here
             # Transpose back the Conv1D back
             if is_conv1d: param.copy_(rounded_matrix.T)
@@ -155,10 +190,16 @@ def load_or_create_quantized_model(
     bits: int = 4,
 ) -> PreTrainedModel:
     """Load a saved RTN model, or create and save it when it is absent."""
-    model_path = Path(output_folder) / "model.safetensors"
-    if model_path.exists():
+    # model_path = Path(output_folder) / "model.safetensors"
+    model_path = Path(output_folder)
+    single_file = (model_path / "model.safetensors").exists()
+    sharded_file = (model_path / "model.safetensors.index.json").exists()
+    if single_file or sharded_file:
+        # return AutoModelForCausalLM.from_pretrained(
+        #     output_folder, dtype=torch.float32
+        # ).eval()
         return AutoModelForCausalLM.from_pretrained(
-            output_folder, dtype=torch.float32
+            output_folder, dtype=model.dtype
         ).eval()
 
     quantized_model = rtn(model, bits=bits)
