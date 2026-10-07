@@ -1,0 +1,4 @@
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+meta-llama/Llama-3.1-8B: perplexity 131154.094 (126 predicted tokens, windows of 64)
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-rtn-4bit: perplexity 132081.562 (126 predicted tokens, windows of 64)

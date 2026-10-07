@@ -1,0 +1,9 @@
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 4109.38it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-awq-4bit-v2-seed0: perplexity 6.606 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 10486.57it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-awq-4bit-v2-seed1: perplexity 6.593 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  35%|███▌      | 102/291 [00:00<00:00, 942.52it/s]Loading weights:  71%|███████   | 206/291 [00:00<00:00, 983.57it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1019.13it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-awq-4bit-v2-seed2: perplexity 6.599 (288627 predicted tokens, windows of 2048)

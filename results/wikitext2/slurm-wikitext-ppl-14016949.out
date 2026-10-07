@@ -1,0 +1,12 @@
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 16165.91it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+meta-llama/Llama-3.1-8B: perplexity 6.240 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 105/291 [00:00<00:00, 1045.82it/s]Loading weights:  72%|███████▏  | 210/291 [00:00<00:00, 675.73it/s] Loading weights:  98%|█████████▊| 285/291 [00:00<00:00, 630.03it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 680.99it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-rtn-4bit: perplexity 6.910 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  30%|███       | 88/291 [00:00<00:00, 809.09it/s]Loading weights:  74%|███████▎  | 214/291 [00:00<00:00, 1048.84it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1053.62it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-gptq-4bit-calib: perplexity 6.576 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  29%|██▉       | 84/291 [00:00<00:00, 834.21it/s]Loading weights:  58%|█████▊    | 169/291 [00:00<00:00, 833.62it/s]Loading weights:  92%|█████████▏| 269/291 [00:00<00:00, 898.74it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 907.54it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-gptq-4bit: perplexity 7.206 (288627 predicted tokens, windows of 2048)

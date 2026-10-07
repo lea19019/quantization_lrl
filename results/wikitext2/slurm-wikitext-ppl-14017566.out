@@ -1,0 +1,12 @@
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  41%|████      | 120/291 [00:00<00:00, 1113.89it/s]Loading weights:  80%|███████▉  | 232/291 [00:00<00:00, 1012.90it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1040.53it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-gptq-4bit-c4-seed1: perplexity 6.679 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  31%|███       | 89/291 [00:00<00:00, 888.63it/s]Loading weights:  75%|███████▍  | 217/291 [00:00<00:00, 1094.66it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1123.34it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-gptq-4bit-c4-seed2: perplexity 6.662 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  33%|███▎      | 97/291 [00:00<00:00, 946.70it/s]Loading weights:  71%|███████   | 206/291 [00:00<00:00, 986.85it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1053.74it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-awq-4bit-clip-seed1: perplexity 6.612 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  34%|███▍      | 100/291 [00:00<00:00, 978.45it/s]Loading weights:  74%|███████▍  | 215/291 [00:00<00:00, 1060.76it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1084.40it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-awq-4bit-clip-seed2: perplexity 6.618 (288627 predicted tokens, windows of 2048)

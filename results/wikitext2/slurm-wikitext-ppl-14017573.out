@@ -1,0 +1,6 @@
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 2737.13it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (287644 > 1024). Running this sequence through the model will result in indexing errors
+models/gpt2-smoothquant-w8a8: perplexity 30.421 (286440 predicted tokens, windows of 1024)
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 2358.93it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (287644 > 1024). Running this sequence through the model will result in indexing errors
+models/gpt2-w8a8-no-smoothing: perplexity 30.443 (286440 predicted tokens, windows of 1024)

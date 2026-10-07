@@ -16,12 +16,20 @@ Still to validate:
 5. Build that group’s allowed-value grid from those endpoints and the chosen bit width.
 6. Replace every weight with its closest grid value.
 7. Put the rows back into a matrix of exactly the same shape.
+
+• Results, 2026-10-07 (WikiText-2 test perplexity, Llama-3.1-8B, 2048-token windows,
+  qlrl/eval/perplexity.py, job 14016949):
+  - Full precision (bf16):  6.240
+  - RTN 4-bit, groups of 128: 6.910  (+0.67)
 '''
-from typing import cast
+import argparse
+from copy import deepcopy
 from pathlib import Path
+from typing import cast
 
 import torch
 from transformers import (
+    AutoConfig,
     AutoModelForCausalLM,
     AutoTokenizer,
     PreTrainedModel,
@@ -29,20 +37,26 @@ from transformers import (
 )
 from transformers.pytorch_utils import Conv1D
 
+from qlrl.quant.architectures import is_quantized_module
+
 
 def _is_quantized_module(module_name: str, module: torch.nn.Module) -> bool:
-    gpt2_weight = module_name.startswith("transformer.h.") and isinstance(module, Conv1D)
-    llama_weight = module_name.startswith("model.layers.") and isinstance(
-        module, torch.nn.Linear
-    )
-    return gpt2_weight or llama_weight
+    # gpt2_weight = module_name.startswith("transformer.h.") and isinstance(module, Conv1D)
+    # llama_weight = module_name.startswith("model.layers.") and isinstance(
+    #     module, torch.nn.Linear
+    # )
+    # return gpt2_weight or llama_weight
+    # Any architecture: every linear inside the repeated layers (see architectures.py).
+    return is_quantized_module(module_name, module)
 
 
 def forward_pass(
     model: PreTrainedModel, tokenizer: PreTrainedTokenizerBase, text: str
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Return (logits [1, seq, vocab] in float32, input_ids [1, seq]) for one string."""
-    inputs = tokenizer(text, return_tensors="pt")
+    device = next(model.parameters()).device
+    tokenized = tokenizer(text, return_tensors="pt")
+    inputs = {name: tensor.to(device) for name, tensor in tokenized.items()}
     with torch.no_grad():  # inference only, no autograd graph
         out = model(**inputs)
     return out.logits.float(), inputs["input_ids"]
@@ -65,7 +79,9 @@ def generate(
     model: PreTrainedModel, tokenizer: PreTrainedTokenizerBase, text: str, max_new_tokens: int
 ) -> str:
     """Return the greedy continuation of `text`, without the prompt."""
-    inputs = tokenizer(text, return_tensors="pt")
+    device = next(model.parameters()).device
+    tokenized = tokenizer(text, return_tensors="pt")
+    inputs = {name: tensor.to(device) for name, tensor in tokenized.items()}
     with torch.no_grad():
         ids = model.generate(  # type: ignore[attr-defined]  # transformers 5.x stub bug
             **inputs, max_new_tokens=max_new_tokens, do_sample=False
@@ -224,24 +240,65 @@ def compare_forward_passes(
     difference = torch.abs(logits - quantized_logits)
     return torch.equal(logits, quantized_logits), difference.mean().item(), difference.max().item()
 
+def _load_model(model_path: str, test: bool) -> tuple[PreTrainedModel, PreTrainedTokenizerBase]:
+    """Load the requested model, or a tiny Llama with the same tokenizer for a test run."""
+    tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True)
+    if test:
+        config = AutoConfig.from_pretrained(model_path, local_files_only=True)
+        config.hidden_size = 64
+        config.intermediate_size = 128
+        config.num_hidden_layers = 1
+        config.num_attention_heads = 4
+        config.num_key_value_heads = 2
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        dtype = torch.bfloat16 if device == "cuda" else torch.float32
+        model = AutoModelForCausalLM.from_config(config, dtype=dtype).to(device)
+        return model.eval(), tokenizer
+    if not torch.cuda.is_available() or not torch.cuda.is_bf16_supported():
+        raise RuntimeError("Full Llama quantization requires a CUDA GPU with bfloat16 support.")
+    model = AutoModelForCausalLM.from_pretrained(
+        model_path, dtype=torch.bfloat16, local_files_only=True
+    ).to("cuda")
+    return model.eval(), tokenizer
+
+
+def _parse_args() -> argparse.Namespace:
+    """Return command-line paths and quantization settings."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("model_path")
+    parser.add_argument("output_folder")
+    parser.add_argument("--bits", type=int, default=4)
+    parser.add_argument("--test", action="store_true")
+    return parser.parse_args()
+
+
 def main() -> None:
-    tokenizer = AutoTokenizer.from_pretrained("gpt2")
-    model = AutoModelForCausalLM.from_pretrained("gpt2", dtype=torch.float32).eval()
-    output_folder = "models/gpt2-rtn-4bit"
-    quantized_model = load_or_create_quantized_model(model, tokenizer, output_folder)
+    args = _parse_args()
+    model, tokenizer = _load_model(args.model_path, args.test)
+    reference_model = deepcopy(model) if args.test else None
+    quantized_model = load_or_create_quantized_model(
+        model, tokenizer, args.output_folder, bits=args.bits
+    )
+    if reference_model is None:
+        print("Saved RTN model to", args.output_folder)
+        return
     text = "The capital of France is"
 
     identical, mean_difference, max_difference = compare_forward_passes(
-        model, quantized_model, tokenizer, text
+        reference_model, quantized_model, tokenizer, text
     )
     print("Logits identical:", identical)
     print("Mean absolute logit difference:", mean_difference)
     print("Maximum absolute logit difference:", max_difference)
     print("Prompt:", repr(text))
-    print("Full-precision continuation:", repr(generate(model, tokenizer, text, 20)))
+    max_new_tokens = 2 if args.test else 20
+    print(
+        "Full-precision continuation:",
+        repr(generate(reference_model, tokenizer, text, max_new_tokens)),
+    )
     print(
         "RTN 4-bit continuation:",
-        repr(generate(quantized_model, tokenizer, text, 20)),
+        repr(generate(quantized_model, tokenizer, text, max_new_tokens)),
     )
 
     # logits, input_ids = forward_pass(model, tokenizer, text) # What is exactly logits and input_ids?

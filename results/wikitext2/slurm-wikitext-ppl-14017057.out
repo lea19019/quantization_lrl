@@ -1,0 +1,6 @@
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  38%|███▊      | 110/291 [00:00<00:00, 1089.89it/s]Loading weights:  75%|███████▌  | 219/291 [00:00<00:00, 1018.35it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1031.71it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-smoothquant-w8a8: perplexity 6.343 (288627 predicted tokens, windows of 2048)
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  35%|███▍      | 101/291 [00:00<00:00, 1002.44it/s]Loading weights:  69%|██████▉   | 202/291 [00:00<00:00, 996.46it/s] Loading weights: 100%|██████████| 291/291 [00:00<00:00, 1029.33it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+models/llama-3.1-8b-w8a8-no-smoothing: perplexity 6.365 (288627 predicted tokens, windows of 2048)
