@@ -29,6 +29,9 @@ fine-tuning, calibration or prompt examples.
 Church counts are from the 2024 inventory reported by the data provider; the files have
 not arrived yet. External counts below were measured from the downloaded files.
 
+Church data location on the cluster:
+`/home/vacl2/groups/grp_mtlab/nobackup/archive/all-data/church-data-2026`.
+
 | Language | Church pairs | External train/pool | External held out | Total identified |
 |---|---:|---:|---:|---:|
 | English | Not reported separately | 0 | 1,012 FLORES | At least 1,012 |
