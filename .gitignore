@@ -17,3 +17,4 @@ docs/course/report/*.synctex.gz
 .DS_Store
 data
 examples/
+papers/
