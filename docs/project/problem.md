@@ -132,7 +132,7 @@ reported as unresolved. Unit: per-token perplexity is never compared across lang
 
 ## 4. The question
 
-Given a model, a quantization configuration and the five languages: **why is
+Given a model, a quantization configuration and the project languages: **why is
 `G(L, c) > 0` for the low-resource languages, and what mechanism produces it?** The
 candidate mechanisms are E1–E7 in [../concepts/explanations.md](../concepts/explanations.md).
 An answer is a mechanism whose prediction differs from the other candidates' and from the
@@ -141,7 +141,9 @@ null, tested with criteria written before the run.
 ## 5. Scope
 
 Models Llama 3.1 8B, Qwen 2.5 7B, a from-scratch GPT-2-scale decoder (core); Aya and the
-Gemma 4 pair (extension). Languages English, French, Swahili, Yoruba, Zulu. Methods RTN
+Gemma 4 pair (extension). Languages: English (anchor); French, Spanish, Portuguese
+(high-resource controls); Yoruba, Zulu, Swahili, Amharic; Q'eqchi', Guarani, Nahuatl,
+Kichwa, Bribri. Methods RTN
 and GPTQ at 4 and 3 bits (core); AWQ and SmoothQuant (extension). Text: FLORES-200
 devtest. Details in [design.md](design.md).
 

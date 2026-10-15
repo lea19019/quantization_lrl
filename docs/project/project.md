@@ -39,7 +39,9 @@ before any run.
 
 - Model: Llama 3.1 8B. All H2 experiments run on it alone.
 - GPT-2 small trained by us, once, early, with shares per language set by us.
-- Languages: English, French, Swahili, Yoruba, Zulu.
+- Languages: English as the anchor; French, Spanish and Portuguese as high-resource
+  controls; Yoruba, Zulu, Swahili and Amharic (African); Q'eqchi', Guarani, Nahuatl,
+  Kichwa and Bribri (Latin American).
 - Methods: RTN, GPTQ (act-order), AWQ, SmoothQuant (W4A8), bitsandbytes NF4; 4, 3 and
   2 bits where supported; five calibration draws for calibration-based methods.
 - Evaluation: COMET and human evaluation as the goal metrics, per-word damage as the

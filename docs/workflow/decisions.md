@@ -29,3 +29,22 @@ lives in `docs/project/`.
 - 2026-09-29: African core fixed at English, French, Yoruba and Zulu. Zulu supplies
   Bantu–Yoruboid contrast while retaining FLORES, human-evaluation and AfriCOMET coverage;
   Swahili and Xhosa are excluded.
+- 2026-10-13: Church data comes from the 2026 release, now readable for every project
+  language (counts in [church_data.md](../project/church_data.md)).
+- 2026-10-13: Llama 3.1 8B is fine-tuned three times, all full fine-tuning: one
+  multilingual model on every language, and one model each for Yoruba and Zulu, to see
+  whether the per-language and multilingual results differ.
+- 2026-10-13: English is the only anchor: training and main evaluation are English–X.
+  Spanish–X zero-shot evaluation is set aside for now.
+- 2026-10-13: External Spanish–X data (AmericasNLP, MayanV, Kichwa lexicon) gets a
+  synthetic English source by machine-translating its Spanish side; the target side stays
+  human-written. The list of what to translate is in [data.md](../project/data.md).
+- 2026-10-13: Spanish sides are translated with Qwen3-32B (Apache-2.0), greedy, prompt of
+  three FLORES+ dev pairs in the format `<spa>…</spa> <eng>…</eng>`.
+- 2026-10-13: The church data (already cleaned by the lab) is split by line, not by
+  document: 1,000 dev and 1,000 test per language. Near-duplicate: equal after lowercasing
+  and removing digits and punctuation; such pairs leave train. External train sets are
+  cleaned with the lab pipeline; external dev and test sets are left as published.
+- 2026-10-13: Translation evaluation: base model, three dev examples per test set (the
+  same for every model), both directions, greedy, answer capped at 2x the source tokens,
+  full test sets. Damage is measured on the bare FLORES+ devtest sentence.

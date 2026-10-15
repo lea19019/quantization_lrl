@@ -12,3 +12,6 @@ start,end,hours,category,description
 2026-10-01 11:00,2026-10-01 14:00,3.0,coding,Implemented GPTQ
 2026-10-06 21:00,2026-10-06 22:30,1.5,experiments,Validated GPTQ and RTN
 2026-10-07 11:00,2026-10-07 12:00,1.0,experiments;coding,Validated RTN; GPTQ; AWQ and SmoothQuant on WikiText-2 (AI-driven implementation)
+2026-10-09 16:00,2026-10-09 18:00,2.0,coding;design,Developed the data and evaluation pipeline
+2026-10-12 17:00,2026-10-12 19:00,2.0,coding;design,Developed the data and evaluation pipeline
+2026-10-13 19:00,2026-10-13 21:00,2.0,design,Defined the data and evaluation plan: church split; external data cleaning; Spanish-to-English translation; translation prompt and evaluation protocol

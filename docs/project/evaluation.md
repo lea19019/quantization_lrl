@@ -63,6 +63,8 @@ diagnostics are collected for every row when required by a mechanism analysis.
 | French | ISO `fra`; FLORES `fra_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
 | Yoruba | ISO `yor`; FLORES `yor_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
 | Zulu | ISO `zul`; FLORES `zul_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
+| Swahili | ISO `swh`; FLORES `swh_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Undecided |
+| Amharic | ISO `amh`; FLORES `amh_Ethi` | FLORES-200 devtest | Yes | Yes | Yes | Undecided |
 | Spanish | ISO `spa`; FLORES `spa_Latn` | Church and pair-specific test sets | Yes | Yes | Yes | No |
 | Portuguese | ISO `por`; FLORES `por_Latn` | Fixed church test | Yes | Yes | Yes | No |
 | Q'eqchi' | ISO/MayanV `kek` | MayanV test | Yes | Yes | Yes | No |

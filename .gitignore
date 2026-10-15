@@ -18,3 +18,4 @@ docs/course/report/*.synctex.gz
 data
 examples/
 papers/
+.python-version

@@ -9,7 +9,7 @@ settled with the advisor.
 
 | Model | Role | Why |
 |---|---|---|
-| Llama 3.1 8B | **core** | Published numbers to check against (Marie & Fujita 2025, Chimoto 2026, Chang 2025); none of sw/yo/zu in its official list, so the fine-tuning intervention is meaningful |
+| Llama 3.1 8B | **core** | Published numbers to check against (Marie & Fujita 2025, Chimoto 2026, Chang 2025); none of yo/zu/sw/am in its official list, so the fine-tuning intervention is meaningful |
 | GPT-2 small (124M), trained by us | **core** | The only setting where data per language is set by us; gives the learning curve of damage |
 | Qwen 2.5 7B | add-on | Replicates the language ordering on a second family |
 | Gemma 4 26B A4B and 31B | add-on | MoE vs dense on the same data and tokenizer; official QAT checkpoints |
@@ -20,9 +20,9 @@ ordering of damage and COMET loss, nothing more.
 
 ## 2. Languages
 
-English and French as high-resource anchors present in every model; Swahili, Yoruba and
-Zulu as the lab languages, absent from Llama's official list, present in Gemma's. Xhosa
-and Shona substitute for Zulu or Yoruba if the lab text for either is unusable.
+English is the anchor. French, Spanish and Portuguese are high-resource controls.
+African: Yoruba, Zulu, Swahili and Amharic. Latin American: Q'eqchi', Guarani, Nahuatl,
+Kichwa and Bribri ([data.md](data.md)).
 Coverage table (fill from model cards before phase 0; this is the H1 prediction written
 down: largest damage in the ✗ cells):
 
@@ -30,7 +30,7 @@ down: largest damage in the ✗ cells):
 |---|---|---|---|---|
 | English, French | ✓ | ✓ | ✓ | set by us |
 | Swahili | ✗ | ? | ✓ | set by us |
-| Yoruba, Zulu | ✗ | ? | ? | set by us |
+| Yoruba, Zulu, Amharic | ✗ | ? | ? | set by us |
 
 ## 3. Quantization methods
 
@@ -51,11 +51,11 @@ once GPTQ exists. Every calibration-based method: five draws.
 
 ### Phase 0. Baseline and the null
 
-Full precision and every method × bits on the core model, all five languages. Output:
+Full precision and every method × bits on the core model, all project languages. Output:
 damage, COMET loss and the paired gaps ([evaluation.md](evaluation.md) §3–4). Decision:
 if the 4-bit gap does not exceed the between-draw spread and hold on the second family,
 H1 and H2 are judged at 3 bits. Also the check that Llama's full-precision quality on
-sw/yo/zu is above the floor.
+yo/zu/sw/am is above the floor.
 
 ### Phase 1. Cheap evidence on both hypotheses (released model, no training)
 

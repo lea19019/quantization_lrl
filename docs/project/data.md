@@ -15,22 +15,46 @@ fine-tuning, calibration or prompt examples.
 | Ecuadorian Quichua/Kichwa | Quechuan, Northern Quechua | Ecuadorian Andes and Amazon | Gives South American Indigenous coverage and church data. The external source is specifically Napo Lowland Kichwa (`qvo`) and is merged only if the church variety is compatible. |
 | Bribri (`bzd`) | Chibchan, Talamancan | Talamanca region of Costa Rica and Panama | Extremely low-resource language from another family, with a published benchmark and a possible path to human evaluation. |
 
+## Additional Latin-American church languages (exploratory)
+
+Church data only, English–X, no external benchmark. Line counts are `filtered/` lines; see
+[church_data.md](church_data.md).
+
+| Language | Family | Geographic origin | Church lines |
+|---|---|---|---:|
+| Aymara (`aym`) | Aymaran | Andes of Bolivia, Peru and Chile | 8,400 |
+| Guna (`cuk`) | Chibchan | Guna Yala, Panama | 2,770 |
+| Kaqchikel (`cak`) | Mayan, K'ichean | Central highlands of Guatemala | 2,811 |
+| K'iche' (`quc`) | Mayan, K'ichean | Western highlands of Guatemala | 2,770 |
+| Mam (`mam`) | Mayan, Mamean | Western Guatemala and Chiapas, Mexico | 2,769 |
+| Nivaclé (`cag`) | Matacoan | Gran Chaco of Paraguay and Argentina | 123 |
+| Cusco Quechua (`quz`) | Quechuan, Southern Quechua | Cusco region, Peru | 2,768 |
+| South Bolivian Quechua (`quh`) | Quechuan, Southern Quechua | Southern Bolivia | 2,765 |
+| Tzotzil (`tzo`) | Mayan, Tzeltalan | Chiapas, Mexico | 2,787 |
+| Yucatec Maya (`yua`) | Mayan, Yucatecan | Yucatán Peninsula, Mexico and Belize | 2,784 |
+| Haitian Creole (`hat`) | French-based creole | Haiti | 324,028 |
+| Papiamento (`pap`) | Iberian-based creole | Aruba, Curaçao and Bonaire | 87,896 |
+
 ## African core languages
 
 | Language | Family | Geographic origin | Church segments | Role and reason for inclusion |
 |---|---|---|---:|---|
-| English (`eng_Latn`) | Indo-European, Germanic | England | Not reported separately | High-resource source and control language. |
+| English (`eng_Latn`) | Indo-European, Germanic | England | Not reported separately | The anchor: one side of every training and evaluation pair. |
 | French (`fra_Latn`) | Indo-European, Romance | Northern France | 2,615,266 | High-resource African lingua-franca control with substantial church data. |
 | Yoruba (`yor_Latn`) | Niger-Congo, Volta-Niger, Yoruboid | Southwestern Nigeria, Benin and Togo | 84,373 | Low-resource tonal language with FLORES, human-evaluation and AfriCOMET coverage. |
 | Zulu (`zul_Latn`) | Niger-Congo, Bantu, Nguni | South Africa | 95,741 | Low-resource language with the same evaluation coverage; its Bantu structure gives stronger typological contrast with Yoruba. |
+| Swahili (`swh_Latn`) | Niger-Congo, Bantu | East African coast; lingua franca of East Africa | Not in the 2024 inventory; 437,118 lines in 2026 | Bantu like Zulu with far more data: the resource contrast for H1. |
+| Amharic (`amh_Ethi`) | Afro-Asiatic, Semitic | Ethiopia | Not in the 2024 inventory; 187,539 lines in 2026 | Different family and Ge'ez script: tests whether results hold beyond Niger-Congo and Latin script, and separates tokenization effects. |
 
 ## Parallel-corpus inventory
 
-Church counts are from the 2024 inventory reported by the data provider; the files have
-not arrived yet. External counts below were measured from the downloaded files.
+Church counts are from the 2024 inventory reported by the data provider; the 2026 files
+are now readable and their measured line counts are in [church_data.md](church_data.md).
+External counts below were measured from the downloaded files.
 
 Church data location on the cluster:
 `/home/vacl2/groups/grp_mtlab/nobackup/archive/all-data/church-data-2026`.
+Layout, access and how to read it: [church_data.md](church_data.md).
 
 | Language | Church pairs | External train/pool | External held out | Total identified |
 |---|---:|---:|---:|---:|
@@ -38,6 +62,8 @@ Church data location on the cluster:
 | French | 2,615,266 | 0 | 1,012 FLORES | 2,616,278 |
 | Yoruba | 84,373 | 0 | 1,012 FLORES | 85,385 |
 | Zulu | 95,741 | 0 | 1,012 FLORES | 96,753 |
+| Swahili | Not inventoried | 0 | 1,012 FLORES | Not inventoried |
+| Amharic | Not inventoried | 0 | 1,012 FLORES | Not inventoried |
 | Spanish | 3,137,864 | 0 | 0 | 3,137,864 |
 | Portuguese | 2,876,104 | 0 | 0 | 2,876,104 |
 | Q'eqchi' | 202,255 | 2,114 | 2,000 | 206,369 |
@@ -57,6 +83,8 @@ lower. The Kichwa pool contains 6,287 accepted and 26 review entries.
 | French | FLORES-200 devtest for evaluation; reserve church data for training after deduplication and a church holdout. |
 | Yoruba | FLORES-200 devtest for evaluation; use church data for training after deduplication and a church holdout. |
 | Zulu | FLORES-200 devtest for evaluation; use church data for training after deduplication and a church holdout. |
+| Swahili | FLORES-200 devtest for evaluation; use church data for training after deduplication and a church holdout. |
+| Amharic | FLORES-200 devtest for evaluation; use church data for training after deduplication and a church holdout. |
 | Spanish | No external data needed now; reserve a fixed church test split. |
 | Portuguese | No external data needed now; identify its regional variety, then reserve a fixed church test split. |
 | Q'eqchi' | [MayanV](https://github.com/transducens/mayanv/tree/07d1426cbf783c81e4b8fe623051836b6b3fd0f4/MayanV/kek): add only train to church training and preserve dev/test. Its README reports 4,133 pairs, while the pinned files contain 4,114. |
@@ -73,6 +101,33 @@ Downloaded snapshots:
   [`data/external/mayanv`](../../data/external/mayanv)
 - Napo Kichwa–Spanish commit `b05c9a5f1f9f1606ac286d1465125b4225501783`:
   [`data/external/kichwa-spanish`](../../data/external/kichwa-spanish)
+
+## Spanish sides to translate into English
+
+Every Spanish side below gets a machine-translated English version (decision of
+2026-10-13); the Indigenous side stays human-written. Lines counted on 2026-10-13.
+
+| Language | Source | Split | File (Spanish side) | Lines |
+|---|---|---|---|---:|
+| Nahuatl | AmericasNLP | train | `americasnlp2021/data/nahuatl-spanish/train.es` | 16,145 |
+| Nahuatl | AmericasNLP | dev | `americasnlp2021/data/nahuatl-spanish/dev.es` | 672 |
+| Nahuatl | AmericasNLP | test | `americasnlp2021/data/nahuatl-spanish/test.es` | 1,003 |
+| Bribri | AmericasNLP | train | `americasnlp2021/data/bribri-spanish/train.es` | 7,508 |
+| Bribri | AmericasNLP | dev | `americasnlp2021/data/bribri-spanish/dev.es` | 996 |
+| Bribri | AmericasNLP | test | `americasnlp2021/data/bribri-spanish/test.es` | 1,003 |
+| Q'eqchi' | MayanV | train | `mayanv/MayanV/kek/train/data.es` | 2,114 |
+| Q'eqchi' | MayanV | dev | `mayanv/MayanV/kek/dev/data.es` | 1,000 |
+| Q'eqchi' | MayanV | test | `mayanv/MayanV/kek/test/data.es` | 1,000 |
+| Guarani | AmericasNLP | train | `americasnlp2021/data/guarani-spanish/train.es` | 26,032 |
+| Guarani | AmericasNLP | dev | `americasnlp2021/data/guarani-spanish/dev.es` | 995 |
+| Guarani | AmericasNLP | test | `americasnlp2021/data/guarani-spanish/test.es` | 1,003 |
+| Kichwa | Napo Kichwa–Spanish | lexicon | `kichwa-spanish/lexicon/train-*.parquet`, column `spanish` | 6,313 |
+
+Paths are under `data/external/`. About 65,800 lines in total. Nahuatl, Bribri and
+Guarani test targets are in `americasnlp2021/test_data/` (`test.nah`, `test.bzd`,
+`test.gn`). The Kichwa lexicon is 4,135
+headwords (single words or short phrases) and 2,178 example sentences; 26 rows are
+flagged `review`.
 
 ## Translation metrics
 
