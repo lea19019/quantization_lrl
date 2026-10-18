@@ -15,3 +15,8 @@ start,end,hours,category,description
 2026-10-09 16:00,2026-10-09 18:00,2.0,coding;design,Developed the data and evaluation pipeline
 2026-10-12 17:00,2026-10-12 19:00,2.0,coding;design,Developed the data and evaluation pipeline
 2026-10-13 19:00,2026-10-13 21:00,2.0,design,Defined the data and evaluation plan: church split; external data cleaning; Spanish-to-English translation; translation prompt and evaluation protocol
+2026-10-15 16:00,2026-10-15 18:00,2.0,design,Laid out the work plan and rolled back earlier code
+2026-10-15 18:00,2026-10-15 19:00,1.0,coding;reading,Fixed RTN layer selection (skip embeddings and lm_head) and vectorized RTN; moved shared helpers to qlrl/quant/utils.py; learned the transformer architecture
+2026-10-15 20:00,2026-10-15 22:00,2.0,coding;reading,Fixed RTN layer selection (skip embeddings and lm_head) and vectorized RTN; moved shared helpers to qlrl/quant/utils.py; learned the transformer architecture
+2026-10-16 18:00,2026-10-16 20:00,2.0,coding;reading,Started simplifying GPTQ: calibration inputs (X and H = X X^T) and the inverse Hessian with damping; began the column loop
+2026-10-17 13:00,2026-10-17 22:00,9.0,coding;reading,Learned the GPTQ math (H; damage; error update; Cholesky) and rewrote GPTQ: group grid; Cholesky of the inverse Hessian; lazy batch updates; C4 calibration; block-by-block quantization; WikiText-2 perplexity explained and written; AWQ and SmoothQuant (AI-written); Llama and GPU compatibility

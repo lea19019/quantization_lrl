@@ -17,52 +17,10 @@ Still to validate:
 6. Replace every weight with its closest grid value.
 7. Put the rows back into a matrix of exactly the same shape.
 '''
-from typing import cast
-from pathlib import Path
-
 import torch
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    PreTrainedModel,
-    PreTrainedTokenizerBase,
-)
+from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedModel
 
-
-def forward_pass(
-    model: PreTrainedModel, tokenizer: PreTrainedTokenizerBase, text: str
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """Return (logits [1, seq, vocab] in float32, input_ids [1, seq]) for one string."""
-    inputs = tokenizer(text, return_tensors="pt")
-    with torch.no_grad():  # inference only, no autograd graph
-        out = model(**inputs)
-    return out.logits.float(), inputs["input_ids"]
-
-
-def gold_logprobs(logits: torch.Tensor, input_ids: torch.Tensor) -> torch.Tensor:
-    """Return the log-prob of the true next token at each position, shape [seq - 1]."""
-    # Position t predicts token t+1, so drop the last logit row and the first token.
-    logprobs = torch.log_softmax(logits[0, :-1], dim=-1)  # [seq - 1, vocab]
-    targets = input_ids[0, 1:]  # [seq - 1]
-    return logprobs[torch.arange(targets.shape[0]), targets]
-
-
-def perplexity(gold: torch.Tensor) -> float:
-    """Return exp(-mean log-prob): the effective number of tokens the model hesitated between."""
-    return torch.exp(-gold.mean()).item()
-
-
-def generate(
-    model: PreTrainedModel, tokenizer: PreTrainedTokenizerBase, text: str, max_new_tokens: int
-) -> str:
-    """Return the greedy continuation of `text`, without the prompt."""
-    inputs = tokenizer(text, return_tensors="pt")
-    with torch.no_grad():
-        ids = model.generate(  # type: ignore[attr-defined]  # transformers 5.x stub bug
-            **inputs, max_new_tokens=max_new_tokens, do_sample=False
-        )
-    # decode() is typed `str | list[str]`; a 1-D id tensor always gives a str.
-    return cast(str, tokenizer.decode(ids[0, inputs["input_ids"].shape[1] :]))
+from qlrl.quant.utils import generate, load_or_create_quantized_model
 
 
 def rtn( model: PreTrainedModel, bits: int = 4 ) -> PreTrainedModel:
@@ -71,17 +29,20 @@ def rtn( model: PreTrainedModel, bits: int = 4 ) -> PreTrainedModel:
 
     quantized_model = deepcopy(model)
     number_of_levels = 2 ** bits
-    # names = "\n".join(name for name, _ in model.named_parameters())
+    # names = "\n".join( f"{name}, {param.ndim}" for name, param in model.named_parameters())
     # print(names)
+
     with torch.no_grad():
-        for name, param in quantized_model.named_parameters():
-            if param.ndim != 2:
+        for name, module in quantized_model.named_modules():
+            # Quantize only linear layers: Conv1D in GPT-2, nn.Linear in Llama.
+            # Embeddings and LayerNorms are other module types, so they are skipped here.
+            if not isinstance(module, (torch.nn.Linear, Conv1D)):
                 continue
-            if "weight" not in name:
+            # lm_head is linear but stays in full precision. In GPT-2 it is the same
+            # tensor as wte, so quantizing it would quantize the embeddings too.
+            if name == "lm_head":
                 continue
-            # Code to check if it's Conv1D or whatever other format
-            module_name = name.rsplit(".", 1)[0]
-            module = quantized_model.get_submodule(module_name)
+            param = module.weight
 
             is_conv1d = isinstance(module, Conv1D)
 
@@ -90,118 +51,38 @@ def rtn( model: PreTrainedModel, bits: int = 4 ) -> PreTrainedModel:
             else:
                 matrix = param
 
-            rounded_matrix = matrix.clone()
+            G = matrix.reshape(matrix.shape[0], matrix.shape[-1]//128, 128)
+            group_min = G.amin(dim=-1, keepdim=True)
+            group_max = G.amax(dim=-1, keepdim=True)
+            spacer = (group_max - group_min) / (number_of_levels - 1)
+            spacer = torch.where(spacer == 0, 1.0, spacer)
+            q = torch.round( (G - group_min )/ spacer) # What was this?
+            q = torch.clamp(q, 0, number_of_levels - 1)
+            rounded_m = q * spacer + group_min
+            reshaped_matrix = rounded_m.reshape(matrix.shape)
 
-            # Code to transpose the weight
-            # This stays the same
-            for row_index in range(matrix.shape[0]):
-                row = matrix[row_index]
-                rounded_row = row.clone()
-    
-                groups = torch.split(row, 128)
-                for group_number, group in enumerate(groups):
-                    group_min = group.min()
-                    group_max = group.max()
-
-                    if group_min == group_max: continue
-
-                    # Calculate the space we're going to have in between each value in the grid
-                    spacer = (group_max - group_min) / (number_of_levels - 1)
-                    #
-                    q = torch.round((group - group_min) / spacer)
-                    q = torch.clamp(q, 0, number_of_levels - 1)
-                    rounded_group = q * spacer + group_min
-                    '''
-                    Brute Force Approach
-                    grid = []
-
-                    for i in range(number_of_levels):
-                        grid_val = group_min + i*spacer
-                        grid.append(grid_val)
-
-                    rounded_group = torch.empty_like(group)
-
-                    for index, p in enumerate(group):
-                        idx = round((p-group_min)/spacer)
-                        closest_val = grid[idx]
-                        # BRUTE FORCE APPROACH
-                        # curr_dif = float("inf")
-                        # closest_val = 0
-                        # for val_grid in grid:
-                        #     # Get the absolute difference between p and val_grid
-                        #     absolute_dif = torch.abs(p - val_grid)
-                        #     if absolute_dif < curr_dif:
-                        #         curr_dif = absolute_dif
-                        #         closest_val = val_grid
-                        # # Replace p with closest_val, don't know how to do it.
-
-                        rounded_group[index] = closest_val
-                    '''
-                    start = group_number * 128
-                    end = start + group.numel()
-                    rounded_row[start:end] = rounded_group
-                rounded_matrix[row_index].copy_(rounded_row)
-            # Perform operations on param.data here
-            # Transpose back the Conv1D back
-            if is_conv1d: param.copy_(rounded_matrix.T)
-            else: param.copy_(rounded_matrix)
+           
+            if is_conv1d: param.copy_(reshaped_matrix.T)
+            else: param.copy_(reshaped_matrix)
     return quantized_model
 
-
-def load_or_create_quantized_model(
-    model: PreTrainedModel,
-    tokenizer: PreTrainedTokenizerBase,
-    output_folder: str,
-    bits: int = 4,
-) -> PreTrainedModel:
-    """Load a saved RTN model, or create and save it when it is absent."""
-    model_path = Path(output_folder) / "model.safetensors"
-    if model_path.exists():
-        return AutoModelForCausalLM.from_pretrained(
-            output_folder, dtype=torch.float32
-        ).eval()
-
-    quantized_model = rtn(model, bits=bits)
-    quantized_model.save_pretrained(output_folder)
-    tokenizer.save_pretrained(output_folder)
-    return quantized_model
-
-
-def compare_forward_passes(
-    model: PreTrainedModel,
-    quantized_model: PreTrainedModel,
-    tokenizer: PreTrainedTokenizerBase,
-    text: str,
-) -> tuple[bool, float, float]:
-    """Return whether logits match, plus their mean and maximum absolute differences."""
-    logits, input_ids = forward_pass(model, tokenizer, text)
-    quantized_logits, quantized_ids = forward_pass(quantized_model, tokenizer, text)
-
-    if not torch.equal(input_ids, quantized_ids):
-        raise ValueError("The models received different token IDs.")
-
-    difference = torch.abs(logits - quantized_logits)
-    return torch.equal(logits, quantized_logits), difference.mean().item(), difference.max().item()
 
 def main() -> None:
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
     model = AutoModelForCausalLM.from_pretrained("gpt2", dtype=torch.float32).eval()
     output_folder = "models/gpt2-rtn-4bit"
-    quantized_model = load_or_create_quantized_model(model, tokenizer, output_folder)
+    # rtn(model)
+    quantized_model = load_or_create_quantized_model(model, tokenizer, output_folder, rtn)
     text = "The capital of France is"
 
-    identical, mean_difference, max_difference = compare_forward_passes(
-        model, quantized_model, tokenizer, text
-    )
-    print("Logits identical:", identical)
-    print("Mean absolute logit difference:", mean_difference)
-    print("Maximum absolute logit difference:", max_difference)
     print("Prompt:", repr(text))
     print("Full-precision continuation:", repr(generate(model, tokenizer, text, 20)))
     print(
         "RTN 4-bit continuation:",
         repr(generate(quantized_model, tokenizer, text, 20)),
     )
+
+    print(sum(not torch.equal(p, q) for p, q in zip(model.parameters(), quantized_model.parameters())))
 
     # logits, input_ids = forward_pass(model, tokenizer, text) # What is exactly logits and input_ids?
     # print(tokenizer.convert_ids_to_tokens(input_ids[0]))  # the subword pieces
