@@ -1,0 +1,37 @@
+# Data preparation: python -m qlrl.data.prepare configs/data.yaml [--test]
+# Writes <output>/<lang>/{train,dev,test}.jsonl, one pair per line:
+#   {"en": ..., "tgt": ..., "lang": ..., "source": church | flores | americasnlp | mayanv | kichwa}
+church: /home/vacl2/groups/grp_mtlab/nobackup/archive/all-data/church-data-2026
+external: data/external
+translated: data/translated    # English sides of the Spanish-X corpora (Qwen3-32B)
+cleaning: data/cleaning        # work folders of the lab cleaning tool
+output: data/processed
+seed: 0
+held_out: 1000                 # church dev and test pairs per language
+
+# Lab cleaning tool, run on external train sets only (church data is already clean).
+cleaner: /home/vacl2/data-cleaning-pipeline
+
+# Re-translate the Spanish sides. Already done (Slurm job 14131729); needs one 80 GB GPU.
+# translate: {model: Qwen/Qwen3-32B, batch_size: 32}
+
+# Per language, the corpora it uses. English is the anchor: the "en" side of every pair.
+#   church:      folder name in the church release
+#   flores:      FLORES+ code (dev and devtest are evaluation only)
+#   americasnlp: [folder name, file extension]
+#   mayanv:      MayanV language folder
+#   kichwa:      the Napo Kichwa lexicon (train only)
+#   cleaner:     the cleaning tool's config name; no file of that name = default settings
+languages:
+  fra: {church: French, flores: fra_Latn}
+  spa: {church: Spanish, flores: spa_Latn}
+  por: {church: Portuguese, flores: por_Latn}
+  yor: {church: Yoruba, flores: yor_Latn}
+  zul: {church: Zulu, flores: zul_Latn}
+  swh: {church: Swahili, flores: swh_Latn}
+  amh: {church: Amharic, flores: amh_Ethi}
+  kek: {church: Kekchi, mayanv: kek, cleaner: kek}
+  grn: {church: Guarani, flores: gug_Latn, americasnlp: [guarani, gn], cleaner: gug-PY}
+  nah: {americasnlp: [nahuatl, nah], cleaner: nah}
+  bzd: {americasnlp: [bribri, bzd], cleaner: bzd}
+  qug: {church: Quichua (Ecuador), kichwa: true, cleaner: qug}

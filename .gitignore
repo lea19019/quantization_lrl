@@ -15,7 +15,8 @@ docs/course/report/*.log
 docs/course/report/*.out
 docs/course/report/*.synctex.gz
 .DS_Store
-data
+/data/
+/results/
 examples/
 papers/
 .python-version
