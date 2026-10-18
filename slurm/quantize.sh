@@ -1,19 +1,29 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Full job. Description only. Claude Code, 2026-10-17, at Adrian's request.
-# Submit only after test_quantize.sh passes.
-#
-# • Roadmap:
-#   1. Same header and environment as test_quantize.sh.
-#   2. Set --mem and --time from the test job's MaxRSS and Elapsed, with margin.
-#   3. --array=0-4 for the five calibration seeds; pass --seed $SLURM_ARRAY_TASK_ID.
-#   4. Run rtn, gptq and perplexity at full size.
-#   5. One results folder per run, each with its manifest.
-#   6. Submit: sbatch slurm/quantize.sh.
-#   7. Watch: squeue -u $USER at most once a minute; read the log in results/slurm/.
-#   8. After: sacct -j <id> --format=JobID,State,Elapsed,MaxRSS,ReqMem.
-#
-# • Still to validate:
-#   - gptq.py creates torch.eye and torch.zeros on the weight's device (GPU).
-#   - All five seeds finish and write their own folders.
-#   - MaxRSS and Elapsed are well under what was requested.
+# Full job: quantize with every method in the given config and check WikiText-2 perplexity.
+# Submit only after test_quantize.sh passes. From the repo root:
+#   mkdir -p results/slurm && sbatch slurm/quantize.sh configs/quantize_llama.yaml
+#SBATCH --job-name=quantize
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=64G
+#SBATCH --time=03:00:00
+#SBATCH --qos=cs
+#SBATCH --gpus=1
+#SBATCH --output=results/slurm/%x-%j.out
+
+set -euo pipefail
+export LC_ALL=C
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+# Compute nodes may have no internet: the models and the C4/WikiText-2 files are already local.
+export HF_HUB_OFFLINE=1
+export HF_DATASETS_OFFLINE=1
+
+module load python/3.11
+cd "$SLURM_SUBMIT_DIR"
+
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+
+# GPU torch lives in this venv; the repo's .venv is CPU-only.
+~/.venvs/quantization_lrl/bin/python -m qlrl.quantization "$1"

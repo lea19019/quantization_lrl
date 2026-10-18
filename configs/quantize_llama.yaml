@@ -1,0 +1,20 @@
+# Llama 3.1 8B at full size: python -m qlrl.quantization configs/quantize_llama.yaml
+# A method runs only if its section under `methods:` is set; comment it out to skip it.
+model: meta-llama/Llama-3.1-8B
+dtype: bfloat16
+output: models
+
+calibration:               # C4 windows, GPTQ paper size
+  n: 128
+  length: 2048
+  seed: 0
+
+perplexity:                # WikiText-2 check after each method; remove to skip
+  length: 2048
+  max_windows: null        # null = all windows
+
+methods:
+  rtn:         {bits: 4, group_size: 128}
+  gptq:        {bits: 4, group_size: 128}
+  awq:         {bits: 4, group_size: 128}
+  smoothquant: {bits: 4, group_size: 128, act_bits: 8, alpha: 0.5}

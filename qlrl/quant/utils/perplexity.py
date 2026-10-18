@@ -7,8 +7,8 @@ Validation only: checks that a quantizer works (docs/project/evaluation.md).
   2. Join all lines into one string with "\n\n" between them.
   3. Tokenize it once into [1, total_tokens].
   4. Cut into non-overlapping windows of L tokens; drop the leftover.
-  5. For each window, run the model and keep gold_logprobs() from utils.py.
-  6. Concatenate all windows' log-probs and compute perplexity() from utils.py.
+  5. For each window, run the model and keep gold_logprobs().
+  6. Concatenate all windows' log-probs and compute perplexity().
   7. Do it for full precision, RTN and GPTQ with the same windows.
   8. Save one results folder per model with a manifest.json.
 
@@ -25,10 +25,7 @@ Validation only: checks that a quantizer works (docs/project/evaluation.md).
 
 import torch
 from datasets import load_dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedModel
-from transformers import PreTrainedTokenizerBase
-
-from qlrl.quant.utils import gold_logprobs, perplexity
+from transformers import PreTrainedModel, PreTrainedTokenizerBase
 
 WIKITEXT_TEST = "data/wikitext-2-raw-v1/wikitext-2-raw-v1/test-00000-of-00001.parquet"
 
@@ -37,6 +34,19 @@ def load_wikitext2(tokenizer: PreTrainedTokenizerBase) -> torch.Tensor:
     # One parquet file loads as a split called "train"; it is the WikiText-2 test split.
     lines = load_dataset("parquet", data_files=WIKITEXT_TEST, split="train")["text"]
     return tokenizer("\n\n".join(lines), return_tensors="pt").input_ids  # [1, total_tokens]
+
+
+def gold_logprobs(logits: torch.Tensor, input_ids: torch.Tensor) -> torch.Tensor:
+    """Return the log-prob of the true next token at each position, shape [seq - 1]."""
+    # Position t predicts token t+1, so drop the last logit row and the first token.
+    logprobs = torch.log_softmax(logits[0, :-1], dim=-1)  # [seq - 1, vocab]
+    targets = input_ids[0, 1:]  # [seq - 1]
+    return logprobs[torch.arange(targets.shape[0]), targets]
+
+
+def perplexity(gold: torch.Tensor) -> float:
+    """Return exp(-mean log-prob): the effective number of tokens the model hesitated between."""
+    return torch.exp(-gold.mean()).item()
 
 
 def wikitext2_perplexity(
@@ -53,21 +63,3 @@ def wikitext2_perplexity(
             logits = model(window, use_cache=False).logits.float()  # bf16 logits lose precision
             gold.append(gold_logprobs(logits, window))  # keep [length - 1], drop the logits
     return perplexity(torch.cat(gold)), number_of_windows
-
-
-def main() -> None:
-    # GPT-2: float32, length 1024. Llama 3.1 8B: its tokenizer, torch.bfloat16, length 2048.
-    model_folder, tokenizer_name, dtype, length = "models/gpt2-gptq-4bit", "gpt2", torch.float32, 1024
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
-    model = AutoModelForCausalLM.from_pretrained(model_folder, dtype=dtype, device_map=device).eval()
-    ids = load_wikitext2(tokenizer)
-
-    # 4 windows keep it quick on the login node; None runs all 280 (about 16 minutes).
-    ppl, windows = wikitext2_perplexity(model, ids, length, max_windows=4)
-    print(f"GPTQ perplexity {ppl:.3f} over {windows} windows of {length}")
-
-
-if __name__ == "__main__":
-    main()

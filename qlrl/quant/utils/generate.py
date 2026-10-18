@@ -1,10 +1,11 @@
 '''
-Helpers shared by every quantization script: run a model, score it, generate, and cache
-a quantized model on disk. Moved out of rtn.py by Claude Code on 2026-10-15 at Adrian's
+Helpers used by archive/_rtn.py and archive/_gptq.py: run a model on one string, generate,
+and cache a quantized model on disk. Moved out of rtn.py by Claude Code on 2026-10-15 at Adrian's
 request.
 '''
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, cast
+from typing import cast
 
 import torch
 from transformers import AutoModelForCausalLM, PreTrainedModel, PreTrainedTokenizerBase
@@ -18,19 +19,6 @@ def forward_pass(
     with torch.no_grad():  # inference only, no autograd graph
         out = model(**inputs)
     return out.logits.float(), inputs["input_ids"]
-
-
-def gold_logprobs(logits: torch.Tensor, input_ids: torch.Tensor) -> torch.Tensor:
-    """Return the log-prob of the true next token at each position, shape [seq - 1]."""
-    # Position t predicts token t+1, so drop the last logit row and the first token.
-    logprobs = torch.log_softmax(logits[0, :-1], dim=-1)  # [seq - 1, vocab]
-    targets = input_ids[0, 1:]  # [seq - 1]
-    return logprobs[torch.arange(targets.shape[0]), targets]
-
-
-def perplexity(gold: torch.Tensor) -> float:
-    """Return exp(-mean log-prob): the effective number of tokens the model hesitated between."""
-    return torch.exp(-gold.mean()).item()
 
 
 def generate(
@@ -63,15 +51,3 @@ def load_or_create_quantized_model(
     quantized_model.save_pretrained(output_folder)
     tokenizer.save_pretrained(output_folder)
     return quantized_model
-
-
-def round_to_groups(matrix: torch.Tensor, bits: int, group_size: int = 128) -> torch.Tensor:
-    """Round each row's groups of `group_size` weights to their own min-max grid (as rtn.py)."""
-    number_of_levels = 2 ** bits
-    G = matrix.reshape(matrix.shape[0], matrix.shape[-1] // group_size, group_size)
-    group_min = G.amin(dim=-1, keepdim=True)
-    group_max = G.amax(dim=-1, keepdim=True)
-    spacer = (group_max - group_min) / (number_of_levels - 1)
-    spacer = torch.where(spacer == 0, 1.0, spacer)
-    q = torch.clamp(torch.round((G - group_min) / spacer), 0, number_of_levels - 1)
-    return (q * spacer + group_min).reshape(matrix.shape)

@@ -1,0 +1,20 @@
+# Every quantization run: python -m qlrl.quantization configs/quantize.yaml
+# A method runs only if its section under `methods:` is set; comment it out to skip it.
+model: gpt2                # Hugging Face name or local folder
+dtype: float32             # bfloat16 for Llama 3.1 8B
+output: models
+
+calibration:               # C4 windows, GPTQ paper size (length 1024 is GPT-2's maximum)
+  n: 128
+  length: 1024
+  seed: 0
+
+perplexity:                # WikiText-2 check after each method; remove to skip
+  length: 1024             # 2048 for Llama
+  max_windows: null        # null = all windows (280 for GPT-2)
+
+methods:
+  rtn:         {bits: 4, group_size: 128}
+  gptq:        {bits: 4, group_size: 128}
+  awq:         {bits: 4, group_size: 128}
+  smoothquant: {bits: 4, group_size: 128, act_bits: 8, alpha: 0.5}
