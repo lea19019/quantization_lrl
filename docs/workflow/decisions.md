@@ -48,3 +48,4 @@ lives in `docs/project/`.
 - 2026-10-13: Translation evaluation: base model, three dev examples per test set (the
   same for every model), both directions, greedy, answer capped at 2x the source tokens,
   full test sets. Damage is measured on the bare FLORES+ devtest sentence.
+- 2026-10-18: SmoothQuant dropped from the methods and the code.

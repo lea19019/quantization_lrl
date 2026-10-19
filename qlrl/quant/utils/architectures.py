@@ -4,9 +4,9 @@ Written by Claude Code on 2026-10-15 at Adrian's request, from what the archived
 (branch archive/before-reset) had to know about each model.
 
 • Why this file exists
-  RTN and GPTQ only need to find every weight matrix and round it. SmoothQuant and AWQ also
-  need to know what produces each matrix's input (a norm or another linear), because they
-  move a scale s into that producer. That wiring is not stored in the weights; it lives in
+  RTN and GPTQ only need to find every weight matrix and round it. AWQ also
+  needs to know what produces each matrix's input (a norm or another linear), because it
+  moves a scale s into that producer. That wiring is not stored in the weights; it lives in
   each model's forward() code, so it has to be written down by hand. For Llama only, that is
   a handful of lines; this file may end up being just those lines, or folded into awq.py.
 
@@ -36,11 +36,11 @@ Written by Claude Code on 2026-10-15 at Adrian's request, from what the archived
   - RMSNorm: x / rms(x) * g. Only a gain g, no mean and no bias.
   - Not quantized (papers keep them in 16 bits): embed_tokens, lm_head, the norms.
 
-• What SmoothQuant and AWQ need from this (Llama only)
+• What AWQ needs from this (Llama only)
   - "Who produces the input of which linears", where s can be folded in for free:
         input_layernorm          -> q_proj, k_proj, v_proj
         post_attention_layernorm -> gate_proj, up_proj
-        up_proj                  -> down_proj        (AWQ only)
+        up_proj                  -> down_proj
         v_proj -> o_proj is skipped: v is narrower than o's input under grouped-query
         attention, so the shapes do not line up.
   - Folding s into an RMSNorm means dividing its g by s. Folding it into a linear means

@@ -39,7 +39,6 @@ down: largest damage in the ✗ cells):
 | RTN | weight-only | none | 4, 3, 2 | us |
 | GPTQ (act-order) | weight-only, error compensation | 128 × 2048 tokens | 4, 3, 2 | us |
 | AWQ | weight-only, activation-aware scales | yes | 4, 3 | us |
-| SmoothQuant | weight + activation, run as W4A8 | yes | 4 (W), 8 (A) | us |
 | bitsandbytes NF4 | weight-only, calibration-free | none | 4 | library |
 
 Group size 128 throughout. Fake quantization: weights rounded and stored back in bf16.
@@ -116,5 +115,4 @@ look, and lab text prepared. Add-ons wait for the week-9 draft.
 
 - GPT-2 training corpora and the share vector (see [data.md](data.md)).
 - The "learning curve" reading of H1: data-scaling curve per language.
-- Whether SmoothQuant at W4A8 or at W8A8, or both.
 - Hutchinson vector count, checkpoint spacing, and the 5B-token budget.

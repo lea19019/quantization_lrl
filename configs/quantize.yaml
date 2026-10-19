@@ -17,4 +17,3 @@ methods:
   rtn:         {bits: 4, group_size: 128}
   gptq:        {bits: 4, group_size: 128}
   awq:         {bits: 4, group_size: 128}
-  smoothquant: {bits: 4, group_size: 128, act_bits: 8, alpha: 0.5}

@@ -80,7 +80,6 @@ quantization_lrl/
 | `qlrl/quant/rtn.py` | round-to-nearest, grid, group size |
 | `qlrl/quant/gptq.py` | Hessian, column-by-column update, act-order |
 | `qlrl/quant/awq.py` | per-channel scale search |
-| `qlrl/quant/smoothquant.py` | migration scales, W8A8 fake quant |
 | `qlrl/quant/apply.py` | walk a model, replace weights, one module at a time if asked |
 | `qlrl/data.py` | FLORES loading, calibration windows, language codes |
 | `qlrl/score.py` | per-token measures: `d_gold`, KL, flips, margin, entropy |

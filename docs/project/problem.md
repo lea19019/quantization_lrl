@@ -69,7 +69,7 @@ The cost is not small and not visible in the usual numbers:
 
 - **Post-training quantization (PTQ).** Weights replaced by the nearest point on a
   grid with 2^b levels, per group of 128 weights, no retraining. Weight-only unless
-  stated. Methods: RTN, GPTQ, AWQ; SmoothQuant for W8A8. See
+  stated. Methods: RTN, GPTQ, AWQ. See
   [../concepts/quantization.md](../concepts/quantization.md).
 - **Low-resource language (LRL).** Operationally, for a given model: a language absent
   from the model's official supported-language list, or with a small share of its
@@ -144,7 +144,7 @@ Models Llama 3.1 8B, Qwen 2.5 7B, a from-scratch GPT-2-scale decoder (core); Aya
 Gemma 4 pair (extension). Languages: English (anchor); French, Spanish, Portuguese
 (high-resource controls); Yoruba, Zulu, Swahili, Amharic; Q'eqchi', Guarani, Nahuatl,
 Kichwa, Bribri. Methods RTN
-and GPTQ at 4 and 3 bits (core); AWQ and SmoothQuant (extension). Text: FLORES-200
+and GPTQ at 4 and 3 bits (core); AWQ (extension). Text: FLORES-200
 devtest. Details in [design.md](design.md).
 
 ## 6. Not the problem

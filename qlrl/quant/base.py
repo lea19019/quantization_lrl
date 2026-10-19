@@ -6,7 +6,7 @@ Quantizer: the methods every quantization class in this package has.
     quantizer.save(model, tokenizer, folder)
 
 The default quantize() rounds each linear on its own with quantize_matrix(). A method that
-needs more than that (GPTQ, SmoothQuant) overrides quantize().
+needs more than that (GPTQ) overrides quantize().
 
 The helpers below the class are shared: which modules are linears, the Conv1D transpose,
 and the RTN grid every method rounds onto.

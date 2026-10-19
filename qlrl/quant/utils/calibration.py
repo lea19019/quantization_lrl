@@ -1,6 +1,6 @@
 '''
 Calibration: C4 windows, and the hooks that record what each linear receives on them.
-GPTQ, AWQ and SmoothQuant use both; RTN uses neither.
+GPTQ and AWQ use both; RTN uses neither.
 
 • Roadmap:
   1. Load data/c4/c4-train.00000-of-01024.json.gz; each row has a "text" field.
@@ -10,7 +10,7 @@ GPTQ, AWQ and SmoothQuant use both; RTN uses neither.
   5. Repeat until there are N windows; stack them into [N, L] token ids.
   6. collect_inputs: run the windows one at a time, with a hook on every linear.
   7. In the hook, fold X into a running statistic instead of saving X:
-     H += X X^T (GPTQ, AWQ), sum|x| (AWQ), max|x| (SmoothQuant).
+     H += X X^T (GPTQ, AWQ), sum|x| (AWQ).
 
 • Sizes:
   - N = 128 windows (GPTQ paper).
@@ -37,7 +37,7 @@ from qlrl.quant.base import linears
 
 C4_FILE = "data/c4/c4-train.00000-of-01024.json.gz"
 
-# The statistic a method keeps per linear: H, (H, sum|x|) or max|x|.
+# The statistic a method keeps per linear: H or (H, sum|x|).
 Statistic = TypeVar("Statistic")
 
 

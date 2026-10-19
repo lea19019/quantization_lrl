@@ -4,7 +4,7 @@ Entry point for quantization: python -m qlrl.quantization configs/quantize.yaml
 Loads the model and the C4 calibration windows named in the YAML, then runs each method
 that has a section under `methods:`; a method with no section is skipped. Each method
 writes models/<model>-<method>-<bits>bit[-seed<seed>]/ with the quantized model
-(SmoothQuant excepted, see smoothquant.py) and a manifest.json.
+and a manifest.json.
 '''
 import json
 import subprocess
@@ -21,7 +21,6 @@ from qlrl.quant import (
     GPTQ,
     RTN,
     Quantizer,
-    SmoothQuant,
     load_c4,
     load_wikitext2,
     sample_windows,
@@ -64,12 +63,6 @@ def main() -> None:
         awq.calibrate(model, input_ids)
         folder = f"{output}-awq-{awq.bits}bit-seed{seed}"
         finish(awq, awq.quantize(model), folder, config, tokenizer)
-
-    if methods.get("smoothquant"):
-        smoothquant = SmoothQuant(**methods["smoothquant"])
-        smoothquant.calibrate(model, input_ids)
-        folder = f"{output}-smoothquant-w{smoothquant.bits}a{smoothquant.act_bits}-seed{seed}"
-        finish(smoothquant, smoothquant.quantize(model), folder, config, tokenizer)
 
 
 def finish(

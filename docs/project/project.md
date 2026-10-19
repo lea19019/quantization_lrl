@@ -42,7 +42,7 @@ before any run.
 - Languages: English as the anchor; French, Spanish and Portuguese as high-resource
   controls; Yoruba, Zulu, Swahili and Amharic (African); Q'eqchi', Guarani, Nahuatl,
   Kichwa and Bribri (Latin American).
-- Methods: RTN, GPTQ (act-order), AWQ, SmoothQuant (W4A8), bitsandbytes NF4; 4, 3 and
+- Methods: RTN, GPTQ (act-order), AWQ, bitsandbytes NF4; 4, 3 and
   2 bits where supported; five calibration draws for calibration-based methods.
 - Evaluation: COMET and human evaluation as the goal metrics, per-word damage as the
   diagnostic ([evaluation.md](evaluation.md)).
@@ -77,7 +77,7 @@ That leaves **108.7 hours**, an average of **10.6 hours per week**. The allocati
 | Dates | Hours | Work |
 |---|---:|---|
 | 2026-09-29–2026-10-04 | 8.7 | Finish the method foundations; settle scorer and metric decisions; prepare validation. |
-| 2026-10-05–2026-10-18 | 20 | Validate RTN and GPTQ on WikiText-2; build scorer sanity checks, data and COMET pipeline; then AWQ, SmoothQuant and NF4. |
+| 2026-10-05–2026-10-18 | 20 | Validate RTN and GPTQ on WikiText-2; build scorer sanity checks, data and COMET pipeline; then AWQ and NF4. |
 | 2026-10-19–2026-11-01 | 20 | Phase 0 on Llama 3.1 8B; test the null; fix the human-evaluation subset and arrange raters. |
 | 2026-11-02–2026-11-15 | 20 | Phase 1 measurements; quantize and score GPT-2 checkpoints; collect human ratings. |
 | 2026-11-16–2026-11-22 | 10 | Write the draft report; make the phase-3 and add-on go/no-go decision with the advisor. |
@@ -102,6 +102,5 @@ These are planning targets. Actual sessions remain recorded by category in
 - Lab text per language: token counts, parallel or not, cleaning, FLORES overlap.
 - Qwen 2.5 7B and Gemma 4 official language lists: sw, yo, zu.
 - Human evaluation: raters available per language, and French as control.
-- SmoothQuant at W4A8 only, or W8A8 too.
 - Pre-set criteria and the *proposed* numbers in design.md and evaluation.md.
 - Verify: Zhong 2025 venue; Marie & Fujita 2025 title/version to cite.
