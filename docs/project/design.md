@@ -84,9 +84,9 @@ yo/zu/sw/am is above the floor.
 
 ### Phase 3. Interventions
 
-- **H1c, fine-tune and re-quantize.** Continue training Llama 3.1 8B on lab Swahili text
-  (then Yoruba, Zulu if time), re-quantize, and measure that language's damage, gradient
-  norm and COMET loss. Controls: the full-precision baseline rises too, so the drop in
+- **H1c, fine-tune and re-quantize.** Fine-tune Llama 3.1 8B on lab text, one multilingual
+  model on every language, re-quantize, and measure each language's damage, gradient norm
+  and COMET loss. Controls: the full-precision baseline rises too, so the drop in
   damage must exceed what the baseline change predicts; English and French are measured
   before and after for forgetting.
 - **H2c, activation patching.** Run the quantized model and overwrite the activations at

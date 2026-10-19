@@ -148,9 +148,9 @@ author-released COMET checkpoint with defensible coverage of all seven languages
 The African core uses the same chrF++ and BLEU settings plus the author-released
 [`masakhane/africomet-stl-1.1`](https://huggingface.co/masakhane/africomet-stl-1.1/tree/b4065f4424a962cf6e52373a9ec8a22a624fb278)
 checkpoint at revision `b4065f4424a962cf6e52373a9ec8a22a624fb278`. Its core is English,
-French, Yoruba and Zulu. FLORES-200 devtest is retained for that core because it supplies
-the same parallel test sentences for every core language; it is not required for the
-Latin-American extension.
+French, Yoruba, Zulu, Swahili and Amharic. FLORES-200 devtest is retained for that core
+because it supplies the same parallel test sentences for every core language; it is not
+required for the Latin-American extension.
 
 ## Split and contamination rules
 

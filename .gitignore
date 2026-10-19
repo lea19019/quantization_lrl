@@ -20,3 +20,4 @@ docs/course/report/*.synctex.gz
 examples/
 papers/
 .python-version
+.venv-comet/

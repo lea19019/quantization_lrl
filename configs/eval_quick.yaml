@@ -1,0 +1,39 @@
+# Every evaluation run: python -m qlrl.eval configs/eval.yaml
+# Writes results/eval/<model folder name>/{scores,manifest}.json, translation/, perplexity/.
+model: gpt2                # Hugging Face name or a folder in models/
+dtype: float32             # bfloat16 for Llama 3.1 8B
+data: data/processed
+output: results/eval/eval_quick
+
+languages: [yor]
+sources: [flores]
+max_sentences: 3
+examples: 3                # dev pairs in each prompt
+batch_size: 3              # sentences generated at once
+
+metrics: [chrf, bleu, africomet, off_target, reference_logprob, perplexity]
+
+africomet:
+  repo: masakhane/africomet-stl-1.1
+  revision: b4065f4424a962cf6e52373a9ec8a22a624fb278
+  comet_score: .venv-comet/bin/comet-score
+  batch_size: 16
+  languages: [fra, yor, zul, swh, amh]   # paired with English, both directions
+
+glotlid:                   # off-target rate: an output is on target if its label is listed
+  repo: cis-lmu/glotlid
+  revision: 85cd6716494360367b75f642b5bc78667605d0b4
+  labels:
+    eng: [eng_Latn]
+    fra: [fra_Latn]
+    spa: [spa_Latn]
+    por: [por_Latn]
+    yor: [yor_Latn]
+    zul: [zul_Latn]
+    swh: [swh_Latn]
+    amh: [amh_Ethi]
+    kek: [kek_Latn]
+    grn: [gug_Latn, gui_Latn, gun_Latn]
+    nah: [nah_Latn, nhe_Latn, nhw_Latn, nhi_Latn, ngu_Latn, azz_Latn, nch_Latn, ncj_Latn]
+    bzd: [bzd_Latn]
+    qug: [qug_Latn, qvo_Latn, quw_Latn, qup_Latn, qvz_Latn]

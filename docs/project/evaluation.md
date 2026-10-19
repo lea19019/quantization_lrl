@@ -9,7 +9,7 @@ internally to explain quantization. Data and splits are in [data.md](data.md).
 |---|---|---|---|
 | Human direct assessment | primary outcome | all | Translation adequacy judged by qualified speakers, 0–100 |
 | chrF++ | primary automatic outcome | all | Reference overlap robust to inflection and spelling variation |
-| AfriCOMET 1.1 | primary automatic outcome | English, French, Yoruba, Zulu | Learned reference-based translation quality |
+| AfriCOMET 1.1 | primary automatic outcome | English, French, Yoruba, Zulu, Swahili, Amharic | Learned reference-based translation quality |
 | BLEU | secondary automatic outcome | all | Comparison with earlier machine-translation work |
 
 Human evaluation carries the conclusion when it disagrees with an automatic metric.
@@ -44,6 +44,8 @@ mechanism analysis or an appendix only when they answer a stated question.
 | KL divergence | internal diagnostic | Full-vs-quantized distribution shift following Lotfi 2026 |
 | Margin and entropy | internal controls | Full-model confidence controls motivated by Proskurina 2024 and Lotfi 2026 |
 | Token fertility | internal control | Tokens per word, following Rust 2021; tests tokenizer fragmentation |
+| Reference log-probability | supporting result | Log-probability of the human reference given the translation prompt (forced decoding, as Prism scores translations, Thompson & Post 2020); links damage to translation without decoding noise |
+| Off-target rate | supporting result | Share of outputs GlotLID does not identify as the target language (Zhang 2020); explains collapses; does not replace the raters' marks |
 
 Perplexity and `D(L,c)` use the same gold-token probabilities. Perplexity summarizes how
 well one model predicts the corpus; `D(L,c)` subtracts full-model loss from quantized-model
@@ -63,8 +65,8 @@ diagnostics are collected for every row when required by a mechanism analysis.
 | French | ISO `fra`; FLORES `fra_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
 | Yoruba | ISO `yor`; FLORES `yor_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
 | Zulu | ISO `zul`; FLORES `zul_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
-| Swahili | ISO `swh`; FLORES `swh_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Undecided |
-| Amharic | ISO `amh`; FLORES `amh_Ethi` | FLORES-200 devtest | Yes | Yes | Yes | Undecided |
+| Swahili | ISO `swh`; FLORES `swh_Latn` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
+| Amharic | ISO `amh`; FLORES `amh_Ethi` | FLORES-200 devtest | Yes | Yes | Yes | Yes |
 | Spanish | ISO `spa`; FLORES `spa_Latn` | Church and pair-specific test sets | Yes | Yes | Yes | No |
 | Portuguese | ISO `por`; FLORES `por_Latn` | Fixed church test | Yes | Yes | Yes | No |
 | Q'eqchi' | ISO/MayanV `kek` | MayanV test | Yes | Yes | Yes | No |
@@ -74,8 +76,8 @@ diagnostics are collected for every row when required by a mechanism analysis.
 | Bribri | ISO/AmericasNLP `bzd` | AmericasNLP test | Yes | Yes | Yes | No |
 
 Do not label Ecuadorian Kichwa as FLORES `quy_Latn`: that code is Ayacucho Quechua.
-AfriCOMET is restricted to the four-language core so every COMET comparison uses one
-checkpoint and the same parallel FLORES design. Portuguese AfriCOMET may be a separately
+AfriCOMET is restricted to the six African-core languages so every COMET comparison uses
+one checkpoint and the same parallel FLORES design. Portuguese AfriCOMET may be a separately
 labelled add-on, not part of the shared Latin-American evaluation.
 
 ## 4. Protocol and uncertainty
@@ -87,6 +89,8 @@ labelled add-on, not part of the shared Latin-American evaluation.
 - Human evaluation uses 100 fixed test sentences per direction, two qualified raters per
   target language, blind and shuffled. Report the mean, 95% interval, loss from full
   precision, off-target rate and Krippendorff's alpha.
+- Prompt: three fixed dev pairs of the same test set, then the sentence, as
+  `<eng>…</eng> <yor>…</yor>`; greedy; stop at the closing tag or 2x the source tokens.
 - Fix prompts, decoding and references before comparing precision configurations. No
   evaluation sentence may appear in training or prompts.
 - Bootstrap 1,000 times over sentences for 95% percentile intervals. Full and quantized

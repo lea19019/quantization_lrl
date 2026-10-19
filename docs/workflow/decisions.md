@@ -48,4 +48,15 @@ lives in `docs/project/`.
 - 2026-10-13: Translation evaluation: base model, three dev examples per test set (the
   same for every model), both directions, greedy, answer capped at 2x the source tokens,
   full test sets. Damage is measured on the bare FLORES+ devtest sentence.
+- 2026-10-18: AfriCOMET 1.1 scores all six African-core languages: English, French,
+  Yoruba, Zulu, Swahili and Amharic (Swahili and Amharic are project languages; the
+  2026-09-29 exclusion no longer holds).
+- 2026-10-18: Translation prompt: three dev pairs of the same test set, as
+  `<eng>…</eng> <yor>…</yor>`; greedy; stop at the closing tag or 2x the source tokens.
+- 2026-10-18: Two supporting measurements added: the log-probability of the human
+  reference given the translation prompt, and the off-target rate with GlotLID.
+- 2026-10-18: Fine-tuning: one multilingual model on every language, no per-language
+  models; replaces the three models of 2026-10-13.
+- 2026-10-18: Nahuatl and Bribri X→English are scored against machine-translated English
+  references; kept, and stated as a limitation.
 - 2026-10-18: SmoothQuant dropped from the methods and the code.
