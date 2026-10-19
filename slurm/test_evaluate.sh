@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Test job: runs configs/eval_llama_test.yaml (Llama 3.1 8B, Yoruba and Nahuatl, 32
+# Test job: runs configs/eval_llama_test.yaml (Llama 3.1 8B, Yoruba, Amharic, Nahuatl, 32
 # sentences) on one GPU to catch cluster-only failures before the full evaluation.
 # Submit from the repo root: mkdir -p results/slurm && sbatch slurm/test_evaluate.sh
 #SBATCH --job-name=test_evaluate
@@ -26,4 +26,4 @@ cd "$SLURM_SUBMIT_DIR"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
 # GPU torch lives in this venv; the repo's .venv is CPU-only. AfriCOMET uses .venv-comet.
-time ~/.venvs/quantization_lrl/bin/python -m qlrl.eval configs/eval_llama_test.yaml
+time ~/.venvs/quantization_lrl/bin/python -m qlrl.evaluation configs/eval_llama_test.yaml

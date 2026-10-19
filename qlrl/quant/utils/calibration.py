@@ -6,7 +6,7 @@ GPTQ and AWQ use both; RTN uses neither.
   1. Load data/c4/c4-train.00000-of-01024.json.gz; each row has a "text" field.
   2. Seed a random generator so the same seed always gives the same windows.
   3. Pick a random document and tokenize it; skip it if it has L tokens or fewer.
-  4. Take L consecutive tokens from a random start position.
+  4. Take L consecutive tokens from a random start position (bos: BOS + L-1 tokens).
   5. Repeat until there are N windows; stack them into [N, L] token ids.
   6. collect_inputs: run the windows one at a time, with a hook on every linear.
   7. In the hook, fold X into a running statistic instead of saving X:
@@ -47,17 +47,27 @@ def load_c4() -> Dataset:
 
 
 def sample_windows(
-    tokenizer: PreTrainedTokenizerBase, documents: Dataset, n: int, length: int, seed: int
+    tokenizer: PreTrainedTokenizerBase, documents: Dataset, n: int, length: int, seed: int,
+    bos: bool = False,
 ) -> torch.Tensor:
-    """Return n random windows of `length` token ids, [n, length], drawn with `seed`."""
+    """Return n random windows of `length` token ids, [n, length], drawn with `seed`.
+
+    bos: each window is BOS + length-1 tokens from a random position of the document.
+    Calibration should match inference, where every input starts with BOS; the BOS
+    position carries massive activations (Sun et al. 2024) that a mid-document window
+    never shows the quantizer (PrefixQuant, Chen et al. 2024).
+    """
     rng = random.Random(seed)
+    take = length - 1 if bos else length
     windows = []
     while len(windows) < n:
         text = documents[rng.randrange(len(documents))]["text"]
-        ids = tokenizer(text, return_tensors="pt").input_ids  # [1, tokens]
-        if ids.shape[1] <= length: continue
-        start = rng.randint(0, ids.shape[1] - length - 1)
-        windows.append(ids[:, start:start + length])
+        ids = tokenizer(text, return_tensors="pt", add_special_tokens=not bos).input_ids
+        if ids.shape[1] <= take: continue
+        start = rng.randint(0, ids.shape[1] - take - 1)
+        window = ids[:, start:start + take]  # [1, take]
+        if bos: window = torch.cat([torch.tensor([[tokenizer.bos_token_id]]), window], dim=1)
+        windows.append(window)
     return torch.cat(windows)  # [n, length]
 
 

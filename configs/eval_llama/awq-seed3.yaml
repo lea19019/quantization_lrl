@@ -1,0 +1,37 @@
+# Llama 3.1 8B, awq seed 3: python -m qlrl.evaluation configs/eval_llama/awq-seed3.yaml
+# Writes results/eval_v2/<model folder name>/{scores,manifest}.json, translation/, perplexity/.
+model: models/bos/Llama-3.1-8B-awq-4bit-seed3
+dtype: bfloat16
+data: data/processed
+output: results/eval_v2
+
+languages: [fra, spa, por, yor, zul, swh, amh, kek, grn, nah, bzd, qug]
+test_sets:                 # the one test set of each language
+  fra: flores
+  spa: flores
+  por: flores
+  yor: flores
+  zul: flores
+  swh: flores
+  amh: flores
+  grn: flores
+  kek: mayanv
+  nah: americasnlp
+  bzd: americasnlp
+  qug: church
+max_sentences: null        # null = the whole test set
+examples: 3                # dev pairs in each prompt
+batch_size: 32             # sentences generated at once
+
+metrics: [chrf, bleu, africomet, off_target, reference_logprob, perplexity]
+
+africomet:
+  repo: masakhane/africomet-stl-1.1
+  revision: b4065f4424a962cf6e52373a9ec8a22a624fb278
+  comet_score: .venv-comet/bin/comet-score
+  batch_size: 16
+  languages: [fra, yor, zul, swh, amh]   # paired with English, both directions
+
+glotlid:                   # off-target rate: English or not (see offTargert_eval)
+  repo: cis-lmu/glotlid
+  revision: 85cd6716494360367b75f642b5bc78667605d0b4

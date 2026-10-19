@@ -1,9 +1,8 @@
 '''
-The measurements behind qlrl/eval.py: log-probabilities of given text, and scores of
-generated translations. Settings and reasons: docs/project/evaluation.md.
+Scores of generated translations: chrF++, BLEU, AfriCOMET and the off-target rate.
+Settings and reasons: docs/project/evaluation.md.
 '''
 import json
-import math
 import os
 import subprocess
 import tempfile
@@ -14,47 +13,6 @@ import fasttext
 import sacrebleu
 import torch
 from huggingface_hub import hf_hub_download
-
-from qlrl.quant.utils.perplexity import gold_logprobs
-
-
-def text_logprob(model, tokenizer, prefix: str, text: str) -> tuple[float, int]:
-    """Return (summed log p in nats, token count) of the tokens of `text` given `prefix`."""
-    # Tokenized apart and joined, so `text` keeps its own tokens: in one string Llama merges
-    # the prompt's ">" with the first letter of the reference into a single token.
-    prefix_ids = tokenizer(prefix).input_ids
-    text_ids = tokenizer(text, add_special_tokens=False).input_ids
-    ids = torch.tensor([prefix_ids + text_ids], device=model.device)  # [1, seq]
-    with torch.no_grad():
-        logits = model(ids).logits.float()  # [1, seq, vocab]; bf16 logits lose precision
-    gold = gold_logprobs(logits, ids)  # [seq - 1]; gold[t - 1] scores token t
-    return gold[len(prefix_ids) - 1:].sum().item(), len(text_ids)
-
-
-def referenceLogProb_eval(model, tokenizer, prefixes: list[str], texts: list[str]):
-    """Return, per text, its log p given its prefix, with token, word and byte counts."""
-    rows = []
-    for prefix, text in zip(prefixes, texts):
-        logprob, tokens = text_logprob(model, tokenizer, prefix, text)
-        rows.append({"logprob": logprob, "tokens": tokens,
-                     "words": len(text.split()), "bytes": len(text.encode())})
-    return rows
-
-
-def perplexity_eval(model, tokenizer, texts: list[str]) -> list[dict]:
-    """Return referenceLogProb_eval rows for bare sentences, after only a BOS token."""
-    # Llama's tokenizer adds BOS itself; GPT-2's does not, so give it one to predict from.
-    adds_bos = tokenizer("a").input_ids[0] == tokenizer.bos_token_id
-    prefix = "" if adds_bos else tokenizer.bos_token
-    return referenceLogProb_eval(model, tokenizer, [prefix] * len(texts), texts)
-
-
-def summarize(rows: list[dict]) -> dict:
-    """Return perplexity per token and negative log p per word and per byte, over all rows."""
-    logprob = sum(row["logprob"] for row in rows)
-    return {"perplexity": math.exp(-logprob / sum(row["tokens"] for row in rows)),
-            "nll_per_word": -logprob / sum(row["words"] for row in rows),
-            "nll_per_byte": -logprob / sum(row["bytes"] for row in rows)}
 
 
 def chrfPP_eval(hypotheses: list[str], references: list[str]) -> dict:
@@ -96,9 +54,42 @@ def load_glotlid(repo: str, revision: str):
 
 
 def offTargert_eval(hypotheses: list[str], config: dict, tgt: str) -> dict:
-    """Return the share of outputs whose GlotLID label is not one of tgt's labels, and labels."""
+    """Return the share of off-target outputs and the GlotLID label of every output."""
+    # Only "is it English?" is asked. GlotLID cannot separate close varieties (on the human
+    # references it labels 91% of Kichwa 'qvi' and 27% of church Swahili 'swc'), so a list of
+    # accepted labels per language would count good outputs as off target.
+    # English -> X: off target if the output is English (the model fell back to English).
+    # X -> English: off target if the output is anything but English.
     glotlid = load_glotlid(config["repo"], config["revision"])
     found = [glotlid.predict(text.replace("\n", " "))[0][0].removeprefix("__label__")
              for text in hypotheses]
-    off = sum(label not in config["labels"][tgt] for label in found)
+    if tgt == "eng":
+        off = sum(label != "eng_Latn" for label in found)
+    else:
+        off = sum(label == "eng_Latn" for label in found)
     return {"rate": off / len(found), "labels": found}
+
+
+def score_translations(rows: list[dict], lang: str, tgt: str, config: dict):
+    """Return (scores, metric signatures) of the outputs in rows; add per-sentence columns."""
+    sources = [row["src"] for row in rows]
+    hypotheses = [row["hyp"] for row in rows]
+    references = [row["ref"] for row in rows]
+    metrics, scores, signatures = config["metrics"], {}, {}
+    if "chrf" in metrics:
+        chrf = chrfPP_eval(hypotheses, references)
+        scores["chrF++"], signatures["chrF++"] = chrf["score"], chrf["signature"]
+    if "bleu" in metrics:
+        bleu = sacreBLEU_eval(hypotheses, references)
+        scores["BLEU"], signatures["BLEU"] = bleu["score"], bleu["signature"]
+    if "africomet" in metrics and lang in config["africomet"]["languages"]:
+        comet = afriCOMET_eval(sources, hypotheses, references, config["africomet"])
+        for row, segment in zip(rows, comet["segments"]):
+            row["africomet"] = segment
+        scores["AfriCOMET"] = comet["score"]
+    if "off_target" in metrics:
+        lid = offTargert_eval(hypotheses, config["glotlid"], tgt)
+        for row, label in zip(rows, lid["labels"]):
+            row["lid"] = label
+        scores["off-target %"] = 100 * lid["rate"]
+    return scores, signatures

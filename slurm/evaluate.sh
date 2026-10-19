@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Full evaluation: one array task per config in configs/eval_llama/ (awq, full, gptq, rtn,
-# in sorted order). Submit only after test_evaluate.sh passes. From the repo root:
+# Full evaluation: one array task per config in configs/eval_llama/ (12: full, rtn, and
+# awq and gptq for seeds 0-4, in sorted order). Submit only after test_evaluate.sh passes. From the repo root:
 #   mkdir -p results/slurm && sbatch slurm/evaluate.sh
 #SBATCH --job-name=evaluate
 #SBATCH --nodes=1
@@ -11,7 +11,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --qos=cs
 #SBATCH --gpus=1
-#SBATCH --array=0-3
+#SBATCH --array=0-11
 #SBATCH --output=results/slurm/%x-%A_%a.out
 
 set -euo pipefail
@@ -30,4 +30,4 @@ echo "$config"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
 # GPU torch lives in this venv; the repo's .venv is CPU-only. AfriCOMET uses .venv-comet.
-~/.venvs/quantization_lrl/bin/python -m qlrl.eval "$config"
+~/.venvs/quantization_lrl/bin/python -m qlrl.evaluation "$config"

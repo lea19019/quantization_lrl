@@ -8,6 +8,7 @@ calibration:               # C4 windows, GPTQ paper size (length 1024 is GPT-2's
   n: 128
   length: 1024
   seed: 0
+  bos: false               # true: every window starts with BOS, as at inference
 
 perplexity:                # WikiText-2 check after each method; remove to skip
   length: 1024             # 2048 for Llama

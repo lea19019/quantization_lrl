@@ -39,7 +39,9 @@ def main() -> None:
 
     calibration = config["calibration"]
     seed = calibration["seed"]
-    input_ids = sample_windows(tokenizer, load_c4(), calibration["n"], calibration["length"], seed)
+    input_ids = sample_windows(
+        tokenizer, load_c4(), calibration["n"], calibration["length"], seed, calibration["bos"]
+    )
     methods = config["methods"]
     output = Path(config["output"]) / Path(config["model"]).name
 

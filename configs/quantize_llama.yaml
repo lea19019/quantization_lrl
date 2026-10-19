@@ -8,6 +8,7 @@ calibration:               # C4 windows, GPTQ paper size
   n: 128
   length: 2048
   seed: 0
+  bos: false               # true: every window starts with BOS, as at inference
 
 perplexity:                # WikiText-2 check after each method; remove to skip
   length: 2048

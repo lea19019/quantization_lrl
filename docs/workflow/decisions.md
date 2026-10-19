@@ -60,3 +60,22 @@ lives in `docs/project/`.
 - 2026-10-18: Nahuatl and Bribri X→English are scored against machine-translated English
   references; kept, and stated as a limitation.
 - 2026-10-18: SmoothQuant dropped from the methods and the code.
+- 2026-10-19: Generation cap: 2x the source tokens times the test set's dev-set ratio of
+  target to source tokens. The flat 2x cut every English→Amharic output (Amharic needs
+  about 7.8x the tokens of English).
+- 2026-10-19: Off-target rate: English→X counts outputs GlotLID identifies as English;
+  X→English counts outputs it does not. Per-language label lists dropped: GlotLID cannot
+  separate close varieties (it labels 91% of the Kichwa references `qvi`).
+- 2026-10-19: One test set per language: FLORES-200 devtest for French, Spanish,
+  Portuguese, Yoruba, Zulu, Swahili, Amharic and Guarani; MayanV for Q'eqchi';
+  AmericasNLP for Nahuatl and Bribri; church for Kichwa. Other splits are free for
+  fine-tuning and its validation.
+- 2026-10-19: GPTQ and AWQ calibration windows start with BOS (`bos: true`). Calibrated
+  without BOS, GPTQ was worse than RTN on every language when sentences start with BOS
+  (Amharic damage 7.8 vs 3.5 nats per word); with BOS windows it is 2.3. The WikiText-2
+  validation check stays as in the papers.
+- 2026-10-19: Five calibration seeds (0-4) for GPTQ and AWQ on Llama 3.1 8B; RTN once.
+- 2026-10-19: Greedy decoding kept. Repetition loops of the base model on low-resource
+  targets are expected and not corrected.
+- 2026-10-19: Results of the first full evaluation (no BOS calibration, flat cap, all test
+  sets) are kept in `results/eval/`; the new evaluation writes to `results/eval_v2/`.
