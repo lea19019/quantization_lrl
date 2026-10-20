@@ -1,0 +1,21 @@
+# Cluster test of quantization on Qwen 2.5 7B (slurm/test_qwen.sh):
+#   python -m qlrl.quantization configs/quantize/qwen_test.yaml
+# 8 calibration windows of 512 tokens, 8 WikiText-2 windows: checks the code runs on Qwen.
+model: Qwen/Qwen2.5-7B
+dtype: bfloat16
+output: /nobackup/autodelete/usr/vacl2/quantization_lrl/models/test
+
+calibration:
+  n: 8
+  length: 512
+  seed: 0
+  bos: false               # Qwen 2.5 has no BOS token
+
+perplexity:
+  length: 2048
+  max_windows: 8
+
+methods:
+  rtn:         {bits: 4, group_size: 128}
+  gptq:        {bits: 4, group_size: 128}
+  awq:         {bits: 4, group_size: 128}

@@ -1,0 +1,22 @@
+# Analysis of the finished runs in results/eval_v2:
+#   python -m qlrl.analysis configs/analysis/eval_v2.yaml
+# Writes <output>/summary.md, damage.csv, translation.csv. Unfinished runs are skipped.
+results: results/eval_v2
+output: results/analysis/eval_v2
+africomet_floor: results/analysis/africomet_floor.json   # computed once if missing (GPU)
+
+bootstrap:
+  samples: 1000             # resamples of sentences
+  seed: 0                   # also the seed of the shuffled references (the floor)
+  level: 0.95
+  floor_standard_errors: 3  # above floor: full - floor > 3 bootstrap standard errors
+
+models:                     # run folder: <full>-<method>-<bits>bit[-seed<seed>]
+  Llama-3.1-8B:
+    full: Llama-3.1-8B
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}  # null: no seed
+  Qwen2.5-7B:
+    full: Qwen2.5-7B
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}

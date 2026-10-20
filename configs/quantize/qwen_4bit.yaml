@@ -1,0 +1,21 @@
+# Qwen/Qwen2.5-7B at 4 bits, calibration seeds 0-4, one Slurm array task per seed:
+#   sbatch --array=0-4 slurm/run.sh qlrl.quantization configs/quantize/qwen_4bit.yaml
+# Output on /nobackup/autodelete: home has no room for the models; they can be recreated.
+model: Qwen/Qwen2.5-7B
+dtype: bfloat16
+output: /nobackup/autodelete/usr/vacl2/quantization_lrl/models
+
+calibration:               # C4 windows, GPTQ paper size
+  n: 128
+  length: 2048
+  seed: [0, 1, 2, 3, 4]    # the array index picks one
+  bos: false               # Qwen 2.5 has no BOS token
+
+perplexity:                # WikiText-2 check after each method; remove to skip
+  length: 2048
+  max_windows: null        # null = all windows
+
+methods:                   # rtn runs with the first seed only
+  rtn:         {bits: 4, group_size: 128}
+  gptq:        {bits: 4, group_size: 128}
+  awq:         {bits: 4, group_size: 128}

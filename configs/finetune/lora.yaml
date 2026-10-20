@@ -1,0 +1,34 @@
+# LoRA fine-tune of Llama 3.1 8B: python -m qlrl.finetune configs/finetune/lora.yaml
+# Writes models/<name>/ (merged, plain checkpoint) with manifest.json.
+# Settings marked "proposed" are starting points from the papers, not decisions.
+model: meta-llama/Llama-3.1-8B
+dtype: bfloat16
+data: data/processed
+output: models
+name: Llama-3.1-8B-lora
+seed: 0
+
+# French is not trained: it is the forgetting control, with English.
+languages: [spa, por, swh, yor, zul, amh, kek, grn, nah, bzd, qug]
+caps: {spa: 100000, por: 100000, swh: 100000}   # every other language keeps all its pairs
+pairs_per_sequence: 4      # 3 examples + the graded pair, as in the evaluation prompt
+max_length: 1024           # tokens; longer rows are dropped (proposed: check the counts)
+
+mode: lora
+lora:
+  implementation: ours     # ours (LoRALinear) | peft
+  r: 64                    # proposed (QLoRA: r matters little on all layers)
+  alpha: 128               # proposed: alpha = 2r (Biderman 2024)
+  dropout: 0.05
+  targets: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  optimizer: adamw
+  lr: 2.0e-4               # proposed (QLoRA 7B/13B; Biderman best 2e-4 to 5e-4)
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  batch_size: 8
+  accumulation: 4          # 32 rows = 128 pairs per optimizer step
+  clip: 1.0
+  gradient_checkpointing: true
+  log_every: 50
