@@ -1,5 +1,5 @@
 '''
-Entry point for data preparation: python -m qlrl.data.prepare configs/data.yaml [--test]
+Entry point for data preparation: python -m qlrl.data.prepare configs/data/data.yaml [--test]
 
 1. Only if the config has `translate:`, translate the Spanish sides into English.
 2. Every language's dev and test: church held-out pairs, and FLORES+, AmericasNLP and

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Test job: runs configs/quantize.yaml (GPT-2, 16 calibration windows, 4 perplexity windows)
+# Test job: runs configs/quantize/gpt2.yaml (GPT-2, 16 calibration windows, 4 perplexity windows)
 # on one GPU to catch cluster-only failures before a full-size job.
 # Submit from the repo root: mkdir -p results/slurm && sbatch slurm/test_quantize.sh
 #SBATCH --job-name=test_quantize
@@ -26,4 +26,4 @@ cd "$SLURM_SUBMIT_DIR"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
 # GPU torch lives in this venv; the repo's .venv is CPU-only.
-~/.venvs/quantization_lrl/bin/python -m qlrl.quantization configs/quantize.yaml
+~/.venvs/quantization_lrl/bin/python -m qlrl.quantization configs/quantize/gpt2.yaml

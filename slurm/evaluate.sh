@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Full evaluation: one array task per config in configs/eval_llama/ (12: full, rtn, and
+# Full evaluation: one array task per config in configs/eval/llama/ (12: full, rtn, and
 # awq and gptq for seeds 0-4, in sorted order). Submit only after test_evaluate.sh passes. From the repo root:
 #   mkdir -p results/slurm && sbatch slurm/evaluate.sh
 #SBATCH --job-name=evaluate
@@ -24,7 +24,7 @@ export HF_DATASETS_OFFLINE=1
 module load python/3.11
 cd "$SLURM_SUBMIT_DIR"
 
-configs=(configs/eval_llama/*.yaml)  # sorted by the glob under LC_ALL=C
+configs=(configs/eval/llama/*.yaml)  # sorted by the glob under LC_ALL=C
 config=${configs[$SLURM_ARRAY_TASK_ID]}
 echo "$config"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader

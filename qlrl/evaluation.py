@@ -1,5 +1,5 @@
 '''
-Entry point for evaluation: python -m qlrl.evaluation configs/eval.yaml
+Entry point for evaluation: python -m qlrl.evaluation configs/eval/gpt2.yaml
 
 Loads one model (full precision or quantized) and, for the one test set of every language in
 the YAML (`test_sets`) and both directions (English -> X and X -> English), measures:
@@ -124,6 +124,9 @@ def evaluate_model(model, tokenizer, config: dict, folder: Path) -> tuple[dict, 
 
 def main() -> None:
     config = yaml.safe_load(Path(sys.argv[1]).read_text())
+    # A list of models is a sweep: the Slurm array index (second argument) picks one.
+    if isinstance(config["model"], list):
+        config["model"] = config["model"][int(sys.argv[2]) if len(sys.argv) > 2 else 0]
     folder = Path(config["output"]) / Path(config["model"]).name
     folder.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_model(config["model"], config["dtype"])

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Data preparation: runs configs/data.yaml (python -m qlrl.data.prepare). CPU only, unless
+# Data preparation: runs configs/data/data.yaml (python -m qlrl.data.prepare). CPU only, unless
 # the config has a `translate:` section, which needs one 80 GB GPU.
 # Submit from the repo root: mkdir -p results/slurm && sbatch slurm/prepare_data.sh [--test]
 #SBATCH --job-name=prepare_data
@@ -20,4 +20,4 @@ export HF_DATASETS_OFFLINE=1
 module load python/3.11
 cd "$SLURM_SUBMIT_DIR"
 
-~/.venvs/quantization_lrl/bin/python -m qlrl.data.prepare configs/data.yaml "$@"
+~/.venvs/quantization_lrl/bin/python -m qlrl.data.prepare configs/data/data.yaml "$@"

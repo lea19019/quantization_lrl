@@ -35,8 +35,10 @@ def referenceLogProb_eval(model, tokenizer, prefixes: list[str], texts: list[str
 def perplexity_eval(model, tokenizer, texts: list[str]) -> list[dict]:
     """Return referenceLogProb_eval rows for bare sentences, after only a BOS token."""
     # Llama's tokenizer adds BOS itself; GPT-2's does not, so give it one to predict from.
+    # Qwen 2.5 has no BOS token at all: its document separator <|endoftext|> (also its EOS)
+    # takes that place, so the first token of every sentence is still scored.
     adds_bos = tokenizer("a").input_ids[0] == tokenizer.bos_token_id
-    prefix = "" if adds_bos else tokenizer.bos_token
+    prefix = "" if adds_bos else tokenizer.bos_token or tokenizer.eos_token
     return referenceLogProb_eval(model, tokenizer, [prefix] * len(texts), texts)
 
 

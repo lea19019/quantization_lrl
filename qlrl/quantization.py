@@ -1,5 +1,5 @@
 '''
-Entry point for quantization: python -m qlrl.quantization configs/quantize.yaml
+Entry point for quantization: python -m qlrl.quantization configs/quantize/gpt2.yaml
 
 Loads the model and the C4 calibration windows named in the YAML, then runs each method
 that has a section under `methods:`; a method with no section is skipped. Each method
@@ -38,7 +38,9 @@ def main() -> None:
     model.to(device)  # type: ignore[arg-type]  # transformers 5.x stub bug
 
     calibration = config["calibration"]
-    seed = calibration["seed"]
+    # A list of seeds is a sweep: the Slurm array index (second argument) picks one.
+    seeds = calibration["seed"] if isinstance(calibration["seed"], list) else [calibration["seed"]]
+    seed = seeds[int(sys.argv[2]) if len(sys.argv) > 2 else 0]
     input_ids = sample_windows(
         tokenizer, load_c4(), calibration["n"], calibration["length"], seed, calibration["bos"]
     )
@@ -49,7 +51,7 @@ def main() -> None:
     if config.get("perplexity"):
         finish(None, model, f"{output}-full-precision", config, tokenizer)
 
-    if methods.get("rtn"):
+    if methods.get("rtn") and seed == seeds[0]:  # RTN uses no calibration: run it once
         rtn = RTN(**methods["rtn"])
         rtn.calibrate(model, input_ids)
         finish(rtn, rtn.quantize(model), f"{output}-rtn-{rtn.bits}bit", config, tokenizer)

@@ -9,7 +9,7 @@ Every row has four columns: en, tgt (the other language), lang and source (churc
 americasnlp, mayanv, kichwa). Turning a row into a prompt, tokenizing and mixing languages
 are left to the caller, so the same data serves every model.
 
-The files are written by `python -m qlrl.data.prepare configs/data.yaml`.
+The files are written by `python -m qlrl.data.prepare configs/data/data.yaml`.
 '''
 from pathlib import Path
 
