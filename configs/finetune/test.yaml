@@ -7,6 +7,7 @@ tiny: {hidden_size: 64, intermediate_size: 128, num_hidden_layers: 2,
 dtype: float32
 data: data/processed
 output: models/test
+results: results/test/finetune
 name: finetune-test
 seed: 0
 
@@ -15,9 +16,13 @@ caps: {yor: 200, nah: 200, bzd: 100}   # pairs per language; a language not list
 pairs_per_sequence: 4      # 3 examples + the graded pair, as in the evaluation prompt
 max_length: 512            # tokens; longer rows are dropped
 
+# Dev loss: church dev, and AmericasNLP where there is no church (nah, bzd).
+dev:
+  sources: [church, americasnlp]
+  pairs: 40                # per language, a seeded random subset: 10 sequences
+
 mode: lora                 # full | lora
 lora:
-  implementation: ours     # ours (LoRALinear) | peft
   r: 8
   alpha: 16
   dropout: 0.05
@@ -33,3 +38,5 @@ train:
   clip: 1.0
   gradient_checkpointing: false
   log_every: 5
+  eval_every: 5            # steps between dev losses (and at step 0 and the end)
+  checkpoint_every: 5      # steps between checkpoints; a rerun resumes from the last

@@ -5,6 +5,7 @@ model: meta-llama/Llama-3.1-8B
 dtype: bfloat16
 data: data/processed
 output: models
+results: results/finetune
 name: Llama-3.1-8B-full
 seed: 0
 
@@ -14,9 +15,13 @@ caps: {spa: 100000, por: 100000, swh: 100000}   # every other language keeps all
 pairs_per_sequence: 4      # 3 examples + the graded pair, as in the evaluation prompt
 max_length: 1024           # tokens; longer rows are dropped (proposed: check the counts)
 
+# Dev loss: church dev, and AmericasNLP where there is no church (nah, bzd).
+dev:
+  sources: [church, americasnlp]
+  pairs: 400               # per language, a seeded random subset: 100 sequences
+
 mode: full               # lora section below is ignored
 lora:
-  implementation: ours     # ours (LoRALinear) | peft
   r: 64                    # proposed (QLoRA: r matters little on all layers)
   alpha: 128               # proposed: alpha = 2r (Biderman 2024)
   dropout: 0.05
@@ -32,3 +37,5 @@ train:
   clip: 1.0
   gradient_checkpointing: true
   log_every: 50
+  eval_every: 500          # steps between dev losses (and at step 0 and the end)
+  checkpoint_every: 500    # steps between checkpoints; a rerun resumes from the last
