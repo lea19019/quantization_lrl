@@ -34,7 +34,8 @@ class TrainingData:
         DataCollatorForSeq2Seq does the padding)."""
         rows = self.rows
         if lang is not None:
-            rows = rows.select([i for i, row_lang in enumerate(rows["lang"]) if row_lang == lang])
+            langs = rows["lang"][:]
+            rows = rows.select([i for i, row_lang in enumerate(langs) if row_lang == lang])
         return DataLoader(
             rows.remove_columns("lang"), batch_size=self.config["train"]["batch_size"],
             shuffle=True, generator=torch.Generator().manual_seed(self.config["seed"]),
@@ -44,14 +45,17 @@ class TrainingData:
     def build(self, pairs: Dataset) -> tuple[Dataset, dict]:
         """Return the rows (input_ids, labels, lang) and counts per language: each pair used
         once, shuffled, packed, too-long rows dropped."""
+        # pairs["en"] is a lazy view that reads the table on every access, and pack slices it
+        # once per sequence; [:] reads each column into a plain list once.
+        english, other, langs = pairs["en"][:], pairs["tgt"][:], pairs["lang"][:]
         rows_of: dict[str, list[int]] = {}
-        for i, lang in enumerate(pairs["lang"]):
+        for i, lang in enumerate(langs):
             rows_of.setdefault(lang, []).append(i)
         texts: dict[str, list[str]] = {"context": [], "target": [], "lang": []}
         for lang, rows in rows_of.items():
             self.rng.shuffle(rows)  # random pairs share a sequence, not neighbouring lines
-            chosen = pairs.select(rows)
-            for context, target in self.pack(chosen["en"], chosen["tgt"], lang):
+            chosen_english, chosen_other = [english[i] for i in rows], [other[i] for i in rows]
+            for context, target in self.pack(chosen_english, chosen_other, lang):
                 texts["context"].append(context)
                 texts["target"].append(target)
                 texts["lang"].append(lang)
@@ -60,7 +64,7 @@ class TrainingData:
             remove_columns=["context", "target"],
         )
         kept = sequences.filter(lambda row: len(row["input_ids"]) <= self.config["max_length"])
-        built, left = Counter(sequences["lang"]), Counter(kept["lang"])
+        built, left = Counter(sequences["lang"][:]), Counter(kept["lang"][:])
         stats = {lang: {"pairs": len(rows_of[lang]), "sequences": left[lang],
                         "dropped_too_long": built[lang] - left[lang]} for lang in rows_of}
         return kept, stats

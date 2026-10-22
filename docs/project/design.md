@@ -13,7 +13,7 @@ settled with the advisor.
 | GPT-2 small (124M), trained by us | **core** | The only setting where data per language is set by us; gives the learning curve of damage |
 | Qwen 2.5 7B | add-on | Replicates the language ordering on a second family |
 | Gemma 4 26B A4B and 31B | add-on | MoE vs dense on the same data and tokenizer; official QAT checkpoints |
-| Llama 3.1 8B fine-tuned on lab text | core, phase 3 | The H1 intervention |
+| Llama 3.1 8B fine-tuned on lab text | core, phase 3; trained 2026-10-21 (`models/Llama-3.1-8B-lora`) | The H1 intervention |
 
 All H2 experiments run on the core model only. Add-on models replicate the per-language
 ordering of damage and COMET loss, nothing more.

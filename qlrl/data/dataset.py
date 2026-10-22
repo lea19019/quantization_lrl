@@ -50,7 +50,8 @@ def cap(dataset: Dataset, caps: dict[str, int], seed: int) -> Dataset:
     """Return the dataset with each capped language cut to a seeded random subset of its rows."""
     rng = random.Random(seed)
     rows_of: dict[str, list[int]] = {}
-    for i, lang in enumerate(dataset["lang"]):
+    # dataset["lang"] is a lazy view that reads the table on every access; [:] reads it once.
+    for i, lang in enumerate(dataset["lang"][:]):
         rows_of.setdefault(lang, []).append(i)
     kept = []
     for lang, rows in rows_of.items():

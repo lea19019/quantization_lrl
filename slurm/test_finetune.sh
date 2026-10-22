@@ -10,9 +10,10 @@
 #SBATCH --mem=64G
 #SBATCH --time=00:10:00
 #SBATCH --qos=cs
-#SBATCH --gpus=1
+#SBATCH --gpus=a100:1
 #SBATCH --output=results/slurm/%x-%j.out
 
+# Pinned to A100: measured ~7.6 s/step there, ~33 s/step on a B200 (test jobs 14361518, 14362900).
 set -euo pipefail
 export LC_ALL=C
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK

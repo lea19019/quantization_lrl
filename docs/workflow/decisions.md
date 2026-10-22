@@ -79,3 +79,16 @@ lives in `docs/project/`.
   targets are expected and not corrected.
 - 2026-10-19: Results of the first full evaluation (no BOS calibration, flat cap, all test
   sets) are kept in `results/eval/`; the new evaluation writes to `results/eval_v2/`.
+- 2026-10-20: Fine-tuning: LoRA with peft (r 64, alpha 128, dropout 0.05) on every linear
+  layer; AdamW, lr 2e-4, 3% warmup; 4 rows x 8 accumulation steps; one epoch; rows of
+  four pairs (3 examples + the graded pair, as the evaluation prompt) in a random
+  direction; rows over 1024 tokens dropped; Spanish, Portuguese and Swahili capped at
+  100,000 pairs. French is not trained: it is the forgetting control.
+- 2026-10-20: Fine-tuning dev loss on 400 pairs per language: church dev, AmericasNLP dev
+  for Nahuatl and Bribri. Checkpoints every 500 steps with resume.
+- 2026-10-20: Fine-tuning jobs run on A100s: about 8 s per step there, about 33 on a B200.
+- 2026-10-21: The fine-tuned model is quantized, evaluated and analysed exactly as the base
+  model: same calibration, seeds, test sets and metrics.
+- 2026-10-22: Schedule: writing the phase-1 results to 2026-10-28; experiments on where
+  the damage happens to 2026-11-18; report to 2026-12-02; presentation to 2026-12-10.
+

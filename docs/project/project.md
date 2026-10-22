@@ -66,23 +66,19 @@ fixed four times. Get the pipeline right on one model first.
 
 ## 4. Progress and remaining-hours plan
 
-As of 2026-09-28, [hours.csv](../course/hours.csv) records **21.3 of 130 hours (16.4%)**.
-The work so far established the repository and research design, reviewed the literature,
-worked through RTN and GPTQ concepts and math, produced an initial RTN implementation
-and an early GPTQ implementation, and investigated the evaluation metrics.
+As of 2026-10-22, [hours.csv](../course/hours.csv) records **66.0 of 130 hours (50.8%)**,
+through 2026-10-20. Phase 1 is done: low-resource languages lose more on Llama 3.1 8B,
+Qwen 2.5 7B and the fine-tuned Llama, at 4 and 3 bits ([progress.md](../course/progress.md)).
 
-From 2026-09-29 through the 2026-12-10 deadline there are **10 weeks and 2 days**.
-That leaves **108.7 hours**, an average of **10.6 hours per week**. The allocation is:
+From 2026-10-22 through the 2026-12-10 deadline there are **7 weeks**. That leaves
+**64.0 hours**, an average of **9.1 hours per week**. The allocation is:
 
 | Dates | Hours | Work |
 |---|---:|---|
-| 2026-09-29–2026-10-04 | 8.7 | Finish the method foundations; settle scorer and metric decisions; prepare validation. |
-| 2026-10-05–2026-10-18 | 20 | Validate RTN and GPTQ on WikiText-2; build scorer sanity checks, data and COMET pipeline; then AWQ and NF4. |
-| 2026-10-19–2026-11-01 | 20 | Phase 0 on Llama 3.1 8B; test the null; fix the human-evaluation subset and arrange raters. |
-| 2026-11-02–2026-11-15 | 20 | Phase 1 measurements; quantize and score GPT-2 checkpoints; collect human ratings. |
-| 2026-11-16–2026-11-22 | 10 | Write the draft report; make the phase-3 and add-on go/no-go decision with the advisor. |
-| 2026-11-23–2026-12-06 | 20 | Run approved phase-3 work or add-ons; freeze results; complete analysis and figures. |
-| 2026-12-07–2026-12-10 | 10 | Finish the report and committee presentation. |
+| 2026-10-22–2026-10-28 | 9 | Write the phase-1 results and set-up; list the open questions. |
+| 2026-10-29–2026-11-18 | 28 | Experiments on where in the model the extra damage happens. |
+| 2026-11-19–2026-12-02 | 18 | Finish the report. |
+| 2026-12-03–2026-12-10 | 9 | Committee presentation. |
 
 These are planning targets. Actual sessions remain recorded by category in
 [hours.csv](../course/hours.csv), and the plan is recalculated from those entries.

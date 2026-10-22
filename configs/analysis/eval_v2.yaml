@@ -20,3 +20,7 @@ models:                     # run folder: <full>-<method>-<bits>bit[-seed<seed>]
     full: Qwen2.5-7B
     bits: [4, 3]
     methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}
+  Llama-3.1-8B-lora:        # fine-tuned (configs/finetune/lora.yaml), quantized the same way
+    full: Llama-3.1-8B-lora
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}
