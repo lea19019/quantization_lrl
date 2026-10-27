@@ -2,7 +2,7 @@
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
 # Full job: quantize with every method in the given config and check WikiText-2 perplexity.
 # Submit only after test_quantize.sh passes. From the repo root:
-#   mkdir -p results/slurm && sbatch slurm/quantize.sh configs/quantize/llama.yaml
+#   mkdir -p slurm/output && sbatch slurm/quantize.sh configs/quantize/llama.yaml
 #SBATCH --job-name=quantize
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -11,7 +11,7 @@
 #SBATCH --time=03:00:00
 #SBATCH --qos=cs
 #SBATCH --gpus=1
-#SBATCH --output=results/slurm/%x-%j.out
+#SBATCH --output=slurm/output/%x-%j.out
 
 set -euo pipefail
 export LC_ALL=C

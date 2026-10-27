@@ -1,0 +1,396 @@
+{
+  "FRA": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→fra": {
+      "chrF++": 54.06,
+      "BLEU": 29.93,
+      "AfriCOMET": 64.43,
+      "off-target %": 0.1,
+      "reference NLL per word": 1.79,
+      "reference NLL per byte": 0.28,
+      "reference perplexity": 2.87
+    },
+    "fra→eng": {
+      "chrF++": 57.47,
+      "BLEU": 33.32,
+      "AfriCOMET": 72.97,
+      "off-target %": 0.1,
+      "reference NLL per word": 1.79,
+      "reference NLL per byte": 0.3,
+      "reference perplexity": 4.23
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "fra": {
+        "perplexity": 57.26,
+        "NLL per word": 6.87,
+        "NLL per byte": 1.07
+      }
+    }
+  },
+  "SPA": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→spa": {
+      "chrF++": 46.82,
+      "BLEU": 20.51,
+      "off-target %": 0.0,
+      "reference NLL per word": 2.23,
+      "reference NLL per byte": 0.36,
+      "reference perplexity": 4.01
+    },
+    "spa→eng": {
+      "chrF++": 51.16,
+      "BLEU": 23.65,
+      "off-target %": 0.1,
+      "reference NLL per word": 2.12,
+      "reference NLL per byte": 0.35,
+      "reference perplexity": 5.5
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "spa": {
+        "perplexity": 61.86,
+        "NLL per word": 6.62,
+        "NLL per byte": 1.08
+      }
+    }
+  },
+  "POR": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→por": {
+      "chrF++": 57.14,
+      "BLEU": 33.15,
+      "off-target %": 0.0,
+      "reference NLL per word": 1.74,
+      "reference NLL per byte": 0.28,
+      "reference perplexity": 2.77
+    },
+    "por→eng": {
+      "chrF++": 59.62,
+      "BLEU": 35.98,
+      "off-target %": 0.3,
+      "reference NLL per word": 1.75,
+      "reference NLL per byte": 0.29,
+      "reference perplexity": 4.11
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "por": {
+        "perplexity": 78.01,
+        "NLL per word": 7.44,
+        "NLL per byte": 1.18
+      }
+    }
+  },
+  "YOR": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→yor": {
+      "chrF++": 11.07,
+      "BLEU": 1.41,
+      "AfriCOMET": 34.11,
+      "off-target %": 0.4,
+      "reference NLL per word": 8.94,
+      "reference NLL per byte": 1.33,
+      "reference perplexity": 21.07
+    },
+    "yor→eng": {
+      "chrF++": 18.86,
+      "BLEU": 3.42,
+      "AfriCOMET": 32.03,
+      "off-target %": 9.09,
+      "reference NLL per word": 4.15,
+      "reference NLL per byte": 0.69,
+      "reference perplexity": 28.41
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "yor": {
+        "perplexity": 139.21,
+        "NLL per word": 14.48,
+        "NLL per byte": 2.16
+      }
+    }
+  },
+  "ZUL": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→zul": {
+      "chrF++": 16.19,
+      "BLEU": 1.16,
+      "AfriCOMET": 22.76,
+      "off-target %": 0.89,
+      "reference NLL per word": 10.2,
+      "reference NLL per byte": 1.09,
+      "reference perplexity": 15.31
+    },
+    "zul→eng": {
+      "chrF++": 21.78,
+      "BLEU": 4.32,
+      "AfriCOMET": 31.45,
+      "off-target %": 3.26,
+      "reference NLL per word": 3.65,
+      "reference NLL per byte": 0.6,
+      "reference perplexity": 18.9
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "zul": {
+        "perplexity": 274.99,
+        "NLL per word": 20.99,
+        "NLL per byte": 2.24
+      }
+    }
+  },
+  "SWH": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→swh": {
+      "chrF++": 22.47,
+      "BLEU": 4.35,
+      "AfriCOMET": 25.46,
+      "off-target %": 0.1,
+      "reference NLL per word": 5.5,
+      "reference NLL per byte": 0.85,
+      "reference perplexity": 9.31
+    },
+    "swh→eng": {
+      "chrF++": 23.62,
+      "BLEU": 5.37,
+      "AfriCOMET": 32.91,
+      "off-target %": 6.32,
+      "reference NLL per word": 3.46,
+      "reference NLL per byte": 0.57,
+      "reference perplexity": 16.32
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "swh": {
+        "perplexity": 369.59,
+        "NLL per word": 14.57,
+        "NLL per byte": 2.24
+      }
+    }
+  },
+  "AMH": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→amh": {
+      "chrF++": 2.09,
+      "BLEU": 0.1,
+      "AfriCOMET": 11.21,
+      "off-target %": 0.0,
+      "reference NLL per word": 14.34,
+      "reference NLL per byte": 1.1,
+      "reference perplexity": 3.34
+    },
+    "amh→eng": {
+      "chrF++": 15.45,
+      "BLEU": 0.82,
+      "AfriCOMET": 27.22,
+      "off-target %": 6.23,
+      "reference NLL per word": 4.55,
+      "reference NLL per byte": 0.75,
+      "reference perplexity": 39.09
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "amh": {
+        "perplexity": 8.26,
+        "NLL per word": 25.12,
+        "NLL per byte": 1.93
+      }
+    }
+  },
+  "KEK": {
+    "test set": "mayanv",
+    "sentences": 1000,
+    "eng→kek": {
+      "chrF++": 14.24,
+      "BLEU": 0.37,
+      "off-target %": 0.0,
+      "reference NLL per word": 12.81,
+      "reference NLL per byte": 2.04,
+      "reference perplexity": 45.0
+    },
+    "kek→eng": {
+      "chrF++": 12.56,
+      "BLEU": 2.33,
+      "off-target %": 4.2,
+      "reference NLL per word": 5.22,
+      "reference NLL per byte": 1.02,
+      "reference perplexity": 49.57
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 545.76,
+        "NLL per word": 8.43,
+        "NLL per byte": 1.65
+      },
+      "kek": {
+        "perplexity": 738.79,
+        "NLL per word": 22.23,
+        "NLL per byte": 3.54
+      }
+    }
+  },
+  "GRN": {
+    "test set": "flores",
+    "sentences": 1012,
+    "eng→grn": {
+      "chrF++": 25.58,
+      "BLEU": 5.01,
+      "off-target %": 0.1,
+      "reference NLL per word": 8.2,
+      "reference NLL per byte": 1.01,
+      "reference perplexity": 12.77
+    },
+    "grn→eng": {
+      "chrF++": 28.22,
+      "BLEU": 7.64,
+      "off-target %": 1.28,
+      "reference NLL per word": 3.26,
+      "reference NLL per byte": 0.54,
+      "reference perplexity": 13.89
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 54.27,
+        "NLL per word": 4.95,
+        "NLL per byte": 0.82
+      },
+      "grn": {
+        "perplexity": 294.87,
+        "NLL per word": 18.31,
+        "NLL per byte": 2.25
+      }
+    }
+  },
+  "NAH": {
+    "test set": "americasnlp",
+    "sentences": 995,
+    "eng→nah": {
+      "chrF++": 10.37,
+      "BLEU": 0.4,
+      "off-target %": 0.8,
+      "reference NLL per word": 15.26,
+      "reference NLL per byte": 1.89,
+      "reference perplexity": 125.68
+    },
+    "nah→eng": {
+      "chrF++": 13.17,
+      "BLEU": 1.71,
+      "off-target %": 10.75,
+      "reference NLL per word": 4.39,
+      "reference NLL per byte": 0.85,
+      "reference perplexity": 37.13
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 67.19,
+        "NLL per word": 5.11,
+        "NLL per byte": 0.99
+      },
+      "nah": {
+        "perplexity": 2395.91,
+        "NLL per word": 24.57,
+        "NLL per byte": 3.04
+      }
+    }
+  },
+  "BZD": {
+    "test set": "americasnlp",
+    "sentences": 1003,
+    "eng→bzd": {
+      "chrF++": 9.16,
+      "BLEU": 0.4,
+      "off-target %": 0.9,
+      "reference NLL per word": 10.49,
+      "reference NLL per byte": 1.86,
+      "reference perplexity": 44.31
+    },
+    "bzd→eng": {
+      "chrF++": 14.89,
+      "BLEU": 1.79,
+      "off-target %": 5.18,
+      "reference NLL per word": 4.38,
+      "reference NLL per byte": 0.85,
+      "reference perplexity": 37.01
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 66.8,
+        "NLL per word": 5.1,
+        "NLL per byte": 0.99
+      },
+      "bzd": {
+        "perplexity": 362.68,
+        "NLL per word": 16.31,
+        "NLL per byte": 2.89
+      }
+    }
+  },
+  "QUG": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→qug": {
+      "chrF++": 29.04,
+      "BLEU": 3.33,
+      "off-target %": 0.0,
+      "reference NLL per word": 6.51,
+      "reference NLL per byte": 0.72,
+      "reference perplexity": 6.18
+    },
+    "qug→eng": {
+      "chrF++": 22.39,
+      "BLEU": 2.97,
+      "off-target %": 2.0,
+      "reference NLL per word": 2.71,
+      "reference NLL per byte": 0.51,
+      "reference perplexity": 9.25
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 33.66,
+        "NLL per word": 4.29,
+        "NLL per byte": 0.81
+      },
+      "qug": {
+        "perplexity": 514.88,
+        "NLL per word": 22.31,
+        "NLL per byte": 2.45
+      }
+    }
+  }
+}

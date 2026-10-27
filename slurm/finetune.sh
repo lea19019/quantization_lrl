@@ -3,7 +3,7 @@
 # Full job: fine-tune with the given config; the model goes to models/<name>/, the train and
 # dev losses to results/finetune/<name>/. Submit only after test_finetune.sh passes; set
 # --time from the test job's speed. From the repo root:
-#   mkdir -p results/slurm && sbatch slurm/finetune.sh configs/finetune/lora.yaml
+#   mkdir -p slurm/output && sbatch slurm/finetune.sh configs/finetune/lora.yaml
 #SBATCH --job-name=finetune
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -12,7 +12,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --qos=cs
 #SBATCH --gpus=a100:1
-#SBATCH --output=results/slurm/%x-%j.out
+#SBATCH --output=slurm/output/%x-%j.out
 
 # Pinned to A100: measured ~7.6 s/step there, ~33 s/step on a B200 (test jobs 14361518, 14362900).
 set -euo pipefail

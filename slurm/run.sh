@@ -2,7 +2,7 @@
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
 # Runs one entry point with one config; in an array, the task index picks the seed or model.
 # From the repo root (set --time to the job: ~30 min quantize, ~3-6 h evaluate):
-#   mkdir -p results/slurm
+#   mkdir -p slurm/output
 #   sbatch --array=0-4 --time=01:00:00 slurm/run.sh qlrl.quantization configs/quantize/qwen_4bit.yaml
 #   sbatch --array=0-22 slurm/run.sh qlrl.evaluation configs/eval/qwen.yaml
 #   sbatch --time=01:00:00 slurm/run.sh qlrl.analysis configs/analysis/eval_v2.yaml
@@ -14,7 +14,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --qos=cs
 #SBATCH --gpus=1
-#SBATCH --output=results/slurm/%x-%A_%a.out
+#SBATCH --output=slurm/output/%x-%A_%a.out
 
 set -euo pipefail
 export LC_ALL=C

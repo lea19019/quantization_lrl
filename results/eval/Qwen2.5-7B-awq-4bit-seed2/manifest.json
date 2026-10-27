@@ -1,0 +1,208 @@
+{
+  "config": {
+    "model": "/nobackup/autodelete/usr/vacl2/quantization_lrl/models/Qwen2.5-7B-awq-4bit-seed2",
+    "dtype": "bfloat16",
+    "data": "data/processed",
+    "output": "results/eval_v2",
+    "languages": [
+      "fra",
+      "spa",
+      "por",
+      "yor",
+      "zul",
+      "swh",
+      "amh",
+      "kek",
+      "grn",
+      "nah",
+      "bzd",
+      "qug"
+    ],
+    "test_sets": {
+      "fra": "flores",
+      "spa": "flores",
+      "por": "flores",
+      "yor": "flores",
+      "zul": "flores",
+      "swh": "flores",
+      "amh": "flores",
+      "grn": "flores",
+      "kek": "mayanv",
+      "nah": "americasnlp",
+      "bzd": "americasnlp",
+      "qug": "church"
+    },
+    "max_sentences": null,
+    "examples": 3,
+    "batch_size": 32,
+    "metrics": [
+      "chrf",
+      "bleu",
+      "africomet",
+      "off_target",
+      "reference_logprob",
+      "perplexity"
+    ],
+    "africomet": {
+      "repo": "masakhane/africomet-stl-1.1",
+      "revision": "b4065f4424a962cf6e52373a9ec8a22a624fb278",
+      "comet_score": ".venv-comet/bin/comet-score",
+      "batch_size": 16,
+      "languages": [
+        "fra",
+        "yor",
+        "zul",
+        "swh",
+        "amh"
+      ]
+    },
+    "glotlid": {
+      "repo": "cis-lmu/glotlid",
+      "revision": "85cd6716494360367b75f642b5bc78667605d0b4"
+    }
+  },
+  "git_sha": "da83844b5ebe13e8c493b34234862bd80070d1d6",
+  "test sets": {
+    "FRA": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→fra": 1.58,
+        "fra→eng": 0.65
+      }
+    },
+    "SPA": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→spa": 1.54,
+        "spa→eng": 0.67
+      }
+    },
+    "POR": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→por": 1.47,
+        "por→eng": 0.7
+      }
+    },
+    "YOR": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→yor": 2.71,
+        "yor→eng": 0.4
+      }
+    },
+    "ZUL": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→zul": 2.19,
+        "zul→eng": 0.47
+      }
+    },
+    "SWH": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→swh": 1.95,
+        "swh→eng": 0.53
+      }
+    },
+    "AMH": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→amh": 4.18,
+        "amh→eng": 0.25
+      }
+    },
+    "KEK": {
+      "test set": "mayanv",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→kek": 1.69,
+        "kek→eng": 0.71
+      }
+    },
+    "GRN": {
+      "test set": "flores",
+      "sentences": 1012,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→grn": 2.12,
+        "grn→eng": 0.49
+      }
+    },
+    "NAH": {
+      "test set": "americasnlp",
+      "sentences": 995,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 671,
+      "cap ratio": {
+        "eng→nah": 1.82,
+        "nah→eng": 0.6
+      }
+    },
+    "BZD": {
+      "test set": "americasnlp",
+      "sentences": 1003,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 994,
+      "cap ratio": {
+        "eng→bzd": 2.73,
+        "bzd→eng": 0.39
+      }
+    },
+    "QUG": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→qug": 1.84,
+        "qug→eng": 0.56
+      }
+    }
+  },
+  "versions": {
+    "model": {
+      "folder": "/nobackup/autodelete/usr/vacl2/quantization_lrl/models/Qwen2.5-7B-awq-4bit-seed2",
+      "git_sha": "b1210c62e20b82fc1e6224b99daab27b4f7a400f"
+    },
+    "torch": "2.11.0+cu128",
+    "transformers": "5.19.0",
+    "sacrebleu": "2.6.0",
+    "fasttext-numpy2-wheel": "0.9.2",
+    "unbabel-comet": "2.2.7",
+    "GlotLID": {
+      "repo": "cis-lmu/glotlid",
+      "revision": "85cd6716494360367b75f642b5bc78667605d0b4"
+    },
+    "AfriCOMET": {
+      "repo": "masakhane/africomet-stl-1.1",
+      "revision": "b4065f4424a962cf6e52373a9ec8a22a624fb278"
+    },
+    "chrF++ signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.6.0",
+    "BLEU signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+  }
+}

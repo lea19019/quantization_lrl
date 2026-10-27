@@ -2,7 +2,7 @@
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
 # Test job: runs configs/quantize/gpt2.yaml (GPT-2, 16 calibration windows, 4 perplexity windows)
 # on one GPU to catch cluster-only failures before a full-size job.
-# Submit from the repo root: mkdir -p results/slurm && sbatch slurm/test_quantize.sh
+# Submit from the repo root: mkdir -p slurm/output && sbatch slurm/test_quantize.sh
 #SBATCH --job-name=test_quantize
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -11,7 +11,7 @@
 #SBATCH --time=00:10:00
 #SBATCH --qos=cs
 #SBATCH --gpus=1
-#SBATCH --output=results/slurm/%x-%j.out
+#SBATCH --output=slurm/output/%x-%j.out
 
 set -euo pipefail
 export LC_ALL=C

@@ -16,7 +16,9 @@ docs/course/report/*.out
 docs/course/report/*.synctex.gz
 .DS_Store
 /data/
-/results/
+/slurm/output/
+/results/**/perplexity/
+/results/**/translation/
 examples/
 papers/
 .python-version

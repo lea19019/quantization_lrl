@@ -1,0 +1,300 @@
+{
+  "FRA": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→fra": {
+      "chrF++": 49.96,
+      "BLEU": 27.57,
+      "AfriCOMET": 66.0,
+      "off-target %": 0.9,
+      "reference NLL per word": 1.84,
+      "reference NLL per byte": 0.3,
+      "reference perplexity": 2.94
+    },
+    "fra→eng": {
+      "chrF++": 60.28,
+      "BLEU": 38.61,
+      "AfriCOMET": 72.61,
+      "off-target %": 3.4,
+      "reference NLL per word": 1.53,
+      "reference NLL per byte": 0.27,
+      "reference perplexity": 3.19
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 30.97,
+        "NLL per word": 4.53,
+        "NLL per byte": 0.79
+      },
+      "fra": {
+        "perplexity": 20.68,
+        "NLL per word": 5.17,
+        "NLL per byte": 0.85
+      }
+    }
+  },
+  "SPA": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→spa": {
+      "chrF++": 57.09,
+      "BLEU": 35.62,
+      "off-target %": 0.6,
+      "reference NLL per word": 1.73,
+      "reference NLL per byte": 0.29,
+      "reference perplexity": 2.86
+    },
+    "spa→eng": {
+      "chrF++": 67.96,
+      "BLEU": 49.38,
+      "off-target %": 2.0,
+      "reference NLL per word": 1.29,
+      "reference NLL per byte": 0.22,
+      "reference perplexity": 2.7
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 32.49,
+        "NLL per word": 4.53,
+        "NLL per byte": 0.79
+      },
+      "spa": {
+        "perplexity": 25.99,
+        "NLL per word": 5.38,
+        "NLL per byte": 0.9
+      }
+    }
+  },
+  "POR": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→por": {
+      "chrF++": 56.74,
+      "BLEU": 35.27,
+      "off-target %": 0.6,
+      "reference NLL per word": 1.82,
+      "reference NLL per byte": 0.3,
+      "reference perplexity": 2.81
+    },
+    "por→eng": {
+      "chrF++": 66.52,
+      "BLEU": 46.36,
+      "off-target %": 3.5,
+      "reference NLL per word": 1.36,
+      "reference NLL per byte": 0.24,
+      "reference perplexity": 2.79
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 32.57,
+        "NLL per word": 4.6,
+        "NLL per byte": 0.8
+      },
+      "por": {
+        "perplexity": 27.1,
+        "NLL per word": 5.81,
+        "NLL per byte": 0.95
+      }
+    }
+  },
+  "YOR": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→yor": {
+      "chrF++": 3.16,
+      "BLEU": 0.27,
+      "AfriCOMET": 22.21,
+      "off-target %": 0.0,
+      "reference NLL per word": 10.92,
+      "reference NLL per byte": 1.54,
+      "reference perplexity": 28.33
+    },
+    "yor→eng": {
+      "chrF++": 18.23,
+      "BLEU": 3.2,
+      "AfriCOMET": 32.22,
+      "off-target %": 7.9,
+      "reference NLL per word": 3.66,
+      "reference NLL per byte": 0.65,
+      "reference perplexity": 16.71
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 27.33,
+        "NLL per word": 4.3,
+        "NLL per byte": 0.77
+      },
+      "yor": {
+        "perplexity": 59.54,
+        "NLL per word": 13.34,
+        "NLL per byte": 1.88
+      }
+    }
+  },
+  "ZUL": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→zul": {
+      "chrF++": 9.47,
+      "BLEU": 1.15,
+      "AfriCOMET": 16.85,
+      "off-target %": 1.8,
+      "reference NLL per word": 14.89,
+      "reference NLL per byte": 1.71,
+      "reference perplexity": 60.06
+    },
+    "zul→eng": {
+      "chrF++": 17.81,
+      "BLEU": 5.95,
+      "AfriCOMET": 32.37,
+      "off-target %": 4.3,
+      "reference NLL per word": 3.37,
+      "reference NLL per byte": 0.61,
+      "reference perplexity": 13.47
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 26.67,
+        "NLL per word": 4.25,
+        "NLL per byte": 0.77
+      },
+      "zul": {
+        "perplexity": 160.64,
+        "NLL per word": 18.47,
+        "NLL per byte": 2.12
+      }
+    }
+  },
+  "SWH": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→swh": {
+      "chrF++": 12.96,
+      "BLEU": 2.11,
+      "AfriCOMET": 18.97,
+      "off-target %": 3.3,
+      "reference NLL per word": 8.95,
+      "reference NLL per byte": 1.36,
+      "reference perplexity": 30.71
+    },
+    "swh→eng": {
+      "chrF++": 30.05,
+      "BLEU": 14.48,
+      "AfriCOMET": 44.93,
+      "off-target %": 3.0,
+      "reference NLL per word": 2.63,
+      "reference NLL per byte": 0.47,
+      "reference perplexity": 7.59
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 29.49,
+        "NLL per word": 4.4,
+        "NLL per byte": 0.78
+      },
+      "swh": {
+        "perplexity": 108.79,
+        "NLL per word": 12.25,
+        "NLL per byte": 1.87
+      }
+    }
+  },
+  "AMH": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→amh": {
+      "chrF++": 1.59,
+      "BLEU": 0.02,
+      "AfriCOMET": 10.97,
+      "off-target %": 2.5,
+      "reference NLL per word": 18.39,
+      "reference NLL per byte": 1.35,
+      "reference perplexity": 15.75
+    },
+    "amh→eng": {
+      "chrF++": 17.06,
+      "BLEU": 1.98,
+      "AfriCOMET": 33.71,
+      "off-target %": 4.4,
+      "reference NLL per word": 3.5,
+      "reference NLL per byte": 0.62,
+      "reference perplexity": 14.88
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 27.86,
+        "NLL per word": 4.31,
+        "NLL per byte": 0.77
+      },
+      "amh": {
+        "perplexity": 27.28,
+        "NLL per word": 22.06,
+        "NLL per byte": 1.62
+      }
+    }
+  },
+  "KEK": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→kek": {
+      "chrF++": 12.71,
+      "BLEU": 1.69,
+      "off-target %": 3.9,
+      "reference NLL per word": 12.98,
+      "reference NLL per byte": 2.08,
+      "reference perplexity": 101.83
+    },
+    "kek→eng": {
+      "chrF++": 17.65,
+      "BLEU": 4.4,
+      "off-target %": 3.6,
+      "reference NLL per word": 3.41,
+      "reference NLL per byte": 0.61,
+      "reference perplexity": 13.98
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 27.98,
+        "NLL per word": 4.31,
+        "NLL per byte": 0.76
+      },
+      "kek": {
+        "perplexity": 351.8,
+        "NLL per word": 16.46,
+        "NLL per byte": 2.63
+      }
+    }
+  },
+  "GRN": {
+    "test set": "church",
+    "sentences": 1000,
+    "eng→grn": {
+      "chrF++": 12.97,
+      "BLEU": 1.7,
+      "off-target %": 1.0,
+      "reference NLL per word": 16.43,
+      "reference NLL per byte": 2.0,
+      "reference perplexity": 132.33
+    },
+    "grn→eng": {
+      "chrF++": 22.04,
+      "BLEU": 3.68,
+      "off-target %": 4.0,
+      "reference NLL per word": 3.24,
+      "reference NLL per byte": 0.58,
+      "reference perplexity": 13.49
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 28.63,
+        "NLL per word": 4.18,
+        "NLL per byte": 0.75
+      },
+      "grn": {
+        "perplexity": 504.55,
+        "NLL per word": 20.93,
+        "NLL per byte": 2.54
+      }
+    }
+  }
+}

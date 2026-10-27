@@ -2,7 +2,7 @@
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
 # Calibration seeds: one array task per config in configs/quantize/llama_seeds/ (seed0-seed4, in
 # sorted order). Seed 0 already exists, so from the repo root:
-#   mkdir -p results/slurm && sbatch --array=1-4 slurm/quantize_seeds.sh
+#   mkdir -p slurm/output && sbatch --array=1-4 slurm/quantize_seeds.sh
 #SBATCH --job-name=quantize_seeds
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -12,7 +12,7 @@
 #SBATCH --qos=cs
 #SBATCH --gpus=1
 #SBATCH --array=0-4
-#SBATCH --output=results/slurm/%x-%A_%a.out
+#SBATCH --output=slurm/output/%x-%A_%a.out
 
 set -euo pipefail
 export LC_ALL=C

@@ -1,0 +1,102 @@
+{
+  "YOR": {
+    "test set": "flores",
+    "sentences": 32,
+    "eng→yor": {
+      "chrF++": 7.63,
+      "BLEU": 0.45,
+      "AfriCOMET": 26.21,
+      "off-target %": 0.0,
+      "reference NLL per word": 9.82,
+      "reference NLL per byte": 1.41,
+      "reference perplexity": 25.16
+    },
+    "yor→eng": {
+      "chrF++": 24.63,
+      "BLEU": 7.73,
+      "AfriCOMET": 45.18,
+      "off-target %": 9.38,
+      "reference NLL per word": 3.36,
+      "reference NLL per byte": 0.52,
+      "reference perplexity": 12.68
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 22.42,
+        "NLL per word": 4.11,
+        "NLL per byte": 0.64
+      },
+      "yor": {
+        "perplexity": 47.0,
+        "NLL per word": 11.73,
+        "NLL per byte": 1.68
+      }
+    }
+  },
+  "AMH": {
+    "test set": "flores",
+    "sentences": 32,
+    "eng→amh": {
+      "chrF++": 3.15,
+      "BLEU": 0.11,
+      "AfriCOMET": 11.13,
+      "off-target %": 0.0,
+      "reference NLL per word": 12.65,
+      "reference NLL per byte": 0.97,
+      "reference perplexity": 7.13
+    },
+    "amh→eng": {
+      "chrF++": 22.64,
+      "BLEU": 2.87,
+      "AfriCOMET": 43.93,
+      "off-target %": 0.0,
+      "reference NLL per word": 3.45,
+      "reference NLL per byte": 0.54,
+      "reference perplexity": 13.57
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 22.42,
+        "NLL per word": 4.11,
+        "NLL per byte": 0.64
+      },
+      "amh": {
+        "perplexity": 12.16,
+        "NLL per word": 16.09,
+        "NLL per byte": 1.23
+      }
+    }
+  },
+  "NAH": {
+    "test set": "americasnlp",
+    "sentences": 32,
+    "eng→nah": {
+      "chrF++": 9.73,
+      "BLEU": 0.17,
+      "off-target %": 0.0,
+      "reference NLL per word": 16.02,
+      "reference NLL per byte": 2.07,
+      "reference perplexity": 191.32
+    },
+    "nah→eng": {
+      "chrF++": 16.25,
+      "BLEU": 1.78,
+      "off-target %": 3.12,
+      "reference NLL per word": 3.97,
+      "reference NLL per byte": 0.76,
+      "reference perplexity": 23.29
+    },
+    "perplexity": {
+      "eng": {
+        "perplexity": 45.39,
+        "NLL per word": 4.81,
+        "NLL per byte": 0.92
+      },
+      "nah": {
+        "perplexity": 1001.57,
+        "NLL per word": 21.07,
+        "NLL per byte": 2.73
+      }
+    }
+  }
+}

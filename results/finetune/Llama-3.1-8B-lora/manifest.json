@@ -1,0 +1,205 @@
+{
+  "config": {
+    "model": "meta-llama/Llama-3.1-8B",
+    "dtype": "bfloat16",
+    "data": "data/processed",
+    "output": "models",
+    "results": "results/finetune",
+    "name": "Llama-3.1-8B-lora",
+    "seed": 0,
+    "languages": [
+      "spa",
+      "por",
+      "swh",
+      "yor",
+      "zul",
+      "amh",
+      "kek",
+      "grn",
+      "nah",
+      "bzd",
+      "qug"
+    ],
+    "caps": {
+      "spa": 100000,
+      "por": 100000,
+      "swh": 100000
+    },
+    "pairs_per_sequence": 4,
+    "max_length": 1024,
+    "dev": {
+      "sources": [
+        "church",
+        "americasnlp"
+      ],
+      "pairs": 400
+    },
+    "mode": "lora",
+    "lora": {
+      "r": 64,
+      "alpha": 128,
+      "dropout": 0.05,
+      "targets": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "train": {
+      "optimizer": "adamw",
+      "lr": 0.0002,
+      "weight_decay": 0.0,
+      "warmup_ratio": 0.03,
+      "batch_size": 4,
+      "accumulation": 8,
+      "clip": 1.0,
+      "gradient_checkpointing": true,
+      "log_every": 50,
+      "eval_every": 500,
+      "checkpoint_every": 500
+    }
+  },
+  "git_sha": "c0d96f03012094ac71da061fd4665f4dea3a9ba9",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.19.0",
+  "stats": {
+    "languages": {
+      "spa": {
+        "pairs": 100000,
+        "sequences": 25000,
+        "dropped_too_long": 0
+      },
+      "por": {
+        "pairs": 100000,
+        "sequences": 25000,
+        "dropped_too_long": 0
+      },
+      "swh": {
+        "pairs": 100000,
+        "sequences": 25000,
+        "dropped_too_long": 0
+      },
+      "yor": {
+        "pairs": 89832,
+        "sequences": 22457,
+        "dropped_too_long": 1
+      },
+      "zul": {
+        "pairs": 100099,
+        "sequences": 25024,
+        "dropped_too_long": 0
+      },
+      "amh": {
+        "pairs": 173590,
+        "sequences": 38421,
+        "dropped_too_long": 4976
+      },
+      "kek": {
+        "pairs": 215508,
+        "sequences": 53877,
+        "dropped_too_long": 0
+      },
+      "grn": {
+        "pairs": 121489,
+        "sequences": 30372,
+        "dropped_too_long": 0
+      },
+      "nah": {
+        "pairs": 12637,
+        "sequences": 3149,
+        "dropped_too_long": 10
+      },
+      "bzd": {
+        "pairs": 6125,
+        "sequences": 1531,
+        "dropped_too_long": 0
+      },
+      "qug": {
+        "pairs": 16742,
+        "sequences": 4185,
+        "dropped_too_long": 0
+      }
+    },
+    "dev": {
+      "spa": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "por": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "swh": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "yor": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "zul": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "amh": {
+        "pairs": 400,
+        "sequences": 82,
+        "dropped_too_long": 18
+      },
+      "kek": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "grn": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "nah": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "bzd": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      },
+      "qug": {
+        "pairs": 400,
+        "sequences": 100,
+        "dropped_too_long": 0
+      }
+    },
+    "steps": 7938,
+    "last": {
+      "step": 7938,
+      "lr": 0.0,
+      "train_loss": 0.6156838218142328,
+      "dev_loss": {
+        "spa": 0.4786343636163903,
+        "por": 0.48124440498867926,
+        "swh": 0.5538692983869948,
+        "yor": 0.567710367649028,
+        "zul": 0.6715528336781235,
+        "amh": 0.3432879116978149,
+        "kek": 0.6190244383940459,
+        "grn": 1.3597246114252393,
+        "nah": 3.0144967063602093,
+        "bzd": 2.68360666906879,
+        "qug": 0.7907831098921764,
+        "mean": 1.0512667922870447
+      }
+    }
+  }
+}

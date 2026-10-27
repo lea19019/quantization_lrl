@@ -2,7 +2,7 @@
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
 # Full evaluation: one array task per config in configs/eval/llama/ (12: full, rtn, and
 # awq and gptq for seeds 0-4, in sorted order). Submit only after test_evaluate.sh passes. From the repo root:
-#   mkdir -p results/slurm && sbatch slurm/evaluate.sh
+#   mkdir -p slurm/output && sbatch slurm/evaluate.sh
 #SBATCH --job-name=evaluate
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -12,7 +12,7 @@
 #SBATCH --qos=cs
 #SBATCH --gpus=1
 #SBATCH --array=0-11
-#SBATCH --output=results/slurm/%x-%A_%a.out
+#SBATCH --output=slurm/output/%x-%A_%a.out
 
 set -euo pipefail
 export LC_ALL=C

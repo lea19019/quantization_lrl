@@ -1,0 +1,109 @@
+{
+  "config": {
+    "model": "meta-llama/Llama-3.1-8B",
+    "dtype": "bfloat16",
+    "data": "data/processed",
+    "output": "results/eval_v2/test",
+    "languages": [
+      "yor",
+      "amh",
+      "nah"
+    ],
+    "test_sets": {
+      "fra": "flores",
+      "spa": "flores",
+      "por": "flores",
+      "yor": "flores",
+      "zul": "flores",
+      "swh": "flores",
+      "amh": "flores",
+      "grn": "flores",
+      "kek": "mayanv",
+      "nah": "americasnlp",
+      "bzd": "americasnlp",
+      "qug": "church"
+    },
+    "max_sentences": 32,
+    "examples": 3,
+    "batch_size": 32,
+    "metrics": [
+      "chrf",
+      "bleu",
+      "africomet",
+      "off_target",
+      "reference_logprob",
+      "perplexity"
+    ],
+    "africomet": {
+      "repo": "masakhane/africomet-stl-1.1",
+      "revision": "b4065f4424a962cf6e52373a9ec8a22a624fb278",
+      "comet_score": ".venv-comet/bin/comet-score",
+      "batch_size": 16,
+      "languages": [
+        "fra",
+        "yor",
+        "zul",
+        "swh",
+        "amh"
+      ]
+    },
+    "glotlid": {
+      "repo": "cis-lmu/glotlid",
+      "revision": "85cd6716494360367b75f642b5bc78667605d0b4"
+    }
+  },
+  "git_sha": "fcce434c7c940c8f50585d5e6489be030a6b430a",
+  "test sets": {
+    "YOR": {
+      "test set": "flores",
+      "sentences": 32,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→yor": 2.74,
+        "yor→eng": 0.4
+      }
+    },
+    "AMH": {
+      "test set": "flores",
+      "sentences": 32,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 997,
+      "cap ratio": {
+        "eng→amh": 7.84,
+        "amh→eng": 0.13
+      }
+    },
+    "NAH": {
+      "test set": "americasnlp",
+      "sentences": 32,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 671,
+      "cap ratio": {
+        "eng→nah": 1.8,
+        "nah→eng": 0.6
+      }
+    }
+  },
+  "versions": {
+    "model": {
+      "repo": "meta-llama/Llama-3.1-8B",
+      "commit": "d04e592bb4f6aa9cfee91e2e20afa771667e1d4b"
+    },
+    "torch": "2.11.0+cu128",
+    "transformers": "5.19.0",
+    "sacrebleu": "2.6.0",
+    "fasttext-numpy2-wheel": "0.9.2",
+    "unbabel-comet": "2.2.7",
+    "GlotLID": {
+      "repo": "cis-lmu/glotlid",
+      "revision": "85cd6716494360367b75f642b5bc78667605d0b4"
+    },
+    "AfriCOMET": {
+      "repo": "masakhane/africomet-stl-1.1",
+      "revision": "b4065f4424a962cf6e52373a9ec8a22a624fb278"
+    },
+    "chrF++ signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.6.0",
+    "BLEU signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+  }
+}

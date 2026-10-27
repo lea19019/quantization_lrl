@@ -1,0 +1,172 @@
+{
+  "config": {
+    "model": "/nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-awq-4bit-seed1",
+    "dtype": "bfloat16",
+    "data": "data/processed",
+    "output": "results/eval_church",
+    "languages": [
+      "fra",
+      "spa",
+      "por",
+      "yor",
+      "zul",
+      "swh",
+      "amh",
+      "kek",
+      "grn"
+    ],
+    "test_sets": {
+      "fra": "church",
+      "spa": "church",
+      "por": "church",
+      "yor": "church",
+      "zul": "church",
+      "swh": "church",
+      "amh": "church",
+      "kek": "church",
+      "grn": "church"
+    },
+    "max_sentences": null,
+    "examples": 3,
+    "batch_size": 32,
+    "metrics": [
+      "chrf",
+      "bleu",
+      "africomet",
+      "off_target",
+      "reference_logprob",
+      "perplexity"
+    ],
+    "africomet": {
+      "repo": "masakhane/africomet-stl-1.1",
+      "revision": "b4065f4424a962cf6e52373a9ec8a22a624fb278",
+      "comet_score": ".venv-comet/bin/comet-score",
+      "batch_size": 16,
+      "languages": [
+        "fra",
+        "yor",
+        "zul",
+        "swh",
+        "amh"
+      ]
+    },
+    "glotlid": {
+      "repo": "cis-lmu/glotlid",
+      "revision": "85cd6716494360367b75f642b5bc78667605d0b4"
+    }
+  },
+  "git_sha": "a0c7258c8e6b75163c234656482b81f932b258c0",
+  "test sets": {
+    "FRA": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→fra": 1.52,
+        "fra→eng": 0.69
+      }
+    },
+    "SPA": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→spa": 1.44,
+        "spa→eng": 0.72
+      }
+    },
+    "POR": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→por": 1.42,
+        "por→eng": 0.73
+      }
+    },
+    "YOR": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→yor": 2.89,
+        "yor→eng": 0.36
+      }
+    },
+    "ZUL": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→zul": 1.96,
+        "zul→eng": 0.53
+      }
+    },
+    "SWH": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→swh": 1.83,
+        "swh→eng": 0.57
+      }
+    },
+    "AMH": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→amh": 7.3,
+        "amh→eng": 0.15
+      }
+    },
+    "KEK": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→kek": 2.4,
+        "kek→eng": 0.45
+      }
+    },
+    "GRN": {
+      "test set": "church",
+      "sentences": 1000,
+      "dev examples in prompt": 3,
+      "dev pairs for cap ratio": 1000,
+      "cap ratio": {
+        "eng→grn": 2.02,
+        "grn→eng": 0.52
+      }
+    }
+  },
+  "versions": {
+    "model": {
+      "folder": "/nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-awq-4bit-seed1",
+      "git_sha": "b1210c62e20b82fc1e6224b99daab27b4f7a400f"
+    },
+    "torch": "2.11.0+cu128",
+    "transformers": "5.19.0",
+    "sacrebleu": "2.6.0",
+    "fasttext-numpy2-wheel": "0.9.2",
+    "unbabel-comet": "2.2.7",
+    "GlotLID": {
+      "repo": "cis-lmu/glotlid",
+      "revision": "85cd6716494360367b75f642b5bc78667605d0b4"
+    },
+    "AfriCOMET": {
+      "repo": "masakhane/africomet-stl-1.1",
+      "revision": "b4065f4424a962cf6e52373a9ec8a22a624fb278"
+    },
+    "chrF++ signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.6.0",
+    "BLEU signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+  }
+}

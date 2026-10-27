@@ -1,5 +1,5 @@
 # Free-text cleaning for pretraining (qlrl/data/freetext.py), one corpus per Slurm array task:
-#   mkdir -p results/slurm
+#   mkdir -p slurm/output
 #   sbatch --array=0-118 --gpus=0 slurm/run.sh qlrl.data.freetext configs/data/freetext.yaml
 # Writes <output>/<source>/<code>/{train,valid}.parquet and manifest.json. Run from the repo root.
 wikipedia: /home/vacl2/nobackup/archive/wikipedia       # wikimedia/wikipedia 20231101.<code>

@@ -1,0 +1,116 @@
+{
+  "config": {
+    "model": "meta-llama/Llama-3.1-8B",
+    "tiny": {
+      "hidden_size": 64,
+      "intermediate_size": 128,
+      "num_hidden_layers": 2,
+      "num_attention_heads": 4,
+      "num_key_value_heads": 2
+    },
+    "dtype": "float32",
+    "data": "data/processed",
+    "output": "models/test",
+    "results": "results/test/finetune",
+    "name": "finetune-test",
+    "seed": 0,
+    "languages": [
+      "yor",
+      "nah",
+      "bzd"
+    ],
+    "caps": {
+      "yor": 200,
+      "nah": 200,
+      "bzd": 100
+    },
+    "pairs_per_sequence": 4,
+    "max_length": 512,
+    "dev": {
+      "sources": [
+        "church",
+        "americasnlp"
+      ],
+      "pairs": 40
+    },
+    "mode": "lora",
+    "lora": {
+      "r": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "targets": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "train": {
+      "optimizer": "adamw",
+      "lr": 0.001,
+      "weight_decay": 0.0,
+      "warmup_ratio": 0.1,
+      "batch_size": 4,
+      "accumulation": 2,
+      "clip": 1.0,
+      "gradient_checkpointing": false,
+      "log_every": 5,
+      "eval_every": 5,
+      "checkpoint_every": 5
+    }
+  },
+  "git_sha": "c0d96f03012094ac71da061fd4665f4dea3a9ba9",
+  "torch": "2.14.0+cpu",
+  "transformers": "5.17.0",
+  "stats": {
+    "languages": {
+      "yor": {
+        "pairs": 200,
+        "sequences": 44,
+        "dropped_too_long": 6
+      },
+      "nah": {
+        "pairs": 200,
+        "sequences": 36,
+        "dropped_too_long": 14
+      },
+      "bzd": {
+        "pairs": 100,
+        "sequences": 25,
+        "dropped_too_long": 0
+      }
+    },
+    "dev": {
+      "yor": {
+        "pairs": 40,
+        "sequences": 9,
+        "dropped_too_long": 1
+      },
+      "nah": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "bzd": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      }
+    },
+    "steps": 14,
+    "last": {
+      "step": 14,
+      "lr": 0.0,
+      "train_loss": 11.724495206560407,
+      "dev_loss": {
+        "yor": 11.682597154696312,
+        "nah": 11.735986203858346,
+        "bzd": 11.71928663511534,
+        "mean": 11.712623331223332
+      }
+    }
+  }
+}
