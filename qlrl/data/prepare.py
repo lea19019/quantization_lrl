@@ -8,7 +8,9 @@ Entry point for data preparation: python -m qlrl.data.prepare configs/data/data.
    cleaned by the lab tool.
 4. Drop every train pair that matches a dev or test sentence of any language (split.py).
    That is why step 2 runs for all languages before step 3.
-5. Write <output>/<lang>/{train,dev,test}.jsonl and <output>/manifest.json.
+5. Write <output>/<lang>/{train,dev,test}.jsonl and <output>/manifest.json; with
+   `split: shared` also <output>/core.jsonl, the normalized English lines of the shared core
+   (split.core_lines): a church dev or test row is in the core if normalize(row["en"]) is.
 
 A pair with an empty side is dropped (blank lines; long lines left untranslated).
 --test: first TEST_LINES lines of each corpus, TEST_HELD_OUT held out, into <output>_test.
@@ -24,7 +26,8 @@ import yaml
 
 from qlrl.data.cleaning import clean
 from qlrl.data.sources import americasnlp, church, flores, kichwa, mayanv, spanish_sides
-from qlrl.data.split import decontaminate, held_out_sentences, hold_out
+from qlrl.data.split import (
+    core_lines, coverage_of, decontaminate, held_out_sentences, hold_out, hold_out_shared)
 
 TEST_LINES = 2000
 TEST_HELD_OUT = 20
@@ -36,13 +39,22 @@ def main() -> None:
     if test:
         config["output"] += "_test"
         config["cleaning"] += "_test"
-        config |= {"held_out": TEST_HELD_OUT, "limit": TEST_LINES}
+        config |= {"held_out": TEST_HELD_OUT, "held_out_core": TEST_HELD_OUT // 2,
+                   "protect_below": 0, "limit": TEST_LINES}  # every test language is small
     if config.get("translate"):
         from qlrl.data.translate import translate  # needs torch and a GPU; imported only here
         translate(config, test)
 
     languages = config["languages"]
-    evaluation = {lang: evaluation_rows(config, lang, spec) for lang, spec in languages.items()}
+    core = None
+    if config.get("split") == "shared":  # the verses the most church languages have
+        coverage, protected = coverage_of(
+            (church(config["church"], spec["church"], config.get("limit"))
+             for spec in languages.values() if "church" in spec), config["protect_below"])
+        core = (core_lines(coverage, config["held_out_core"], config["seed"]), protected)
+        write_jsonl(f"{config['output']}/core.jsonl", [{"en": line} for line in sorted(core[0])])
+    evaluation = {lang: evaluation_rows(config, lang, spec, core)
+                  for lang, spec in languages.items()}
     held_out = [row for splits in evaluation.values() for rows in splits.values() for row in rows]
     spanish = spanish_sides(config["external"], languages)
     spanish_held_out = [line for name, lines in spanish.items()
@@ -51,8 +63,9 @@ def main() -> None:
 
     summary = {}
     for lang, spec in languages.items():
-        train = training_rows(config, lang, spec)
-        splits = {"train": decontaminate(train, seen)} | evaluation[lang]
+        train = training_rows(config, lang, spec, core)
+        kept = decontaminate(train, seen, config.get("decontaminate_sentences", False))
+        splits = {"train": kept} | evaluation[lang]
         summary[lang] = {}
         for split, rows in splits.items():
             write_jsonl(f"{config['output']}/{lang}/{split}.jsonl", rows)
@@ -62,18 +75,21 @@ def main() -> None:
     write_manifest(config, summary)
 
 
-def church_split(config: dict, spec: dict) -> tuple[list, list, list]:
-    """Return the (train, dev, test) pairs of one church language."""
+def church_split(config: dict, spec: dict, core: tuple | None) -> tuple[list, list, list]:
+    """Return the (train, dev, test) pairs of one church language; core is (core, protected)."""
     pairs = church(config["church"], spec["church"], config.get("limit"))
+    if config.get("split") == "shared":  # same held-out verses in every language (split.py)
+        return hold_out_shared(pairs, config["held_out"], config["held_out_fraction"],
+                               config["seed"], *core)
     return hold_out(pairs, config["held_out"], config["seed"])
 
 
-def evaluation_rows(config: dict, lang: str, spec: dict) -> dict[str, list[dict]]:
+def evaluation_rows(config: dict, lang: str, spec: dict, core) -> dict[str, list[dict]]:
     """Return {"dev": rows, "test": rows} from every corpus the language has."""
     external, translated = config["external"], config["translated"]
     splits = {"dev": [], "test": []}
     if "church" in spec:
-        _, dev, test = church_split(config, spec)
+        _, dev, test = church_split(config, spec, core)
         splits["dev"] += rows(dev, lang, "church")
         splits["test"] += rows(test, lang, "church")
     for split in splits:
@@ -89,12 +105,12 @@ def evaluation_rows(config: dict, lang: str, spec: dict) -> dict[str, list[dict]
     return splits
 
 
-def training_rows(config: dict, lang: str, spec: dict) -> list[dict]:
+def training_rows(config: dict, lang: str, spec: dict, core) -> list[dict]:
     """Return the church train rows and the cleaned external train rows of one language."""
     external, translated = config["external"], config["translated"]
     train = []
     if "church" in spec:
-        train += rows(church_split(config, spec)[0], lang, "church")
+        train += rows(church_split(config, spec, core)[0], lang, "church")
     corpora = {}
     if "americasnlp" in spec:
         folder, extension = spec["americasnlp"]

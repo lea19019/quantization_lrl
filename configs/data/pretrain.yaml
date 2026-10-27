@@ -1,0 +1,147 @@
+# Splits for the from-scratch model: python -m qlrl.data.prepare configs/data/pretrain.yaml [--test]
+# Same rules as data.yaml (docs/project/pretraining_data.md section 3), for every church language
+# kept (123: 141 folders minus the 17 near-empty and ASL) plus Nahuatl, Bribri and Ayacucho
+# Quechua. Writes to its own folders so phase 1's data/processed is untouched.
+church: /home/vacl2/groups/grp_mtlab/nobackup/archive/all-data/church-data-2026
+external: data/external
+translated: data/translated_pretrain   # links to data/translated and data/translated_quechua
+cleaning: data/cleaning_pretrain
+output: data/processed_pretrain
+seed: 0
+split: shared                  # same held-out verses in every language (split.hold_out_shared)
+held_out: 1000                 # church dev and test pairs per language, at most
+held_out_fraction: 0.1         # ... and at most this fraction of the language's pairs, each
+held_out_core: 250             # of which this many are the same verses in every language
+protect_below: 5000            # languages with fewer pairs hold out core lines only, and others
+                               # never hold out their lines (split.hold_out_shared)
+decontaminate_sentences: true  # also drop train pairs with a held-out sentence inside a side
+cleaner: /home/vacl2/data-cleaning-pipeline
+
+# Code: church folder, and the external corpora of the language (keys as in data.yaml).
+languages:
+  afr: {church: "Afrikaans"}
+  amh: {church: "Amharic", flores: amh_Ethi}
+  arb: {church: "Arabic"}
+  ayr: {church: "Aymara", flores: ayr_Latn}
+  bcl: {church: "Bikol"}
+  ben: {church: "Bengali"}
+  bis: {church: "Bislama"}
+  bul: {church: "Bulgarian"}
+  cak: {church: "Kaqchikel"}
+  cat: {church: "Catalan"}
+  ceb: {church: "Cebuano"}
+  ces: {church: "Czech"}
+  cha: {church: "Chamorro"}
+  chk: {church: "Chuukese"}
+  cmn_hans: {church: "Chinese S"}
+  cmn_hant: {church: "Chinese T"}
+  cmn_latn: {church: "Chinese (Hanyu Pinyin)"}
+  cuk: {church: "Guna Yala"}
+  dan: {church: "Danish"}
+  deu: {church: "German"}
+  efi: {church: "Efik"}
+  ell: {church: "Greek"}
+  est: {church: "Estonian"}
+  fas: {church: "Persian"}
+  fat: {church: "Fante"}
+  fij: {church: "Fijian"}
+  fin: {church: "Finnish"}
+  fra: {church: "French", flores: fra_Latn}
+  gil: {church: "Kiribati"}
+  grn: {church: "Guarani", flores: gug_Latn, americasnlp: [guarani, gn], cleaner: gug-PY}
+  guz: {church: "Gusii"}
+  hat: {church: "Haitian"}
+  haw: {church: "Hawaiian"}
+  hif: {church: "Hindi (Fiji)"}
+  hil: {church: "Hiligaynon"}
+  hin: {church: "Hindi"}
+  hmn: {church: "Hmong"}
+  hrv: {church: "Croatian"}
+  hun: {church: "Hungarian"}
+  hye: {church: "Armenian"}
+  ibo: {church: "Igbo"}
+  ilo: {church: "Ilokano"}
+  ind: {church: "Indonesian"}
+  isl: {church: "Icelandic"}
+  ita: {church: "Italian"}
+  jpn: {church: "Japanese"}
+  kam: {church: "Kikamba"}
+  kan: {church: "Kannada"}
+  kat: {church: "Georgian"}
+  kaz: {church: "Kazakh"}
+  kek: {church: "Kekchi", mayanv: kek, cleaner: kek}
+  khm: {church: "Cambodian"}
+  kin: {church: "Kinyarwanda"}
+  kor: {church: "Korean"}
+  kos: {church: "Kosraean"}
+  lao: {church: "Lao"}
+  lav: {church: "Latvian"}
+  lin: {church: "Lingala"}
+  lit: {church: "Lithuanian"}
+  lua: {church: "Tshiluba"}
+  mah: {church: "Marshallese"}
+  mam: {church: "Mam"}
+  mkd: {church: "Macedonian"}
+  mlg: {church: "Malagasy"}
+  mlt: {church: "Maltese"}
+  mon: {church: "Mongolian"}
+  mri: {church: "Maori"}
+  msa: {church: "Malay"}
+  mya: {church: "Burmese"}
+  nav: {church: "Navajo"}
+  nep: {church: "Nepali"}
+  niu: {church: "Niuean"}
+  nld: {church: "Dutch"}
+  nor: {church: "Norwegian"}
+  nya: {church: "Chewa"}
+  pag: {church: "Pangasinan"}
+  pam: {church: "Kapampangan"}
+  pap: {church: "Papiamento"}
+  pau: {church: "Palauan"}
+  pol: {church: "Polish"}
+  pon: {church: "Pohnpeian"}
+  por: {church: "Portuguese", flores: por_Latn}
+  por_pt: {church: "Portuguese (Euro)"}
+  quc: {church: "K'iche'"}
+  qug: {church: "Quichua (Ecuador)", kichwa: true, cleaner: qug}
+  quh: {church: "Quechua (South Bolivia)"}
+  quz: {church: "Quechua (Cusco)"}
+  rar: {church: "Rarotongan"}
+  ron: {church: "Romanian"}
+  rus: {church: "Russian"}
+  sin: {church: "Sinhalese"}
+  slk: {church: "Slovak"}
+  slv: {church: "Slovenian"}
+  smo: {church: "Samoan"}
+  sna: {church: "Shona"}
+  sot: {church: "South Sotho"}
+  spa: {church: "Spanish", flores: spa_Latn}
+  sqi: {church: "Albanian"}
+  srp: {church: "Serbian"}
+  ssw: {church: "Swazi"}
+  swe: {church: "Swedish"}
+  swh: {church: "Swahili", flores: swh_Latn}
+  tah: {church: "Tahitian"}
+  tam: {church: "Tamil"}
+  tel: {church: "Telugu"}
+  tgl: {church: "Tagalog"}
+  tha: {church: "Thai"}
+  ton: {church: "Tongan"}
+  tpi: {church: "Tok Pisin"}
+  tsn: {church: "Tswana"}
+  tur: {church: "Turkish"}
+  twi: {church: "Twi"}
+  tzo: {church: "Tzotzil"}
+  ukr: {church: "Ukrainian"}
+  urd: {church: "Urdu"}
+  vie: {church: "Vietnamese"}
+  war: {church: "Waray"}
+  xho: {church: "Xhosa"}
+  yap: {church: "Yapese"}
+  yor: {church: "Yoruba", flores: yor_Latn}
+  yua: {church: "Yucatec Maya"}
+  yue: {church: "Cantonese"}
+  zul: {church: "Zulu", flores: zul_Latn}
+  nah: {americasnlp: [nahuatl, nah], cleaner: nah}
+  bzd: {americasnlp: [bribri, bzd], cleaner: bzd}
+  quy: {flores: quy_Latn, americasnlp: [quechua, quy]}

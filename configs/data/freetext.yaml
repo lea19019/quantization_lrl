@@ -1,0 +1,165 @@
+# Free-text cleaning for pretraining (qlrl/data/freetext.py), one corpus per Slurm array task:
+#   mkdir -p results/slurm
+#   sbatch --array=0-118 --gpus=0 slurm/run.sh qlrl.data.freetext configs/data/freetext.yaml
+# Writes <output>/<source>/<code>/{train,valid}.parquet and manifest.json. Run from the repo root.
+wikipedia: /home/vacl2/nobackup/archive/wikipedia       # wikimedia/wikipedia 20231101.<code>
+fineweb: /home/vacl2/nobackup/archive/fineweb2/data     # HuggingFaceFW/fineweb-2 <code>_Latn
+output: /home/vacl2/nobackup/archive/freetext
+seed: 0
+parallel_splits: data/processed_pretrain   # qlrl/data/monolingual.py: target sides of the train splits
+max_docs: 1000000          # per corpus, a seeded sample; only the largest Wikipedias exceed it
+
+# Every dev and test sentence that must not appear in pretraining text (both sides, all languages).
+held_out:
+  - data/processed_pretrain/*/dev.jsonl
+  - data/processed_pretrain/*/test.jsonl
+  - data/external/flores_plus/*/*.jsonl
+
+glotlid: {repo: cis-lmu/glotlid, revision: 85cd6716494360367b75f642b5bc78667605d0b4,
+          threshold: 0.9, min_chars: 30, max_chars: 200}   # shorter lines not judged; first 200 read
+min_line_chars: 80          # Wikipedia: shorter lines without sentence punctuation are dropped
+templates: {vocabulary_docs: 100000, frequent_words: 100, min_count: 100, keep: 10}  # words in most docs
+validation: {fraction: 0.01, max_docs: 500}
+
+# FineWeb-2: religious sites (their verses could be church test sentences), machine-translated sites,
+# and Wikipedia pages (already in the Wikipedia corpora; counting them twice would inflate the share).
+blocked_sites: [bible.is, jw.org, ebible.org, bibles.org, biblegateway.com, biblica.com, bible.com,
+                stepbible.org, breakeveryyoke.com, gospelgo.com, beblia.com, wordproject.org,
+                divinerevelations.info, biblerevelation.org, americanbible.org, churchofjesuschrist.org,
+                femissionaria.blogspot.com, scriptureearth.org,
+                hielscher.com, mokosmart.com, mokotechnology.com, asuwantpackaging.com,
+                wikipedia.org, wikimedia.org]
+blocked_url_words: [bible, biblia, scripture, gospel, evangel, iglesia]
+
+# The zh wiki mixes Simplified and Traditional articles (separate languages here). Each article
+# goes to the script whose characters it uses (text_filters.script_of): characters seen only in the
+# church Chinese S or only in Chinese T, outnumbering the other script's `ratio` to 1; else dropped.
+scripts: {church: /home/vacl2/groups/grp_mtlab/nobackup/archive/all-data/church-data-2026,
+          folders: {hans: "Chinese S", hant: "Chinese T"}, min_count: 20, ratio: 3}
+
+# [source, code, GlotLID labels that count as the corpus's own language]. The labels are GlotLID's
+# top label on a sample of the corpus, plus dialects, macro-language members and GlotLID confusions
+# seen on that sample (e.g. Russian lines labelled Ingush). Spanish and English are never added, nor
+# other varieties that are separate languages here (Quechua varieties, Kaqchikel, Nynorsk, Mandarin
+# in the Cantonese wiki): a line GlotLID is sure belongs to one of those is dropped. The qu wiki
+# (mixed Southern Quechua varieties) is not used.
+corpora:
+  - [wikipedia, af, [afr_Latn]]
+  - [wikipedia, am, [amh_Ethi]]
+  - [wikipedia, ar, [arb_Arab, ary_Arab, arz_Arab, ars_Arab, acm_Arab, apc_Arab]]
+  - [wikipedia, ay, [ayr_Latn]]
+  - [wikipedia, bcl, [bcl_Latn]]
+  - [wikipedia, be, [bel_Cyrl]]
+  - [wikipedia, bg, [bul_Cyrl]]
+  - [wikipedia, bi, [bis_Latn, tpi_Latn, pis_Latn]]
+  - [wikipedia, bm, [bam_Latn]]
+  - [wikipedia, bn, [ben_Beng]]
+  - [wikipedia, ca, [cat_Latn]]
+  - [wikipedia, ceb, [ceb_Latn]]
+  - [wikipedia, ch, [cha_Latn]]
+  - [wikipedia, ckb, [ckb_Arab, sdh_Arab, hac_Arab]]
+  - [wikipedia, cs, [ces_Latn]]
+  - [wikipedia, da, [dan_Latn]]
+  - [wikipedia, de, [deu_Latn, gsw_Latn, bar_Latn, nds_Latn]]
+  - [wikipedia, el, [ell_Grek]]
+  - [wikipedia, en, [eng_Latn]]
+  - [wikipedia, es, [spa_Latn]]
+  - [wikipedia, et, [ekk_Latn, est_Latn]]
+  - [wikipedia, eu, [eus_Latn]]
+  - [wikipedia, fa, [fas_Arab, pes_Arab, prs_Arab]]
+  - [wikipedia, fi, [fin_Latn]]
+  - [wikipedia, fj, [fij_Latn]]
+  - [wikipedia, fon, [fon_Latn]]
+  - [wikipedia, fr, [fra_Latn]]
+  - [wikipedia, gn, [gug_Latn]]
+  - [wikipedia, haw, [haw_Latn]]
+  - [wikipedia, hi, [hin_Deva, anp_Deva]]
+  - [wikipedia, hif, [hif_Latn]]
+  - [wikipedia, hr, [hrv_Latn, bos_Latn, srp_Latn]]
+  - [wikipedia, ht, [hat_Latn]]
+  - [wikipedia, hu, [hun_Latn]]
+  - [wikipedia, hy, [hye_Armn]]
+  - [wikipedia, hyw, [hyw_Armn, hye_Armn]]
+  - [wikipedia, id, [ind_Latn, zsm_Latn]]
+  - [wikipedia, ig, [ibo_Latn]]
+  - [wikipedia, ilo, [ilo_Latn]]
+  - [wikipedia, is, [isl_Latn]]
+  - [wikipedia, it, [ita_Latn, srd_Latn]]
+  - [wikipedia, ja, [jpn_Jpan]]
+  - [wikipedia, ka, [kat_Geor]]
+  - [wikipedia, kk, [kaz_Cyrl]]
+  - [wikipedia, km, [khm_Khmr]]
+  - [wikipedia, kn, [kan_Knda]]
+  - [wikipedia, ko, [kor_Hang]]
+  - [wikipedia, lb, [ltz_Latn]]
+  - [wikipedia, ln, [lin_Latn]]
+  - [wikipedia, lo, [lao_Laoo]]
+  - [wikipedia, lt, [lit_Latn]]
+  - [wikipedia, lv, [lvs_Latn, lav_Latn]]
+  - [wikipedia, mg, [plt_Latn, mlg_Latn]]
+  - [wikipedia, mi, [mri_Latn]]
+  - [wikipedia, mk, [mkd_Cyrl]]
+  - [wikipedia, ml, [mal_Mlym]]
+  - [wikipedia, mn, [khk_Cyrl, mon_Cyrl]]
+  - [wikipedia, ms, [zsm_Latn, ind_Latn]]
+  - [wikipedia, mt, [mlt_Latn]]
+  - [wikipedia, my, [mya_Mymr, blk_Mymr]]
+  - [wikipedia, nah, [nah_Latn, nhe_Latn, nhw_Latn, nch_Latn, ngu_Latn, ncj_Latn, azz_Latn, nhi_Latn, ncx_Latn, nhy_Latn, nsu_Latn, nhx_Latn, npl_Latn]]
+  - [wikipedia, ne, [npi_Deva]]
+  - [wikipedia, nl, [nld_Latn]]
+  - [wikipedia, "no", [nob_Latn, dan_Latn]]
+  - [wikipedia, nso, [nso_Latn]]
+  - [wikipedia, nv, [nav_Latn]]
+  - [wikipedia, ny, [nya_Latn]]
+  - [wikipedia, om, [gaz_Latn, orm_Latn]]
+  - [wikipedia, pag, [pag_Latn]]
+  - [wikipedia, pam, [pam_Latn]]
+  - [wikipedia, pap, [pap_Latn]]
+  - [wikipedia, pl, [pol_Latn]]
+  - [wikipedia, pt, [por_Latn]]
+  - [wikipedia, ro, [ron_Latn]]
+  - [wikipedia, ru, [rus_Cyrl, inh_Cyrl]]
+  - [wikipedia, rw, [kin_Latn, run_Latn]]
+  - [wikipedia, si, [sin_Sinh]]
+  - [wikipedia, sk, [slk_Latn]]
+  - [wikipedia, sl, [slv_Latn]]
+  - [wikipedia, sm, [smo_Latn]]
+  - [wikipedia, sn, [sna_Latn]]
+  - [wikipedia, sq, [als_Latn, sqi_Latn]]
+  - [wikipedia, sr, [srp_Cyrl, srp_Latn, bos_Latn, hrv_Latn]]
+  - [wikipedia, ss, [ssw_Latn]]
+  - [wikipedia, st, [sot_Latn]]
+  - [wikipedia, sv, [swe_Latn]]
+  - [wikipedia, sw, [swh_Latn, swc_Latn]]
+  - [wikipedia, ta, [tam_Taml]]
+  - [wikipedia, te, [tel_Telu]]
+  - [wikipedia, th, [tha_Thai]]
+  - [wikipedia, tl, [fil_Latn, tgl_Latn]]
+  - [wikipedia, tn, [tsn_Latn]]
+  - [wikipedia, to, [ton_Latn, nov_Latn]]
+  - [wikipedia, tpi, [tpi_Latn]]
+  - [wikipedia, tr, [tur_Latn]]
+  - [wikipedia, tw, [twi_Latn]]
+  - [wikipedia, ty, [tah_Latn, hun_Latn]]
+  - [wikipedia, uk, [ukr_Cyrl, inh_Cyrl]]
+  - [wikipedia, ur, [urd_Arab]]
+  - [wikipedia, vi, [vie_Latn]]
+  - [wikipedia, war, [war_Latn]]
+  - [wikipedia, xh, [xho_Latn]]
+  - [wikipedia, yo, [yor_Latn]]
+  - [wikipedia, zh, [cmn_Hani, wuu_Hani], hans]   # Simplified articles only (cmn_hans)
+  - [wikipedia, zh, [cmn_Hani, wuu_Hani], hant]   # Traditional articles only (cmn_hant)
+  - [wikipedia, zh-yue, [yue_Hani]]
+  - [wikipedia, zu, [zul_Latn]]
+  - [fineweb, nah_Latn, [nah_Latn, nhe_Latn, nhw_Latn, nch_Latn, ngu_Latn, ncj_Latn, azz_Latn, nhi_Latn, ncx_Latn, nhy_Latn, nsu_Latn, nhx_Latn, npl_Latn]]
+  - [fineweb, kek_Latn, [kek_Latn]]
+  - [fineweb, quc_Latn, [quc_Latn]]
+  - [fineweb, yua_Latn, [yua_Latn]]
+  - [fineweb, mam_Latn, [mam_Latn]]
+  - [fineweb, tzo_Latn, [tzo_Latn]]
+  - [fineweb, quy_Latn, [quy_Latn, que_Latn]]
+  - [fineweb, quz_Latn, [quz_Latn, que_Latn]]
+  - [fineweb, quh_Latn, [quh_Latn, que_Latn]]
+  - [fineweb, qug_Latn, [qug_Latn, que_Latn]]
+  - [fineweb, gug_Latn, [gug_Latn, grn_Latn]]
+  - [fineweb, ayr_Latn, [ayr_Latn, aym_Latn]]
