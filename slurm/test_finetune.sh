@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Cluster rules: docs/workflow/BYU_ORC_AGENTS.md (copy of https://rc.byu.edu/documentation/BYU_ORC_AGENTS.md)
-# Test job: runs configs/finetune/llama_test.yaml (Llama 3.1 8B, LoRA, 200 pairs per language)
+# Test job: runs the given config (default configs/finetune/llama_test.yaml: LoRA, 200 pairs per language)
 # on one GPU to catch cluster-only failures and measure memory and speed before the full job.
-# Submit from the repo root: mkdir -p slurm/output && sbatch slurm/test_finetune.sh
+# Submit from the repo root: mkdir -p slurm/output && sbatch slurm/test_finetune.sh [config]
 #SBATCH --job-name=test_finetune
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -30,6 +30,6 @@ nvidia-smi --query-gpu=memory.used --format=csv,noheader -l 30 &
 
 # GPU torch lives in this venv; the repo's .venv is CPU-only.
 # Each output line is timestamped, to measure seconds per step for the full job's --time.
-~/.venvs/quantization_lrl/bin/python -u -m qlrl.finetune configs/finetune/llama_test.yaml 2>&1 \
+~/.venvs/quantization_lrl/bin/python -u -m qlrl.finetune "${1:-configs/finetune/llama_test.yaml}" 2>&1 \
     | while IFS= read -r line; do printf '%s %s\n' "$(date +%T)" "$line"; done
 kill %1

@@ -1,9 +1,9 @@
 # Llama 3.1 8B, gptq seed 4: python -m qlrl.evaluation configs/eval/llama/gptq-seed4.yaml
-# Writes results/eval_v2/<model folder name>/{scores,manifest}.json, translation/, perplexity/.
+# Writes results/eval/<model folder name>/{scores,manifest}.json, translation/, perplexity/.
 model: /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-gptq-4bit-seed4
 dtype: bfloat16
 data: data/processed
-output: results/eval_v2
+output: results/eval
 
 languages: [fra, spa, por, yor, zul, swh, amh, kek, grn, nah, bzd, qug]
 test_sets:                 # the one test set of each language

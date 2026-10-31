@@ -31,7 +31,7 @@ data: data/processed
 output: results/eval_church
 
 # The church test split (1,000 held-out pairs per language). Nahuatl and Bribri have no
-# church data; Kichwa is already evaluated on church in results/eval_v2.
+# church data; Kichwa is already evaluated on church in results/eval.
 languages: [fra, spa, por, yor, zul, swh, amh, kek, grn]
 test_sets:                 # the one test set of each language
   fra: church

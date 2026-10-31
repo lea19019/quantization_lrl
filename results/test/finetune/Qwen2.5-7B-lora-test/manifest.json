@@ -1,0 +1,213 @@
+{
+  "config": {
+    "model": "Qwen/Qwen2.5-7B",
+    "dtype": "bfloat16",
+    "data": "data/processed",
+    "output": "models/test",
+    "results": "results/test/finetune",
+    "name": "Qwen2.5-7B-lora-test",
+    "seed": 0,
+    "languages": [
+      "spa",
+      "por",
+      "swh",
+      "yor",
+      "zul",
+      "amh",
+      "kek",
+      "grn",
+      "nah",
+      "bzd",
+      "qug"
+    ],
+    "caps": {
+      "spa": 200,
+      "por": 200,
+      "swh": 200,
+      "yor": 200,
+      "zul": 200,
+      "amh": 200,
+      "kek": 200,
+      "grn": 200,
+      "nah": 200,
+      "bzd": 200,
+      "qug": 200
+    },
+    "pairs_per_sequence": 4,
+    "max_length": 1024,
+    "dev": {
+      "sources": [
+        "church",
+        "americasnlp"
+      ],
+      "pairs": 40
+    },
+    "mode": "lora",
+    "lora": {
+      "r": 64,
+      "alpha": 128,
+      "dropout": 0.05,
+      "targets": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "train": {
+      "optimizer": "adamw",
+      "lr": 0.0002,
+      "weight_decay": 0.0,
+      "warmup_ratio": 0.03,
+      "batch_size": 4,
+      "accumulation": 8,
+      "clip": 1.0,
+      "gradient_checkpointing": true,
+      "log_every": 1,
+      "eval_every": 5,
+      "checkpoint_every": 5
+    }
+  },
+  "git_sha": "ee96650711020da0a4200c443a5285702be3d3d2",
+  "torch": "2.11.0+cu128",
+  "transformers": "5.19.0",
+  "stats": {
+    "languages": {
+      "spa": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "por": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "swh": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "yor": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "zul": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "amh": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "kek": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "grn": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "nah": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "bzd": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      },
+      "qug": {
+        "pairs": 200,
+        "sequences": 50,
+        "dropped_too_long": 0
+      }
+    },
+    "dev": {
+      "spa": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "por": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "swh": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "yor": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "zul": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "amh": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "kek": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "grn": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "nah": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "bzd": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      },
+      "qug": {
+        "pairs": 40,
+        "sequences": 10,
+        "dropped_too_long": 0
+      }
+    },
+    "steps": 18,
+    "last": {
+      "step": 18,
+      "lr": 0.0,
+      "train_loss": 2.352775812149048,
+      "dev_loss": {
+        "spa": 0.6043672659567424,
+        "por": 0.5694764525859387,
+        "swh": 2.3513729143394997,
+        "yor": 2.031014180388944,
+        "zul": 2.316077724266588,
+        "amh": 1.9360698586619458,
+        "kek": 3.323764169538343,
+        "grn": 3.630563346457569,
+        "nah": 3.566026955842972,
+        "bzd": 3.710567979567304,
+        "qug": 3.238513901986574,
+        "mean": 2.4798013408720383
+      }
+    }
+  }
+}

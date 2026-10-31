@@ -1,9 +1,9 @@
 # Cluster test of the evaluation: python -m qlrl.evaluation configs/eval/llama_test.yaml
-# Writes results/eval_v2/test/<model>/{scores,manifest}.json, translation/, perplexity/.
+# Writes results/eval/test/<model>/{scores,manifest}.json, translation/, perplexity/.
 model: meta-llama/Llama-3.1-8B
 dtype: bfloat16
 data: data/processed
-output: results/eval_v2/test
+output: results/eval/test
 
 languages: [yor, amh, nah]
 test_sets:                 # the one test set of each language

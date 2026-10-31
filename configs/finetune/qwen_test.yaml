@@ -1,0 +1,43 @@
+# Cluster test of the Qwen LoRA fine-tune: sbatch slurm/test_finetune.sh configs/finetune/qwen_test.yaml
+# qwen_lora.yaml with 200 pairs per language: the real model for ~17 steps, to check memory,
+# speed and that the dev loss drops. Writes models/test/<name>/ and results/test/finetune/<name>/.
+# Settings marked "proposed" are starting points from the papers, not decisions.
+model: Qwen/Qwen2.5-7B
+dtype: bfloat16
+data: data/processed
+output: models/test
+results: results/test/finetune
+name: Qwen2.5-7B-lora-test
+seed: 0
+
+# French is not trained: it is the forgetting control, with English.
+languages: [spa, por, swh, yor, zul, amh, kek, grn, nah, bzd, qug]
+caps: {spa: 200, por: 200, swh: 200, yor: 200, zul: 200, amh: 200, kek: 200, grn: 200,
+       nah: 200, bzd: 200, qug: 200}
+pairs_per_sequence: 4      # 3 examples + the graded pair, as in the evaluation prompt
+max_length: 1024           # tokens; longer rows are dropped (proposed: check the counts)
+
+# Dev loss: church dev, and AmericasNLP where there is no church (nah, bzd).
+dev:
+  sources: [church, americasnlp]
+  pairs: 40                # per language, a seeded random subset: 10 sequences
+
+mode: lora
+lora:
+  r: 64                    # proposed (QLoRA: r matters little on all layers)
+  alpha: 128               # proposed: alpha = 2r (Biderman 2024)
+  dropout: 0.05
+  targets: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  optimizer: adamw
+  lr: 2.0e-4               # proposed (QLoRA 7B/13B; Biderman best 2e-4 to 5e-4)
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  batch_size: 4            # 8 reached 72.6 of 80 GB on an A100 (test job)
+  accumulation: 8          # 32 rows = 128 pairs per optimizer step
+  clip: 1.0
+  gradient_checkpointing: true
+  log_every: 1
+  eval_every: 5            # steps between dev losses (and at step 0 and the end)
+  checkpoint_every: 5      # steps between checkpoints; a rerun resumes from the last

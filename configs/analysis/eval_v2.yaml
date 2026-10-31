@@ -1,7 +1,7 @@
-# Analysis of the finished runs in results/eval_v2:
+# Analysis of the finished runs in results/eval:
 #   python -m qlrl.analysis configs/analysis/eval_v2.yaml
 # Writes <output>/summary.md, damage.csv, translation.csv. Unfinished runs are skipped.
-results: results/eval_v2
+results: results/eval
 output: results/analysis/eval_v2
 africomet_floor: results/analysis/africomet_floor.json   # computed once if missing (GPU)
 

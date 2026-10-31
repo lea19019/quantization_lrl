@@ -1,10 +1,10 @@
 # Cluster test of the evaluation on Qwen 2.5 7B (slurm/test_qwen.sh):
 #   python -m qlrl.evaluation configs/eval/qwen_test.yaml
-# Writes results/eval_v2/test/<model>/{scores,manifest}.json, translation/, perplexity/.
+# Writes results/eval/test/<model>/{scores,manifest}.json, translation/, perplexity/.
 model: Qwen/Qwen2.5-7B
 dtype: bfloat16
 data: data/processed
-output: results/eval_v2/test
+output: results/eval/test
 
 languages: [yor, amh, nah]
 test_sets:                 # the one test set of each language

@@ -1,6 +1,6 @@
 # Llama 3.1 8B at 3 bits, one Slurm array task per model (11):
 #   sbatch --array=0-10 slurm/run.sh qlrl.evaluation configs/eval/llama_3bit.yaml
-# Writes results/eval_v2/<model folder name>/{scores,manifest}.json, translation/, perplexity/.
+# Writes results/eval/<model folder name>/{scores,manifest}.json, translation/, perplexity/.
 model:                     # the array index picks one
   - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-rtn-3bit
   - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-gptq-3bit-seed0
@@ -15,7 +15,7 @@ model:                     # the array index picks one
   - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-awq-3bit-seed4
 dtype: bfloat16
 data: data/processed
-output: results/eval_v2
+output: results/eval
 
 languages: [fra, spa, por, yor, zul, swh, amh, kek, grn, nah, bzd, qug]
 test_sets:                 # the one test set of each language
