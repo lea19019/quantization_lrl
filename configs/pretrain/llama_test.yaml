@@ -1,0 +1,53 @@
+# Test of the pretraining loop: llama_576m.yaml with a tiny model on the --test token files.
+#   python -m qlrl.pretrain configs/pretrain/llama_test.yaml                         CPU
+#   sbatch --gpus=2 slurm/pretrain.sh configs/pretrain/llama_test.yaml               2 GPUs
+# Needs: python -m qlrl.data.tokenizer configs/data/tokenizer.yaml --test, then
+#        python -m qlrl.data.tokens configs/data/tokenizer.yaml <index> --test for some corpora.
+name: llama-test
+seed: 0
+tokenizer: models/tokenizer-64k_test
+tokens: /home/vacl2/nobackup/archive/pretrain_tokens_test
+checkpoints: /home/vacl2/nobackup/archive/pretrain_test
+output: models/test
+results: results/test/pretrain
+
+model:
+  vocab_size: 2048         # the --test tokenizer
+  hidden_size: 64
+  intermediate_size: 128
+  num_hidden_layers: 2
+  num_attention_heads: 2
+  num_key_value_heads: 1
+  head_dim: 32
+  max_position_embeddings: 128
+  rope_theta: 10000.0
+  rms_norm_eps: 1.0e-5
+  initializer_range: 0.02
+  tie_word_embeddings: false
+  attention_bias: false
+  mlp_bias: false
+  bos_token_id: 0
+  eos_token_id: 1
+  pad_token_id: 2
+
+train:
+  seq_len: 128
+  batch_tokens: 2048       # 16 windows per step
+  micro_batch: 4           # 4 micro-batches on 1 process, 2 on 2 GPUs
+  lr: 2.0e-3
+  betas: [0.9, 0.95]
+  eps: 1.0e-8
+  weight_decay: 0.1
+  warmup_steps: 5
+  cooldown_fraction: 0.2
+  clip: 1.0
+  autocast: false
+  compile: false
+  hours: 0.15
+  max_steps: null
+  log_every: 20
+  eval_every: 200
+  valid_windows: 2
+  save_every: 200
+  resume_every: 100
+  branch_at: [0.5]

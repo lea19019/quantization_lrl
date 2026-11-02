@@ -89,3 +89,19 @@ Background for E3 and for the per-language activation statistics in [../design.m
 - Finds: Spikes reach ~1.5k (LLaMA-2-7B layer 2) and ~6k (70B layer 9) for one token, dominating per-tensor scales. Quantizing only the top-4 max/median-ratio modules raises LLaMA-2-13B PPL 6.84 -> 15.09 and Mistral 8.35 -> 69.45; middle/bottom-4 do nothing. Per-tensor W8A8 on LLaMA-2-13B gives PPL 34.09 / 55.3% avg acc; +QFeM+QFeP gives 5.13 / 71.6%. SmoothQuant alone fails on 13B (PPL 34.87) but works with QFeM (5.12).
 - Use here: Directly relevant to the W8A8/SmoothQuant arm: calibration scales are hostage to first-occurrence spikes on a few tokens, so record per-language max/median token-scale ratios per module and check whether spike-trigger tokens differ by language or script.
 - Note: Per-tensor dynamic activation quantization is the main setting; per-token quantization (as in SmoothQuant's own paper) largely avoids the spike problem (Fig. 7).
+
+### Park 2025. Outlier-Safe Pre-Training for Robust 4-Bit Quantization of Large Language Models
+- File: `papers/Park-2025-Outlier-Safe-Pretraining-4-Bit.pdf`
+- Venue: ACL 2025 (Volume 1: Long Papers), pp. 12582–12600 (ACL Anthology, confirmed by web search); arXiv:2506.19697v1
+- Does: Trains a 1.4B Llama-architecture model with OSP: Muon on all matrices (Adam on embeddings), single-scale RMSNorm (one scalar gain instead of per-channel gains) and a learnable orthogonal projection after the embedding; WSD schedule; ablations at 100B tokens, Adam and OSP to 1T. Measures excess kurtosis of activations; RTN, GPTQ, QuaRot, SpinQuant at W4A8 to W4A4.
+- Finds: Excess kurtosis at 100B tokens: Adam 1818.56, Muon 1575.12, Muon+SSNorm 66.69, full OSP 0.04; only all three together keep it near zero. W4A8 average / WikiText-2 PPL: Adam 39.7 / 21.6, OSP 40.6 / 12.2 (BF16 41.5 / 11.4 and 41.4 / 11.2). At 1T, W4 GPTQ PPL Adam 3723.46 vs OSP 14.29. Muon at 97.9% of Adam's throughput. Attention sinks remain without massive activations.
+- Use here: Causal evidence that outliers come from optimizer and normalization choices; the from-scratch model keeps AdamW and per-channel RMSNorm so it develops them as Llama and Qwen do. An OSP twin is a possible later control for E5. Its kurtosis is over all activations, not He 2024's per-neuron version; say which one is used.
+- Note: One size, one seed, English-centric data; headline 4-bit numbers also quantize activations. Appendix A.1 lists LR 5e-3 for Adam and 5e-4 for Muon, possibly swapped.
+
+### Qiu 2025. Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free
+- File: `papers/Qiu-2025-Gated-Attention-LLMs.pdf`
+- Venue: NeurIPS 2025, oral (proceedings.neurips.cc, confirmed by web search); arXiv:2505.06708v1
+- Does: Over 30 gating variants in softmax attention, Y' = Y ⊙ σ(XW_θ), on a 15B MoE (400B tokens) and 1.7B dense models (400B–3.5T tokens); first-token attention share and maximum hidden activation per layer.
+- Finds: Head-specific sigmoid gate after SDPA is best: PPL 6.026 → 5.761, MMLU 58.79 → 60.82. Maximum activation 1053 → 94, first-token attention 0.467 → 0.048 (layer 21: 83% → 4%). Gating only values lowers massive activations but keeps the sink: "massive activations are not a prerequisite for attention sinks". Massive activations start in early-layer FFN outputs (e.g. layer 5). Gated 48-layer models train at LR 8e-3 where baselines diverge.
+- Use here: Why the from-scratch model has no attention gate (it would remove the massive activations under study); a gated twin would separate massive activations (Sun 2024) from outlier features (He 2024) for E5. Early-layer FFNs are where to look.
+- Note: No quantization; statistics from one evaluation set, nothing per language.

@@ -1,0 +1,41 @@
+# Tokenizer and token files of the from-scratch model (docs/project/pretraining_model.md §1).
+#   python -m qlrl.data.tokenizer configs/data/tokenizer.yaml [--test]        trains models/<name>/
+#   sbatch --array=0-245 --gpus=0 --cpus-per-task=8 slurm/run.sh qlrl.data.tokens configs/data/tokenizer.yaml
+#                                                                              one corpus per task
+# Read from <freetext>/<source>/<folder>/{train,valid}.parquet (qlrl/data/freetext.py, monolingual.py).
+freetext: /home/vacl2/nobackup/archive/freetext
+dev_splits: data/processed_pretrain     # valid text of the parallel-only corpora: <lang>/dev.jsonl
+output: models                           # the tokenizer goes to <output>/<name>/
+name: tokenizer-64k
+tokens: /home/vacl2/nobackup/archive/pretrain_tokens   # <source>/<folder>/{train,valid}.bin
+seed: 0
+
+vocab_size: 65536          # Tao 2024 x Ali 2024 (pretraining_model.md §1); ids fit in uint16
+alpha: 0.3                 # language sampling p^alpha for the tokenizer sample only (Conneau 2020)
+sample_chars: 2.0e+9       # characters of sampled text the BPE merges are learned from
+special_tokens: ["<s>", "</s>", "<pad>"]   # BOS opens every document, EOS closes it
+# GPT-4o (o200k) split before BPE. GPT-4's \p{L}+ splits words at combining marks (Devanagari,
+# Tamil, Thai, Khmer, Burmese vowel signs); this one keeps \p{M} inside words (Dagan 2024).
+pattern: |-
+  [^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]*[\p{Ll}\p{Lm}\p{Lo}\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?|[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]+[\p{Ll}\p{Lm}\p{Lo}\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n/]*|\s*[\r\n]+|\s+(?!\S)|\s+
+test: {docs: 200, sample_chars: 2.0e+6, vocab_size: 2048}   # --test: first docs of each corpus
+
+# Language of each free-text folder; parallel/<lang> folders are already named by language.
+# Wikipedias of languages without church data (bel, bam, ckb, eus, fon, hyw, ltz, mal, nso, orm)
+# are their own languages: all the data is used.
+wikipedia: {af: afr, am: amh, ar: arb, ay: ayr, bcl: bcl, be: bel, bg: bul, bi: bis, bm: bam,
+            bn: ben, ca: cat, ceb: ceb, ch: cha, ckb: ckb, cs: ces, da: dan, de: deu, el: ell,
+            en: eng, es: spa, et: est, eu: eus, fa: fas, fi: fin, fj: fij, fon: fon, fr: fra,
+            gn: grn, haw: haw, hi: hin, hif: hif, hr: hrv, ht: hat, hu: hun, hy: hye, hyw: hyw,
+            id: ind, ig: ibo, ilo: ilo, is: isl, it: ita, ja: jpn, ka: kat, kk: kaz, km: khm,
+            kn: kan, ko: kor, lb: ltz, ln: lin, lo: lao, lt: lit, lv: lav, mg: mlg, mi: mri,
+            mk: mkd, ml: mal, mn: mon, ms: msa, mt: mlt, my: mya, nah: nah, ne: nep, nl: nld,
+            "no": nor, nso: nso, nv: nav, ny: nya, om: orm, pag: pag, pam: pam, pap: pap, pl: pol,
+            pt: por, ro: ron, ru: rus, rw: kin, si: sin, sk: slk, sl: slv, sm: smo, sn: sna,
+            sq: sqi, sr: srp, ss: ssw, st: sot, sv: swe, sw: swh, ta: tam, te: tel, th: tha,
+            tl: tgl, tn: tsn, to: ton, tpi: tpi, tr: tur, tw: twi, ty: tah, uk: ukr, ur: urd,
+            vi: vie, war: war, xh: xho, yo: yor, zh_hans: cmn_hans, zh_hant: cmn_hant,
+            zh-yue: yue, zu: zul}
+fineweb: {ayr_Latn: ayr, gug_Latn: grn, kek_Latn: kek, mam_Latn: mam, nah_Latn: nah,
+          quc_Latn: quc, qug_Latn: qug, quh_Latn: quh, quy_Latn: quy, quz_Latn: quz,
+          tzo_Latn: tzo, yua_Latn: yua}

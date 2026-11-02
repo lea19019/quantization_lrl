@@ -97,3 +97,79 @@ E4 sources (fertility, token premium), FLORES-200, and the older machine-transla
 - Finds: 8-bit QAT matches or beats fp32 (base En-De 26.38 vs 26.46; En-Fr 38.41 vs 38.34; better in 21 of 35 experiments; 3.91x compression). Post-training 8-bit is essentially free (26.44 / 38.30) but post-training 6-bit drops to 24.84 vs 26.98 for 6-bit QAT, and 4-bit QAT collapses (18.32 En-De, 1.59 En-Fr). Naive full quantization diverges (nan) because of LayerNorm denominators. Base results averaged over 5 trials (std 0.09–0.51).
 - Use here: Background — calibrates expectations: 8-bit is harmless, 6-bit PTQ already hurts, 4-bit needs more than uniform grids; the LayerNorm/softmax fragility is the same activation-outlier problem SmoothQuant targets.
 - Note: High-resource pairs only; big-model rows are single runs; the 4-bit collapse is under QAT, not PTQ, so it is a lower bound on PTQ difficulty.
+
+## Tokenizer of the from-scratch model
+
+Sources for the phase-2 tokenizer ([../project/pretraining_model.md](../project/pretraining_model.md)).
+
+### Tao 2024. Scaling Laws with Vocabulary: Larger Models Deserve Larger Vocabularies
+- File: `papers/Tao-2024-Scaling-Laws-With-Vocabulary.pdf`
+- Venue: NeurIPS 2024; arXiv:2407.13623
+- Does: Decoders of 33M–3B parameters on up to 500B characters of English SlimPajama, BPE vocabularies 4K–96K; data measured in characters; three methods predict the compute-optimal vocabulary.
+- Finds: Vocabulary parameters should grow more slowly than the rest (N_v = 0.20·C^0.42). Predicted optimum 39K–43K for 3B non-vocabulary parameters, 62K–67K for 7B; Llama2-70B "should have been at least 216K". With 302M non-vocabulary parameters the best vocabulary is 16K, 10K when data is short, 24K with excess data. "The risk of under-fitting for rare tokens increases with larger vocabulary sizes".
+- Use here: At our size (about 0.4B non-vocabulary) the English optimum is 10K–24K; 64k trades English optimality for 126 languages (Ali 2024), and rare-token under-fitting is the cost to check (Land 2024; E1, E4).
+- Note: English only; multilingual left to future work; no quantization.
+
+### Ali 2024. Tokenizer Choice For LLM Training: Negligible or Crucial?
+- File: `papers/Ali-2024-Tokenizer-Choice-LLM-Training.pdf`
+- Venue: Findings of NAACL 2024 (confirmed by web search); arXiv:2310.08754
+- Does: 24 tokenizers (HF and SentencePiece BPE, SentencePiece Unigram; 33k–100k; English or en/de/fr/it/es), a 2.6B decoder on 52.6B tokens for each; 41 zero-shot tasks, fertility, parity.
+- Finds: Best English BPE-SP-33 (50.81), best multilingual BPE-SP-100 (41.44); multilingual needs vocabularies "up to three times larger"; an English tokenizer on multilingual data costs up to 68% more training; HF and SentencePiece BPE share only 0.61–0.77 of their vocabularies; fertility is "a necessary criterion but not … a sufficient one".
+- Use here: A shared vocabulary for many languages must be well above 33k; the implementation is part of the experiment, so the library is pinned (E4).
+- Note: Five European Latin-script languages; one seed; no quantization.
+
+### Chung 2023. UniMax: Fairer and More Effective Language Sampling for Large-Scale Multilingual Pretraining
+- File: `papers/Chung-2023-UniMax-Language-Sampling.pdf`
+- Venue: ICLR 2023; arXiv:2304.09151
+- Does: Temperature sampling q_l ∝ p_l^(1/τ) (τ = 1, 3.33) against UniMax (equal character budget, capped at N epochs) for mT5-style models 1.2B–13B on mC4 (107 languages); one SentencePiece vocabulary (256k, byte fallback) per sampling distribution.
+- Finds: English is over 92,000 times Yoruba; τ = 3.33 repeats the smallest languages over 100 times and Yoruba overfits at XXL; under τ = 1 Yoruba loss stays far above English. Higher τ moves vocabulary from Latin script (67.0% to 54.0% of tokens).
+- Use here: The tokenizer's sampling decides how many vocabulary rows each script gets (E4); natural-mix model data avoids the repetition and overfitting of upsampling, at the price of under-fitted small languages (E1). Sizes in characters.
+- Note: Encoder-decoders; only Yoruba plotted among small languages; no quantization.
+
+### Conneau 2020. Unsupervised Cross-lingual Representation Learning at Scale
+- File: `papers/Conneau-2020-XLM-R-Crosslingual-Representation-At-Scale.pdf`
+- Venue: ACL 2020, pp. 8440–8451; arXiv:1911.02116
+- Does: XLM-R, a masked LM on 2.5 TB CommonCrawl in 100 languages; one SentencePiece unigram (250K) on raw text; languages sampled with alpha = 0.3. XLM-R is 550M (24 layers, 1024 wide).
+- Finds: XNLI 80.9% (+14.6 over mBERT); higher alpha helps high-resource and hurts low-resource languages, "we found 0.3 to be an optimal value", "a similar trend for the construction of the subword vocab". 32K to 256K vocabulary adds 2.8% XNLI at fixed size.
+- Use here: The source of alpha = 0.3 for the tokenizer sample (E4). A model our size spent about 256M parameters on embeddings; 64k keeps them to about a third.
+- Note: Encoder MLM; no quantization.
+
+### Land 2024. Fishing for Magikarp: Automatically Detecting Under-trained Tokens in Large Language Models
+- File: `papers/Land-2024-Fishing-For-Magikarp-Undertrained-Tokens.pdf`
+- Venue: EMNLP 2024, pp. 11631–11646, Outstanding Paper (confirmed by web search); arXiv:2405.05417
+- Does: Finds vocabulary tokens nearly absent from training: tokenizer analysis (partial UTF-8, unreachable tokens), weight indicators (input-embedding norm for untied models), then verification by repetition prompts; many open models.
+- Finds: Indicators track training counts "across ten orders of magnitude"; typically 0.1–1% of the vocabulary is severely under-trained (Llama3 8B 556 confirmed). Main causes besides size: tokenizer/model data mismatch and reused tokenizers. Under-trained Llama2 tokens are "mostly relating to long non-English words". Recommends identical pre-processing for tokenizer, model and inference, and tokenizer data representative of model data.
+- Use here: The under-trained-token check after training: input-embedding norm per row (untied), aggregated by the language that uses each token (E1, E4). The alpha = 0.3 tokenizer with natural-mix model data is a controlled version of the mismatch it warns about.
+- Note: BPE only; no per-language breakdown; no quantization.
+
+### Dagan 2024. Getting the most out of your tokenizer for pre-training and domain adaptation
+- File: `papers/Dagan-2024-Getting-Most-Out-Of-Your-Tokenizer.pdf`
+- Venue: ICML 2024, PMLR 235 (confirmed by web search); arXiv:2402.01035
+- Does: Effect of tokenizer training mix, pre-tokenization regex (GPT-2, GPT-4, Punct, none) and vocabulary size (10k–256k) on compression; 1.5B and 7B code models.
+- Finds: Raising the multilingual share 10% to 50% improves multilingual compression by only about 5%; gains shrink with vocabulary size (GPT-4 regex, multilingual NSL 1.13/1.01/0.98/0.94 at 32k/64k/80k/100k); vocabulary size has no significant effect on HumanEval (20.5–20.8%); no pre-tokenization compresses better but performs worse. Recommends the GPT-4 regex.
+- Use here: The GPT-4-style regex, fixed and recorded; alpha changes small-language compression moderately, worth measuring (E4).
+- Note: Code domain; multilingual is one averaged category.
+
+### Arnett 2024. A Bit of a Problem: Measurement Disparities in Dataset Sizes Across Languages
+- File: `papers/Arnett-2024-Bit-Of-A-Problem-Byte-Premium.pdf`
+- Venue: SIGUL 2024 @ LREC-COLING, pp. 1–9 (ACL Anthology 2024.sigul-1.1, confirmed by web search); arXiv:2403.00686
+- Does: Defines the byte premium (UTF-8 bytes for content-matched text relative to English) for 1155 languages from NLLB, FLORES, the Bible and UDHR.
+- Finds: Premiums agree across sources (r > 0.90). NLLB: Burmese 5.10, Georgian 4.34, Khmer 3.91, Amharic 1.72, Yoruba 1.38, French 1.17, Zulu 1.16, Swahili 1.07. "1GB of Georgian" is about 230MB of English-equivalent content.
+- Use here: Language sizes and sampling weights in characters or tokens, never bytes, or non-Latin languages look larger than they are (E1, E4).
+- Note: Workshop paper; describes UTF-8, not a trained tokenizer.
+
+### Sennrich 2016. Neural Machine Translation of Rare Words with Subword Units
+- File: `papers/Sennrich-2016-BPE-Subword-Units.pdf`
+- Venue: ACL 2016, pp. 1715–1725; arXiv:1508.07909
+- Does: BPE for word segmentation: start from characters, repeatedly merge the most frequent adjacent pair, never across words; WMT15 En→De and En→Ru.
+- Finds: 59,500 merges: 0 unknown words on newstest2013 vs 1,079; up to 1.1 and 1.3 BLEU over a back-off dictionary. A symbol whose occurrences were all merged can go unused ("safeguar").
+- Use here: The algorithm; merges follow frequency, so languages with little tokenizer text get few merges (E4), the reason for the alpha sample. Byte-level here (256-byte alphabet), so nothing is unknown.
+- Note: Two high-resource pairs; character alphabet.
+
+### Kudo 2018. SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing
+- File: `papers/Kudo-2018-SentencePiece.pdf`
+- Venue: EMNLP 2018 System Demonstrations, pp. 66–71; arXiv:1808.06226
+- Does: BPE and unigram training on raw sentences without pre-tokenization; whitespace as "▁", lossless; NFKC by default.
+- Finds: 8k SentencePiece beats an 80k word model on KFTT ja↔en (29.55 vs 28.24, 21.62 vs 20.06 BLEU).
+- Use here: The alternative design (characters plus byte fallback) not chosen; its point that normalization must be identical for tokenizer, training and evaluation holds for ours (NFC).
+- Note: Demo paper, one language pair.

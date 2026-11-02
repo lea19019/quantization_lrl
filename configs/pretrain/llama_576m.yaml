@@ -1,0 +1,52 @@
+# The from-scratch model (docs/project/pretraining_model.md): one pass over every token file.
+#   sbatch slurm/pretrain.sh configs/pretrain/llama_576m.yaml     (repeat with --dependency=singleton)
+# Settings marked "proposed" are starting points from the papers, not measured here.
+name: llama-576m
+seed: 0                    # model init and the order of the windows
+tokenizer: models/tokenizer-64k
+tokens: /home/vacl2/nobackup/archive/pretrain_tokens
+checkpoints: /home/vacl2/nobackup/archive/pretrain     # <name>/step-<n>/, resume.pt, state-<n>.pt
+output: models                                         # final model: models/<name>/
+results: results/pretrain                              # <name>/history.jsonl, manifest.json
+
+# Hugging Face LlamaConfig: 575.7M parameters, 424.7M outside the two embedding matrices.
+model:
+  vocab_size: 65536
+  hidden_size: 1152
+  intermediate_size: 3072  # SwiGLU, 8/3 x hidden (Shazeer 2020)
+  num_hidden_layers: 30    # deep and thin below 1B (MobileLLM: optimum near 30 layers)
+  num_attention_heads: 9   # head_dim 128 as Llama 3.1 and Qwen 2.5
+  num_key_value_heads: 3   # grouped-query attention, 3 query heads per key/value head
+  head_dim: 128
+  max_position_embeddings: 2048
+  rope_theta: 10000.0
+  rms_norm_eps: 1.0e-5
+  initializer_range: 0.02
+  tie_word_embeddings: false   # embeddings and lm_head stay separate modules for the per-module map
+  attention_bias: false
+  mlp_bias: false
+  bos_token_id: 0          # <s>, </s>, <pad> are the tokenizer's first three ids
+  eos_token_id: 1
+  pad_token_id: 2
+
+train:
+  seq_len: 2048
+  batch_tokens: 524288     # tokens per optimizer step (256 windows); proposed
+  micro_batch: 8           # windows per GPU per forward; measure memory in the first job
+  lr: 2.0e-3               # peak; proposed (MobileLLM 600M 2e-3, SmolLM2 360M 3e-3)
+  betas: [0.9, 0.95]
+  eps: 1.0e-8
+  weight_decay: 0.1
+  warmup_steps: 2000       # proposed (SmolLM2)
+  cooldown_fraction: 0.2   # (1 - sqrt) decay over the last 20% of steps (Hägele 2024)
+  clip: 1.0
+  autocast: true           # bf16 matmuls, fp32 weights and optimizer
+  compile: true
+  hours: 23.0              # a job stops and saves after this; the qos allows 24 h
+  max_steps: null          # null: the whole pass
+  log_every: 10
+  eval_every: 1000         # steps between validation losses (and at 0 and the end)
+  valid_windows: 16        # per language: up to 16 x 2049 validation tokens
+  save_every: 500          # steps between bf16 weights (262M tokens): the learning curve
+  resume_every: 250        # steps between resume states (overwritten)
+  branch_at: [0.25, 0.5, 0.75]   # fractions of the run whose full state is kept, for cooldowns

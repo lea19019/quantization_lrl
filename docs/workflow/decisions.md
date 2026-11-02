@@ -91,4 +91,13 @@ lives in `docs/project/`.
   model: same calibration, seeds, test sets and metrics.
 - 2026-10-22: Schedule: writing the phase-1 results to 2026-10-28; experiments on where
   the damage happens to 2026-11-18; report to 2026-12-02; presentation to 2026-12-10.
-
+- 2026-10-30: From-scratch model trained on all the pretraining data, one pass, natural
+  shares, no upsampling (supersedes the 2026-09-10 GPT-2 arm). Languages at the floor are
+  reported as such.
+- 2026-10-30: Its tokenizer: byte-level BPE, 65,536 tokens, GPT-4o split, NFC, learned
+  from 2G characters sampled with p^0.3 per language.
+- 2026-10-30: Its architecture: Llama (pre-RMSNorm, SwiGLU, RoPE, GQA 9/3, no biases,
+  untied), 30 layers × 1152, 576M parameters; no outlier-suppressing changes (Muon,
+  attention gates, single-scale RMSNorm, QK-norm). AdamW, warmup-stable-decay with a 20%
+  (1 − sqrt) cooldown; bf16 weights every 500 steps; full states at 25/50/75% for cooldown
+  branches. Details in project/pretraining_model.md.

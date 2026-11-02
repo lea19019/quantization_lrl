@@ -1,7 +1,8 @@
 # Papers: index of everything in `papers/`
 
 80 PDFs: 77 read (first 12 pages, more where a table was needed) on 2026-09-09, three
-method-background papers added and read on 2026-09-13. One
+method-background papers added and read on 2026-09-13; 24 tokenizer and architecture papers
+for the from-scratch model added and read on 2026-10-30. One
 line per paper here; full entries (venue as printed, what it does, what it finds, how
 this project uses it, caveats) are in the theme files in this folder. Codes E1–E7 refer to the explanations in
 [../concepts/explanations.md](../concepts/explanations.md). Venues
@@ -90,6 +91,15 @@ The nine the proposal rests on, in order:
 | [Koishekenov 2023](../../papers/Koishekenov-2023-NLLB200-Language-Specific-Expert-Pruning.pdf) | preprint | Per-language expert pruning of NLLB-200; spBLEU and chrF++ diverge after compression |
 | [Aji 2020](../../papers/Aji-2020-Compressing-NMT-4-Bit-Precision.pdf) | WNGT 2020 | 4-bit log quantization of NMT costs about 1 BLEU on En-De without retraining |
 | [Prato 2020](../../papers/Prato-2020-Fully-Quantized-Transformer-MT.pdf) | Findings EMNLP 2020 | Fully quantized Transformer: 8-bit free, 6-bit PTQ hurts, 4-bit collapses |
+| [Tao 2024](../../papers/Tao-2024-Scaling-Laws-With-Vocabulary.pdf) | NeurIPS 2024 | Vocabulary scaling law: optimum grows slower than the model; ~0.3B non-vocab params → 10K–24K (English) |
+| [Ali 2024](../../papers/Ali-2024-Tokenizer-Choice-LLM-Training.pdf) | Findings NAACL 2024 | 24 tokenizers × 2.6B models: multilingual needs ~3× English vocab; fertility not predictive |
+| [Chung 2023](../../papers/Chung-2023-UniMax-Language-Sampling.pdf) | ICLR 2023 | UniMax vs temperature sampling: upsampling overfits tiny languages; sampling sets vocabulary per script |
+| [Conneau 2020](../../papers/Conneau-2020-XLM-R-Crosslingual-Representation-At-Scale.pdf) | ACL 2020 | XLM-R: source of alpha = 0.3 for data and vocabulary; 550M model, 250K vocab |
+| [Land 2024](../../papers/Land-2024-Fishing-For-Magikarp-Undertrained-Tokens.pdf) | EMNLP 2024 | Embedding-norm indicators find under-trained tokens (0.1–1% of vocab); worst with tokenizer/model data mismatch |
+| [Dagan 2024](../../papers/Dagan-2024-Getting-Most-Out-Of-Your-Tokenizer.pdf) | ICML 2024 | Tokenizer data mix, regex, vocab size vs compression; use the GPT-4 regex |
+| [Arnett 2024](../../papers/Arnett-2024-Bit-Of-A-Problem-Byte-Premium.pdf) | SIGUL 2024 | Byte premium per language (Burmese 5.10, Swahili 1.07): measure data in content, not bytes |
+| [Sennrich 2016](../../papers/Sennrich-2016-BPE-Subword-Units.pdf) | ACL 2016 | Original BPE: frequency merges, open vocabulary, unused intermediate symbols |
+| [Kudo 2018](../../papers/Kudo-2018-SentencePiece.pdf) | EMNLP 2018 Demos | SentencePiece: raw-text BPE/unigram, lossless whitespace, NFKC default |
 
 ## Methods ([papers/methods.md](methods.md))
 
@@ -125,6 +135,26 @@ The nine the proposal rests on, in order:
 | [Pierro 2024](../../papers/Pierro-2024-Mamba-PTQ-Outlier-Channels.pdf) | ICML 2024 workshop | Mamba has outlier channels too |
 | [Puccetti 2022](../../papers/Puccetti-2022-Outlier-Dimensions-Driven-by-Frequency.pdf) | Findings EMNLP 2022 | Outlier-dimension magnitude correlates with pretraining token frequency |
 | [Yang 2024](../../papers/Yang-2024-Activation-Spikes-GLU-Variants.pdf) | preprint | Activation spikes at down-proj input on first-occurrence tokens hijack per-tensor scales |
+| [Park 2025](../../papers/Park-2025-Outlier-Safe-Pretraining-4-Bit.pdf) | ACL 2025 | Muon + single-scale RMSNorm + embedding projection: kurtosis 1818 → 0.04 at 1.4B; 4-bit far better |
+| [Qiu 2025](../../papers/Qiu-2025-Gated-Attention-LLMs.pdf) | NeurIPS 2025 | Sigmoid gate after attention: max activation 1053 → 94, first-token attention 0.47 → 0.05 |
+
+## Architecture and training recipe ([papers/architecture.md](architecture.md))
+
+| Paper | Venue | One line |
+|---|---|---|
+| [Grattafiori 2024](../../papers/Grattafiori-2024-Llama-3-Herd-Of-Models.pdf) | arXiv tech report | Llama 3: 8B is 32 layers, 4096 wide, GQA 32/8, SwiGLU, RoPE 500k, 128K vocab; FP8 notes |
+| [Qwen Team 2025](../../papers/Qwen-2025-Qwen2.5-Technical-Report.pdf) | arXiv tech report | Qwen2.5: GQA, SwiGLU, RoPE, QKV bias, pre-RMSNorm; 7B untied, ≤3B tied |
+| [Zhang 2019](../../papers/Zhang-2019-RMSNorm.pdf) | NeurIPS 2019 | RMSNorm: rescaling without mean-centring; matches LayerNorm, faster |
+| [Shazeer 2020](../../papers/Shazeer-2020-GLU-Variants-Improve-Transformer.pdf) | preprint | SwiGLU and other bias-free gated FFNs beat ReLU at equal parameters |
+| [Su 2021](../../papers/Su-2021-RoFormer-RoPE.pdf) | arXiv | RoPE: rotate q/k pairs by position; dot product depends on the offset only |
+| [Ainslie 2023](../../papers/Ainslie-2023-GQA-Grouped-Query-Attention.pdf) | EMNLP 2023 | Grouped-query attention: near multi-head quality at near multi-query speed |
+| [Xiong 2020](../../papers/Xiong-2020-Layer-Normalization-Pre-LN.pdf) | ICML 2020 | Pre-LN trains without warmup; the residual stream's norm grows with depth |
+| [Press & Wolf 2017](../../papers/Press-Wolf-2017-Tying-Word-Embeddings.pdf) | EACL 2017 | Tying input and output embeddings; untied input rows of rare words are rarely updated |
+| [Liu 2024](../../papers/Liu-2024-MobileLLM-Sub-Billion.pdf) | ICML 2024 | Sub-1B models: deep and thin (~30 layers), GQA; 600M config close to ours |
+| [Allal 2025](../../papers/Allal-2025-SmolLM2.pdf) | preprint | SmolLM2: Llama-style small models with AdamW and WSD; gains concentrate in the decay |
+| [Team OLMo 2025](../../papers/OLMo-2025-2-OLMo-2-Furious.pdf) | arXiv (COLM 2025 per comment) | OLMo 2 stability set: reordered norm + QK-norm, z-loss, ε 1e-8, anneal + souping |
+| [Hägele 2024](../../papers/Hagele-2024-Scaling-Laws-Beyond-Fixed-Durations-WSD.pdf) | NeurIPS 2024 | Constant LR + 20% (1-sqrt) cooldown matches cosine; cooldowns branch from one run |
+| [Hoffmann 2022](../../papers/Hoffmann-2022-Chinchilla-Compute-Optimal.pdf) | NeurIPS 2022 | Chinchilla: ~20 tokens per parameter; cosine length must match the run |
 
 ## Pruning ([papers/pruning.md](pruning.md))
 
@@ -144,5 +174,4 @@ The nine the proposal rests on, in order:
 
 ## Not in the folder
 
-Llama 3 report (arXiv:2407.21783), WikiText (Merity 2017), the Gemma 4 model card, Aya
-model cards, Qwen 2.5 report. Cite from the web; add the PDFs if they get read closely.
+WikiText (Merity 2017), the Gemma 4 model card, Aya model cards. Cite from the web; add the PDFs if they get read closely.

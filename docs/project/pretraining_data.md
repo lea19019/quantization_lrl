@@ -1,6 +1,7 @@
 # Pretraining data for the from-scratch model
 
-What text the from-scratch decoder (phase 2, about 550M parameters) is trained on, where it
+What text the from-scratch decoder (phase 2, 576M parameters; tokenizer, architecture and training in
+[pretraining_model.md](pretraining_model.md)) is trained on, where it
 comes from, how it is cleaned and how it is split. Parallel-data rules shared with phase 1
 are in [data.md](data.md); the church corpus layout is in [church_data.md](church_data.md).
 
@@ -197,6 +198,4 @@ per row, with no document context. Its validation text is the dev splits.
 
 ## 6. Still to decide
 
-- Shares per language (how much Wikipedia per language, upsampling of small languages) and
-  the total token budget.
 - Test set of each new language; the Bible overlap between church and other sources.

@@ -10,7 +10,7 @@ settled with the advisor.
 | Model | Role | Why |
 |---|---|---|
 | Llama 3.1 8B | **core** | Published numbers to check against (Marie & Fujita 2025, Chimoto 2026, Chang 2025); none of yo/zu/sw/am in its official list, so the fine-tuning intervention is meaningful |
-| GPT-2 small (124M), trained by us | **core** | The only setting where data per language is set by us; gives the learning curve of damage |
+| 576M Llama-architecture decoder, trained by us ([pretraining_model.md](pretraining_model.md)) | **core** | The only setting where the data per language is known exactly; gives the learning curve of damage |
 | Qwen 2.5 7B | add-on | Replicates the language ordering on a second family |
 | Gemma 4 26B A4B and 31B | add-on | MoE vs dense on the same data and tokenizer; official QAT checkpoints |
 | Llama 3.1 8B fine-tuned on lab text | core, phase 3; trained 2026-10-21 (`models/Llama-3.1-8B-lora`) | The H1 intervention |
@@ -26,11 +26,11 @@ Kichwa and Bribri ([data.md](data.md)).
 Coverage table (fill from model cards before phase 0; this is the H1 prediction written
 down: largest damage in the ✗ cells):
 
-| | Llama 3.1 8B | Qwen 2.5 7B | Gemma 4 | GPT-2 (ours) |
+| | Llama 3.1 8B | Qwen 2.5 7B | Gemma 4 | 576M (ours) |
 |---|---|---|---|---|
-| English, French | ✓ | ✓ | ✓ | set by us |
-| Swahili | ✗ | ? | ✓ | set by us |
-| Yoruba, Zulu, Amharic | ✗ | ? | ? | set by us |
+| English, French | ✓ | ✓ | ✓ | known |
+| Swahili | ✗ | ? | ✓ | known |
+| Yoruba, Zulu, Amharic | ✗ | ? | ? | known |
 
 ## 3. Quantization methods
 
@@ -70,16 +70,14 @@ yo/zu/sw/am is above the floor.
   outlier-channel activations, Zhong's language dimensions; rogue dimensions
   standardised first (Timkey 2021). Report the per-language delta.
 
-### Phase 2. GPT-2 from scratch (started early, trained once)
+### Phase 2. A model trained from scratch (trained once)
 
-- 124M parameters, *proposed* 5B tokens, byte-level BPE (32k) trained on the same mix,
-  learning-rate decay at the end, checkpoints every *proposed* 250M tokens. Shares per
-  language set after the corpora are measured ([data.md](data.md)); the same shares are
-  never changed after the run starts.
+- A 576M Llama-architecture decoder on one pass over all the pretraining data, natural
+  shares, checkpoints every 262M tokens: [pretraining_model.md](pretraining_model.md).
 - **H1b, learning curve.** Quantize each checkpoint (RTN and GPTQ, 4 and 3 bits); damage
   per language against tokens seen for that language, and the final checkpoint's damage
   against share. Compare checkpoints at matched points of the schedule; final after decay.
-- **H2 on GPT-2.** The per-module map and internal statistics, to see whether the address
+- **H2 on the from-scratch model.** The per-module map and internal statistics, to see whether the address
   of the damage is the same in a model where the shares are known.
 
 ### Phase 3. Interventions
@@ -113,6 +111,5 @@ look, and lab text prepared. Add-ons wait for the week-9 draft.
 
 ## 6. Open, to settle with the advisor
 
-- GPT-2 training corpora and the share vector (see [data.md](data.md)).
 - The "learning curve" reading of H1: data-scaling curve per language.
-- Hutchinson vector count, checkpoint spacing, and the 5B-token budget.
+- Hutchinson vector count.
