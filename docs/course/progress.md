@@ -23,3 +23,4 @@
 | 2026-10-20 | Evaluated Llama 3.1 8B and Qwen 2.5 7B at full precision and at 4 and 3 bits (RTN; GPTQ and AWQ with 5 calibration seeds); analysis with bootstrap intervals and the AfriCOMET floor. |
 | 2026-10-21 | LoRA fine-tune of Llama 3.1 8B on every project language except French; quantized, evaluated and analysed as the base model. |
 | 2026-10-21 | Phase-1 result: in every model, method and bit width, Yoruba, Zulu, Swahili, Amharic and Guarani lose more than French, Spanish and Portuguese; after fine-tuning the extra loss roughly halves but remains. |
+| 2026-10-30 | From-scratch model: trained the 64k tokenizer on 137 languages, encoded 17.07B train tokens, and ran the 2-GPU test of the 576M Llama training loop. |
