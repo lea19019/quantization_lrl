@@ -5,7 +5,7 @@
 #   mkdir -p slurm/output
 #   sbatch --array=0-4 --time=01:00:00 slurm/run.sh qlrl.quantization configs/quantize/qwen_4bit.yaml
 #   sbatch --array=0-22 slurm/run.sh qlrl.evaluation configs/eval/qwen.yaml
-#   sbatch --time=01:00:00 slurm/run.sh qlrl.analysis configs/analysis/eval_v2.yaml
+#   sbatch --time=01:00:00 slurm/run.sh qlrl.analysis configs/analysis/all.yaml
 #SBATCH --job-name=run
 #SBATCH --nodes=1
 #SBATCH --ntasks=1

@@ -83,7 +83,7 @@ quantization_lrl/
 | `qlrl/data.py` | FLORES loading, calibration windows, language codes |
 | `qlrl/score.py` | per-token measures: `d_gold`, KL, flips, margin, entropy |
 | `qlrl/probe.py` | hooks for residual norms and activation statistics |
-| `qlrl/stats.py` | bootstrap CIs, eta-squared, Spearman |
+| `qlrl/analysis/stats.py` | bootstrap CIs, eta-squared, Spearman |
 | `qlrl/manifest.py` | git sha, config, versions, seed |
 | `qlrl/config.py` | load and validate YAML |
 

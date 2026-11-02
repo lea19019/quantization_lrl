@@ -1,10 +1,12 @@
 '''
-Entry point for the analysis: python -m qlrl.analysis configs/analysis/eval_v2.yaml
+Entry point for the analysis: python -m qlrl.analysis configs/analysis/all.yaml
 
 Compares every finished quantized evaluation run with its full-precision run on the same
-sentences (the math is in qlrl/stats.py). No model is run, except AfriCOMET once for its
-floor when the floor file does not exist yet (needs a GPU). Writes <output>/summary.md,
-one table per model and configuration, and damage.csv and translation.csv.
+sentences (the math is in qlrl/analysis/stats.py), in every evaluation folder of the config. No
+model is run, except AfriCOMET once for its floor when the floor file does not exist yet
+(needs a GPU). Writes <output>/summary.md, one table per model and configuration with the
+test sets of every evaluation folder, and damage.csv and translation.csv; then every
+figure and the report tables (qlrl.analysis.plots).
 '''
 import csv
 import json
@@ -14,8 +16,10 @@ from pathlib import Path
 import numpy as np
 import yaml
 
+from qlrl.analysis.plots import draw_figures
+from qlrl.analysis.stats import DIRECTIONS, compare, floors_of, resample_counts, shuffled
+from qlrl.analysis.tables import write_tables
 from qlrl.eval.scores import afriCOMET_eval
-from qlrl.stats import DIRECTIONS, compare, floors_of, resample_counts, shuffled
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -67,12 +71,14 @@ def comet_floors(path: Path, folder: Path, seed: int) -> dict:
     return floors
 
 
-def analyze_model(model: str, spec: dict, config: dict) -> tuple[list[dict], list[dict]]:
-    """Return (damage rows, translation rows) of every configuration and language."""
-    results, settings = Path(config["results"]), config["bootstrap"]
+def analyze_model(model: str, spec: dict, evaluation: dict,
+                  settings: dict) -> tuple[list[dict], list[dict]]:
+    """Return (damage rows, translation rows) of every configuration and language of one
+    evaluation folder ({ "results", "africomet_floor" })."""
+    results = Path(evaluation["results"])
     folder = results / spec["full"]
     configs = configurations(results, spec)
-    comet = comet_floors(Path(config["africomet_floor"]), folder, settings["seed"])
+    comet = comet_floors(Path(evaluation["africomet_floor"]), folder, settings["seed"])
     evaluated = json.loads((folder / "manifest.json").read_text())["config"]
     test_sets = evaluated["test_sets"]
     damages, drops = [], []
@@ -105,7 +111,7 @@ def table(damages: list[dict], drops: list[dict]) -> list[str]:
              + " | ".join(f"{m} {d}" for m, d in columns) + " |", "|---" * (4 + 4) + "|"]
     for row in damages:
         shown = {(r["metric"], r["direction"]): cell(r) for r in drops
-                 if r["language"] == row["language"]}
+                 if (r["language"], r["test set"]) == (row["language"], row["test set"])}
         gap = (f"{row['gap per byte']:.3f} [{row['gap low per byte']:.3f}, "
                f"{row['gap high per byte']:.3f}]")
         lines.append(f"| {row['language'].upper()} | {row['test set']} | "
@@ -119,24 +125,29 @@ def main() -> None:
     output = Path(config["output"])
     output.mkdir(parents=True, exist_ok=True)
     settings = config["bootstrap"]
-    summary = [f"# Analysis of {config['results']}", "", LEGEND.format(**settings)]
     damages, drops = [], []
-    for model, spec in config["models"].items():
-        if not (Path(config["results"]) / spec["full"] / "scores.json").exists():
-            print(f"{model}: full-precision run not finished, skipped")
-            continue
-        model_damages, model_drops = analyze_model(model, spec, config)
-        damages, drops = damages + model_damages, drops + model_drops
-        for name in dict.fromkeys(row["config"] for row in model_damages):
-            rows = [row for row in model_damages if row["config"] == name]
-            summary += ["", f"## {model}, {name} ({rows[0]['seeds']} seeds)", ""]
-            summary += table(rows, [row for row in model_drops if row["config"] == name])
+    for evaluation in config["evaluations"]:
+        for model, spec in config["models"].items():
+            if not (Path(evaluation["results"]) / spec["full"] / "scores.json").exists():
+                print(f"{evaluation['results']} {model}: full-precision run not finished, skipped")
+                continue
+            model_damages, model_drops = analyze_model(model, spec, evaluation, settings)
+            damages, drops = damages + model_damages, drops + model_drops
+    folders = ", ".join(evaluation["results"] for evaluation in config["evaluations"])
+    summary = [f"# Analysis of {folders}", "", LEGEND.format(**settings)]
+    for model, name in dict.fromkeys((row["model"], row["config"]) for row in damages):
+        rows = [row for row in damages if (row["model"], row["config"]) == (model, name)]
+        shown = [row for row in drops if (row["model"], row["config"]) == (model, name)]
+        summary += ["", f"## {model}, {name} ({rows[0]['seeds']} seeds)", ""]
+        summary += table(rows, shown)
     for name, rows in (("damage", damages), ("translation", drops)):
         with (output / f"{name}.csv").open("w", newline="") as file:
             writer = csv.DictWriter(file, fieldnames=list(rows[0]))
             writer.writeheader()
             writer.writerows(rows)
     (output / "summary.md").write_text("\n".join(summary) + "\n")
+    draw_figures(config["figures"], output)
+    write_tables(config["figures"] | config["tables"], Path(config["tables"]["output"]))
 
 
 LEGEND = """Intervals: {level:.0%} paired percentile bootstrap, {samples} resamples of sentences.

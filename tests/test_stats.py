@@ -2,7 +2,7 @@
 import numpy as np
 import sacrebleu
 
-from qlrl.stats import chrf, damage, drop, resample_counts
+from qlrl.analysis.stats import chrf, damage, drop, resample_counts
 
 HYPOTHESES = ["the cat sat on the mat", "a dog ran", "it is raining today", "hello there"]
 REFERENCES = ["the cat sat on a mat", "the dog runs", "it rains today", "hello"]

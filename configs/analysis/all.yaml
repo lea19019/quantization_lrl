@@ -1,0 +1,113 @@
+# Analysis of every finished run, all evaluation folders in one place:
+#   python -m qlrl.analysis configs/analysis/all.yaml
+# Writes <output>/summary.md, damage.csv, translation.csv (unfinished runs are skipped), then
+# every figure (figures:) and the LaTeX tables of the report (tables:).
+output: results/analysis
+evaluations:                # one folder of runs per test-set group, each with its AfriCOMET floor
+  - results: results/eval   # FLORES+, MayanV, AmericasNLP (and church for qug)
+    africomet_floor: results/analysis/africomet_floor.json          # computed once if missing (GPU)
+  - results: results/eval_church   # the church test split
+    africomet_floor: results/analysis/africomet_floor_church.json
+
+bootstrap:
+  samples: 1000             # resamples of sentences
+  seed: 0                   # also the seed of the shuffled references (the floor)
+  level: 0.95
+  floor_standard_errors: 3  # above floor: full - floor > 3 bootstrap standard errors
+
+models:                     # run folder: <full>-<method>-<bits>bit[-seed<seed>]
+  Llama-3.1-8B:
+    full: Llama-3.1-8B
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}  # null: no seed
+  Qwen2.5-7B:
+    full: Qwen2.5-7B
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}
+  Llama-3.1-8B-lora:        # fine-tuned (configs/finetune/lora.yaml), quantized the same way
+    full: Llama-3.1-8B-lora
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}
+  Qwen2.5-7B-lora:          # fine-tuned the same way as Llama
+    full: Qwen2.5-7B-lora
+    bits: [4, 3]
+    methods: {rtn: [null], gptq: [0, 1, 2, 3, 4], awq: [0, 1, 2, 3, 4]}
+
+figures:
+  output: results/analysis/figures
+  notes: configs/analysis/figure_notes.yaml   # title and how to read each figure
+  finetune:                                   # figure name: training history (qlrl.finetune)
+    finetune_loss: results/finetune/Llama-3.1-8B-lora/history.jsonl
+    finetune_loss_qwen: results/finetune/Qwen2.5-7B-lora/history.jsonl
+  models:                     # name shown; the first one's points carry language labels
+    Llama-3.1-8B: Llama 3.1 8B
+    Llama-3.1-8B-lora: Llama 3.1 8B + LoRA
+    Qwen2.5-7B: Qwen 2.5 7B
+    Qwen2.5-7B-lora: Qwen 2.5 7B + LoRA
+  methods: {rtn: RTN, gptq: GPTQ, awq: AWQ}
+  bits: [4, 3]
+  slope_method: gptq          # the figures that show one method (slope, scores, off-target)
+  seeds: [0, 1, 2, 3, 4]      # its calibration seeds; off-target and tables use their mean
+  evaluations: [results/eval, results/eval_church]   # run folders with scores.json
+  # Row order: language, then its test sets in this order (only those it was evaluated on).
+  languages:
+    fra: French
+    spa: Spanish
+    por: Portuguese
+    yor: Yoruba
+    zul: Zulu
+    swh: Swahili
+    amh: Amharic
+    kek: Kekchi
+    grn: Guarani
+    qug: Quichua (Ecuador)
+    nah: Nahuatl
+    bzd: Bribri
+  test_sets: {flores: FLORES+, mayanv: MayanV, americasnlp: AmericasNLP, church: church}
+  groups:                     # colour of a language; panels of the fine-tuning loss figure
+    High-resource: [fra, spa, por]
+    African: [yor, zul, swh, amh]
+    Latin American: [kek, grn, qug, nah, bzd]
+
+tables:                       # LaTeX that report.tex reads with \input; the rest as figures:
+  output: results/analysis/tables
+  models: {Llama-3.1-8B: Llama, Llama-3.1-8B-lora: LoRA, Qwen2.5-7B: Qwen}
+  methods: {fp: FP, rtn: RTN, gptq: GPTQ, awq: AWQ}
+  higher_is_better: [chrF++, BLEU, AfriCOMET]   # for every other metric, lower is better
+  # Summary tables: languages grouped by resource level; cells are the loss from FP.
+  summary_models: [Llama-3.1-8B, Llama-3.1-8B-lora]   # rows grouped as figures: groups
+  summaries:
+    - title: chrF++ drop (FP minus quantized)
+      metric: chrF++
+      side: null              # a translation metric: English→X and X→English halves
+      decimals: [1, 1]        # FP column, loss columns
+    - title: Increase in sentence NLL per byte, X side (quantized minus FP)
+      metric: NLL per byte
+      side: X                 # the X side of the test set, each sentence on its own
+      decimals: [2, 3]
+  # Full tables (appendix): one per language group and bit width, then a sentence table.
+  # metrics: scores.json key: [column name, decimals].
+  full_tables:
+    - title: African languages
+      languages: [fra, yor, zul, swh, amh]
+      metrics:
+        chrF++: [chrF++, 1]
+        BLEU: [BLEU, 1]
+        AfriCOMET: [AfriCOMET, 1]
+        off-target %: [Off-target \%, 1]
+        reference NLL per word: [Ref. NLL/word, 2]
+        reference NLL per byte: [Ref. NLL/byte, 2]
+        reference perplexity: [Ref. PPL, 2]
+    - title: Latin American languages
+      languages: [spa, por, kek, grn, qug, nah, bzd]
+      metrics:
+        chrF++: [chrF++, 1]
+        BLEU: [BLEU, 1]
+        off-target %: [Off-target \%, 1]
+        reference NLL per word: [Ref. NLL/word, 2]
+        reference NLL per byte: [Ref. NLL/byte, 2]
+        reference perplexity: [Ref. PPL, 2]
+  sentence_metrics:
+    perplexity: [PPL, 1]
+    NLL per word: [NLL/word, 2]
+    NLL per byte: [NLL/byte, 2]

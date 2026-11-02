@@ -1,0 +1,207 @@
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{chrF++ drop (FP minus quantized), 4-bit.}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+ & \multicolumn{4}{c}{Llama} & \multicolumn{4}{c}{LoRA} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Language (test set) & FP & RTN & GPTQ & AWQ & FP & RTN & GPTQ & AWQ \\
+\midrule
+\multicolumn{9}{l}{\textbf{English$\rightarrow$X}} \\ \midrule
+\multicolumn{9}{l}{\textit{High-resource}} \\
+French (FLORES+) & 64.0 & \cellcolor{loss!15}1.5 & \cellcolor{loss!10}1.0 & \cellcolor{loss!10}1.0 & 63.0 & \cellcolor{loss!8}0.9 & \cellcolor{loss!6}0.7 & \cellcolor{loss!6}0.6 \\
+French (church) & 56.9 & \cellcolor{loss!4}0.4 & \cellcolor{loss!7}0.7 & \cellcolor{loss!10}1.0 & 58.6 & \cellcolor{loss!6}0.7 & \cellcolor{loss!6}0.6 & \cellcolor{loss!5}0.5 \\
+Spanish (FLORES+) & 51.9 & \cellcolor{loss!8}0.8 & \cellcolor{loss!6}0.6 & \cellcolor{loss!4}0.4 & 51.5 & \cellcolor{loss!2}0.2 & \cellcolor{loss!1}0.1 & \cellcolor{loss!3}0.3 \\
+Spanish (church) & 64.1 & \cellcolor{loss!13}1.3 & \cellcolor{loss!8}0.8 & \cellcolor{loss!10}1.0 & 70.7 & \cellcolor{loss!2}0.2 & \cellcolor{loss!2}0.2 & \cellcolor{loss!3}0.3 \\
+Portuguese (FLORES+) & 64.3 & \cellcolor{loss!18}1.9 & \cellcolor{loss!9}0.9 & \cellcolor{loss!6}0.6 & 64.3 & \cellcolor{loss!7}0.7 & \cellcolor{loss!8}0.9 & \cellcolor{loss!8}0.8 \\
+Portuguese (church) & 62.5 & \cellcolor{loss!11}1.2 & \cellcolor{loss!7}0.7 & \cellcolor{loss!5}0.5 & 70.8 & \cellcolor{loss!4}0.4 & \cellcolor{loss!5}0.5 & \cellcolor{loss!5}0.6 \\
+\midrule \multicolumn{9}{l}{\textit{African}} \\
+Yoruba (FLORES+) & 13.2 & \cellcolor{loss!15}1.6 & \cellcolor{loss!16}1.7 & \cellcolor{loss!19}2.0 & 25.6 & \cellcolor{loss!9}1.0 & \cellcolor{loss!3}0.4 & \cellcolor{loss!2}0.2 \\
+Yoruba (church) & 15.1 & \cellcolor{loss!33}3.5 & \cellcolor{loss!25}2.6 & \cellcolor{loss!25}2.6 & 60.1 & \cellcolor{loss!13}1.4 & \cellcolor{loss!8}0.9 & \cellcolor{loss!9}0.9 \\
+Zulu (FLORES+) & 15.1 & \cellcolor{loss!7}0.8 & \cellcolor{loss!16}1.7 & \cellcolor{loss!3}0.3 & 33.9 & \cellcolor{loss!18}1.9 & \cellcolor{loss!14}1.5 & \cellcolor{loss!13}1.3 \\
+Zulu (church) & 15.4 & 0.0 & \cellcolor{loss!5}0.5 & -0.5 & 56.5 & \cellcolor{loss!13}1.3 & \cellcolor{loss!8}0.9 & \cellcolor{loss!6}0.6 \\
+Swahili (FLORES+) & 37.4 & \cellcolor{loss!56}5.8 & \cellcolor{loss!45}4.8 & \cellcolor{loss!51}5.3 & 47.2 & \cellcolor{loss!13}1.3 & \cellcolor{loss!10}1.0 & \cellcolor{loss!6}0.6 \\
+Swahili (church) & 37.0 & \cellcolor{loss!60}6.3 & \cellcolor{loss!30}3.1 & \cellcolor{loss!44}4.6 & 66.7 & \cellcolor{loss!12}1.3 & \cellcolor{loss!11}1.1 & \cellcolor{loss!10}1.1 \\
+Amharic (FLORES+) & 6.5 & \cellcolor{loss!26}2.7 & \cellcolor{loss!23}2.4 & \cellcolor{loss!18}1.9 & 19.5 & \cellcolor{loss!20}2.1 & \cellcolor{loss!18}1.9 & \cellcolor{loss!17}1.8 \\
+Amharic (church) & 6.3 & \cellcolor{loss!27}2.8 & \cellcolor{loss!20}2.1 & \cellcolor{loss!14}1.4 & 38.5 & \cellcolor{loss!14}1.5 & \cellcolor{loss!16}1.6 & \cellcolor{loss!12}1.2 \\
+\midrule \multicolumn{9}{l}{\textit{Latin American}} \\
+Kekchi (MayanV) & 7.9 & \cellcolor{loss!21}2.2 & \cellcolor{loss!15}1.6 & \cellcolor{loss!26}2.7 & 18.5 & \cellcolor{loss!6}0.6 & \cellcolor{loss!2}0.2 & \cellcolor{loss!2}0.2 \\
+Kekchi (church) & 13.7 & -0.3 & \cellcolor{loss!5}0.5 & -0.3 & 61.6 & \cellcolor{loss!7}0.8 & \cellcolor{loss!4}0.5 & \cellcolor{loss!4}0.4 \\
+Guarani (FLORES+) & 14.4 & -1.5 & -1.0 & \cellcolor{loss!4}0.4 & 33.5 & \cellcolor{loss!7}0.8 & \cellcolor{loss!7}0.8 & \cellcolor{loss!6}0.7 \\
+Guarani (church) & 11.3 & -1.5 & -0.2 & -0.5 & 51.9 & \cellcolor{loss!8}0.8 & \cellcolor{loss!5}0.5 & \cellcolor{loss!4}0.4 \\
+Quichua (Ecuador) (church) & 13.1 & -2.1 & \cellcolor{loss!4}0.4 & -1.7 & 57.4 & \cellcolor{loss!17}1.8 & \cellcolor{loss!8}0.8 & \cellcolor{loss!8}0.8 \\
+Nahuatl (AmericasNLP) & 13.2 & -0.2 & \cellcolor{loss!7}0.7 & \cellcolor{loss!7}0.7 & 13.4 & \cellcolor{loss!14}1.4 & \cellcolor{loss!5}0.5 & \cellcolor{loss!5}0.5 \\
+Bribri (AmericasNLP) & 7.7 & -0.3 & -0.6 & \cellcolor{loss!4}0.4 & 11.7 & \cellcolor{loss!5}0.5 & \cellcolor{loss!3}0.3 & \cellcolor{loss!7}0.7 \\
+\midrule \multicolumn{9}{l}{\textbf{X$\rightarrow$English}} \\ \midrule
+\multicolumn{9}{l}{\textit{High-resource}} \\
+French (FLORES+) & 64.4 & \cellcolor{loss!7}1.0 & \cellcolor{loss!2}0.3 & \cellcolor{loss!1}0.2 & 65.4 & \cellcolor{loss!3}0.5 & \cellcolor{loss!2}0.3 & \cellcolor{loss!3}0.4 \\
+French (church) & 61.6 & \cellcolor{loss!8}1.1 & \cellcolor{loss!6}0.9 & \cellcolor{loss!3}0.5 & 69.1 & \cellcolor{loss!10}1.5 & \cellcolor{loss!4}0.6 & \cellcolor{loss!5}0.7 \\
+Spanish (FLORES+) & 57.2 & \cellcolor{loss!4}0.6 & \cellcolor{loss!1}0.2 & \cellcolor{loss!0}0.1 & 58.1 & \cellcolor{loss!4}0.6 & \cellcolor{loss!2}0.3 & \cellcolor{loss!2}0.4 \\
+Spanish (church) & 70.0 & \cellcolor{loss!7}1.0 & \cellcolor{loss!5}0.8 & \cellcolor{loss!8}1.2 & 77.0 & \cellcolor{loss!4}0.6 & \cellcolor{loss!2}0.4 & \cellcolor{loss!2}0.3 \\
+Portuguese (FLORES+) & 68.8 & \cellcolor{loss!8}1.2 & \cellcolor{loss!4}0.6 & \cellcolor{loss!3}0.4 & 68.7 & \cellcolor{loss!2}0.3 & \cellcolor{loss!1}0.2 & \cellcolor{loss!4}0.6 \\
+Portuguese (church) & 69.6 & \cellcolor{loss!12}1.8 & \cellcolor{loss!9}1.3 & \cellcolor{loss!8}1.2 & 76.1 & \cellcolor{loss!3}0.5 & \cellcolor{loss!3}0.4 & \cellcolor{loss!2}0.3 \\
+\midrule \multicolumn{9}{l}{\textit{African}} \\
+Yoruba (FLORES+) & 28.3 & \cellcolor{loss!25}3.7 & \cellcolor{loss!10}1.4 & \cellcolor{loss!8}1.2 & 33.3 & \cellcolor{loss!12}1.7 & \cellcolor{loss!7}1.0 & \cellcolor{loss!7}1.0 \\
+Yoruba (church) & 29.9 & \cellcolor{loss!46}6.8 & \cellcolor{loss!25}3.7 & \cellcolor{loss!23}3.3 & 70.1 & \cellcolor{loss!18}2.6 & \cellcolor{loss!7}1.0 & \cellcolor{loss!7}1.0 \\
+Zulu (FLORES+) & 31.1 & \cellcolor{loss!33}4.9 & \cellcolor{loss!11}1.6 & \cellcolor{loss!9}1.3 & 41.6 & \cellcolor{loss!13}1.9 & \cellcolor{loss!6}0.9 & \cellcolor{loss!9}1.3 \\
+Zulu (church) & 34.4 & \cellcolor{loss!36}5.3 & \cellcolor{loss!15}2.2 & \cellcolor{loss!13}2.0 & 68.1 & \cellcolor{loss!15}2.1 & \cellcolor{loss!11}1.6 & \cellcolor{loss!9}1.3 \\
+Swahili (FLORES+) & 53.6 & \cellcolor{loss!60}8.8 & \cellcolor{loss!21}3.1 & \cellcolor{loss!16}2.4 & 54.2 & \cellcolor{loss!19}2.8 & \cellcolor{loss!11}1.6 & \cellcolor{loss!12}1.7 \\
+Swahili (church) & 60.3 & \cellcolor{loss!53}7.7 & \cellcolor{loss!23}3.3 & \cellcolor{loss!23}3.4 & 75.2 & \cellcolor{loss!12}1.7 & \cellcolor{loss!4}0.6 & \cellcolor{loss!3}0.5 \\
+Amharic (FLORES+) & 28.7 & \cellcolor{loss!45}6.5 & \cellcolor{loss!30}4.3 & \cellcolor{loss!19}2.8 & 36.1 & \cellcolor{loss!13}2.0 & \cellcolor{loss!6}0.9 & \cellcolor{loss!7}1.0 \\
+Amharic (church) & 27.4 & \cellcolor{loss!58}8.4 & \cellcolor{loss!38}5.5 & \cellcolor{loss!25}3.6 & 59.1 & \cellcolor{loss!19}2.8 & \cellcolor{loss!10}1.4 & \cellcolor{loss!11}1.6 \\
+\midrule \multicolumn{9}{l}{\textit{Latin American}} \\
+Kekchi (MayanV) & 9.5 & -0.2 & -0.8 & -0.5 & 25.8 & \cellcolor{loss!9}1.4 & \cellcolor{loss!3}0.5 & \cellcolor{loss!3}0.4 \\
+Kekchi (church) & 22.6 & \cellcolor{loss!9}1.3 & \cellcolor{loss!5}0.7 & \cellcolor{loss!4}0.6 & 60.8 & \cellcolor{loss!10}1.4 & \cellcolor{loss!3}0.5 & \cellcolor{loss!6}0.8 \\
+Guarani (FLORES+) & 30.5 & \cellcolor{loss!21}3.1 & \cellcolor{loss!5}0.8 & \cellcolor{loss!6}0.9 & 41.7 & \cellcolor{loss!10}1.4 & \cellcolor{loss!4}0.5 & \cellcolor{loss!5}0.8 \\
+Guarani (church) & 30.6 & \cellcolor{loss!30}4.4 & \cellcolor{loss!6}0.9 & \cellcolor{loss!21}3.1 & 64.8 & \cellcolor{loss!17}2.4 & \cellcolor{loss!7}1.0 & \cellcolor{loss!8}1.2 \\
+Quichua (Ecuador) (church) & 23.1 & -0.2 & -0.6 & -0.3 & 56.5 & \cellcolor{loss!30}4.3 & \cellcolor{loss!14}2.1 & \cellcolor{loss!16}2.3 \\
+Nahuatl (AmericasNLP) & 18.0 & \cellcolor{loss!6}0.9 & \cellcolor{loss!0}0.1 & \cellcolor{loss!4}0.6 & 20.1 & \cellcolor{loss!8}1.1 & \cellcolor{loss!2}0.3 & \cellcolor{loss!3}0.4 \\
+Bribri (AmericasNLP) & 17.3 & -0.2 & \cellcolor{loss!0}0.0 & \cellcolor{loss!0}0.0 & 20.1 & \cellcolor{loss!5}0.8 & \cellcolor{loss!1}0.2 & \cellcolor{loss!2}0.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Increase in sentence NLL per byte, X side (quantized minus FP), 4-bit.}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+ & \multicolumn{4}{c}{Llama} & \multicolumn{4}{c}{LoRA} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Language (test set) & FP & RTN & GPTQ & AWQ & FP & RTN & GPTQ & AWQ \\
+\midrule
+\multicolumn{9}{l}{\textit{High-resource}} \\
+French (FLORES+) & 0.63 & \cellcolor{loss!5}0.020 & \cellcolor{loss!2}0.010 & \cellcolor{loss!2}0.010 & 0.70 & \cellcolor{loss!9}0.040 & \cellcolor{loss!5}0.020 & \cellcolor{loss!5}0.020 \\
+French (church) & 0.81 & \cellcolor{loss!7}0.030 & \cellcolor{loss!2}0.010 & \cellcolor{loss!2}0.010 & 0.84 & \cellcolor{loss!12}0.050 & \cellcolor{loss!6}0.028 & \cellcolor{loss!5}0.020 \\
+Spanish (FLORES+) & 0.69 & \cellcolor{loss!7}0.030 & \cellcolor{loss!5}0.020 & \cellcolor{loss!4}0.018 & 0.76 & \cellcolor{loss!7}0.030 & \cellcolor{loss!4}0.016 & \cellcolor{loss!2}0.010 \\
+Spanish (church) & 0.84 & \cellcolor{loss!7}0.030 & \cellcolor{loss!4}0.018 & \cellcolor{loss!2}0.010 & 0.82 & \cellcolor{loss!7}0.030 & \cellcolor{loss!4}0.016 & \cellcolor{loss!3}0.014 \\
+Portuguese (FLORES+) & 0.73 & \cellcolor{loss!7}0.030 & \cellcolor{loss!5}0.020 & \cellcolor{loss!2}0.010 & 0.80 & \cellcolor{loss!9}0.040 & \cellcolor{loss!7}0.030 & \cellcolor{loss!7}0.030 \\
+Portuguese (church) & 0.90 & \cellcolor{loss!7}0.030 & \cellcolor{loss!6}0.024 & \cellcolor{loss!5}0.020 & 0.90 & \cellcolor{loss!7}0.030 & \cellcolor{loss!6}0.026 & \cellcolor{loss!5}0.020 \\
+\midrule \multicolumn{9}{l}{\textit{African}} \\
+Yoruba (FLORES+) & 1.40 & \cellcolor{loss!30}0.130 & \cellcolor{loss!21}0.092 & \cellcolor{loss!14}0.060 & 1.61 & \cellcolor{loss!16}0.070 & \cellcolor{loss!12}0.054 & \cellcolor{loss!10}0.042 \\
+Yoruba (church) & 1.36 & \cellcolor{loss!32}0.140 & \cellcolor{loss!22}0.094 & \cellcolor{loss!15}0.064 & 1.25 & \cellcolor{loss!23}0.100 & \cellcolor{loss!18}0.080 & \cellcolor{loss!15}0.064 \\
+Zulu (FLORES+) & 1.45 & \cellcolor{loss!32}0.140 & \cellcolor{loss!23}0.098 & \cellcolor{loss!19}0.084 & 1.77 & \cellcolor{loss!21}0.090 & \cellcolor{loss!19}0.082 & \cellcolor{loss!13}0.058 \\
+Zulu (church) & 1.60 & \cellcolor{loss!25}0.110 & \cellcolor{loss!18}0.080 & \cellcolor{loss!15}0.066 & 1.65 & \cellcolor{loss!18}0.080 & \cellcolor{loss!19}0.084 & \cellcolor{loss!14}0.060 \\
+Swahili (FLORES+) & 1.16 & \cellcolor{loss!28}0.120 & \cellcolor{loss!17}0.072 & \cellcolor{loss!14}0.060 & 1.43 & \cellcolor{loss!25}0.110 & \cellcolor{loss!21}0.092 & \cellcolor{loss!13}0.058 \\
+Swahili (church) & 1.32 & \cellcolor{loss!23}0.100 & \cellcolor{loss!16}0.070 & \cellcolor{loss!14}0.062 & 1.41 & \cellcolor{loss!25}0.110 & \cellcolor{loss!24}0.104 & \cellcolor{loss!14}0.060 \\
+Amharic (FLORES+) & 0.85 & \cellcolor{loss!60}0.260 & \cellcolor{loss!42}0.182 & \cellcolor{loss!27}0.118 & 1.12 & \cellcolor{loss!14}0.060 & \cellcolor{loss!15}0.066 & \cellcolor{loss!12}0.052 \\
+Amharic (church) & 0.89 & \cellcolor{loss!60}0.260 & \cellcolor{loss!40}0.172 & \cellcolor{loss!27}0.116 & 0.91 & \cellcolor{loss!18}0.080 & \cellcolor{loss!17}0.074 & \cellcolor{loss!10}0.042 \\
+\midrule \multicolumn{9}{l}{\textit{Latin American}} \\
+Kekchi (MayanV) & 3.21 & \cellcolor{loss!18}0.080 & \cellcolor{loss!10}0.042 & \cellcolor{loss!14}0.060 & 2.44 & \cellcolor{loss!23}0.100 & \cellcolor{loss!14}0.062 & \cellcolor{loss!14}0.062 \\
+Kekchi (church) & 2.47 & \cellcolor{loss!12}0.050 & \cellcolor{loss!8}0.034 & \cellcolor{loss!7}0.032 & 1.14 & \cellcolor{loss!14}0.060 & \cellcolor{loss!12}0.052 & \cellcolor{loss!8}0.034 \\
+Guarani (FLORES+) & 1.74 & \cellcolor{loss!32}0.140 & \cellcolor{loss!23}0.098 & \cellcolor{loss!21}0.092 & 1.56 & \cellcolor{loss!12}0.050 & \cellcolor{loss!9}0.040 & \cellcolor{loss!12}0.050 \\
+Guarani (church) & 1.91 & \cellcolor{loss!28}0.120 & \cellcolor{loss!21}0.092 & \cellcolor{loss!20}0.088 & 1.47 & \cellcolor{loss!14}0.060 & \cellcolor{loss!12}0.054 & \cellcolor{loss!12}0.054 \\
+Quichua (Ecuador) (church) & 2.05 & \cellcolor{loss!12}0.050 & \cellcolor{loss!7}0.030 & \cellcolor{loss!7}0.032 & 1.96 & 0.000 & \cellcolor{loss!4}0.016 & \cellcolor{loss!0}0.002 \\
+Nahuatl (AmericasNLP) & 2.50 & \cellcolor{loss!7}0.030 & \cellcolor{loss!8}0.034 & \cellcolor{loss!13}0.056 & 2.42 & \cellcolor{loss!25}0.110 & \cellcolor{loss!12}0.054 & \cellcolor{loss!12}0.054 \\
+Bribri (AmericasNLP) & 3.02 & \cellcolor{loss!14}0.060 & \cellcolor{loss!3}0.012 & \cellcolor{loss!9}0.038 & 2.32 & \cellcolor{loss!21}0.090 & \cellcolor{loss!7}0.030 & \cellcolor{loss!11}0.046 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{chrF++ drop (FP minus quantized), 3-bit.}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+ & \multicolumn{4}{c}{Llama} & \multicolumn{4}{c}{LoRA} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Language (test set) & FP & RTN & GPTQ & AWQ & FP & RTN & GPTQ & AWQ \\
+\midrule
+\multicolumn{9}{l}{\textbf{English$\rightarrow$X}} \\ \midrule
+\multicolumn{9}{l}{\textit{High-resource}} \\
+French (FLORES+) & 64.0 & \cellcolor{loss!17}9.5 & \cellcolor{loss!11}5.8 & \cellcolor{loss!11}5.9 & 63.0 & \cellcolor{loss!16}8.9 & \cellcolor{loss!7}3.9 & \cellcolor{loss!7}3.9 \\
+French (church) & 56.9 & \cellcolor{loss!11}6.2 & \cellcolor{loss!8}4.1 & \cellcolor{loss!7}4.0 & 58.6 & \cellcolor{loss!16}9.0 & \cellcolor{loss!5}2.9 & \cellcolor{loss!6}3.1 \\
+Spanish (FLORES+) & 51.9 & \cellcolor{loss!9}5.1 & \cellcolor{loss!5}2.7 & \cellcolor{loss!6}3.2 & 51.5 & \cellcolor{loss!9}4.7 & \cellcolor{loss!3}1.8 & \cellcolor{loss!3}1.9 \\
+Spanish (church) & 64.1 & \cellcolor{loss!16}8.7 & \cellcolor{loss!9}4.8 & \cellcolor{loss!8}4.5 & 70.7 & \cellcolor{loss!10}5.7 & \cellcolor{loss!4}2.1 & \cellcolor{loss!4}2.0 \\
+Portuguese (FLORES+) & 64.3 & \cellcolor{loss!18}9.6 & \cellcolor{loss!9}5.1 & \cellcolor{loss!10}5.2 & 64.3 & \cellcolor{loss!13}7.2 & \cellcolor{loss!7}3.7 & \cellcolor{loss!6}3.3 \\
+Portuguese (church) & 62.5 & \cellcolor{loss!14}7.8 & \cellcolor{loss!9}5.1 & \cellcolor{loss!9}4.9 & 70.8 & \cellcolor{loss!11}6.2 & \cellcolor{loss!7}3.6 & \cellcolor{loss!5}2.9 \\
+\midrule \multicolumn{9}{l}{\textit{African}} \\
+Yoruba (FLORES+) & 13.2 & \cellcolor{loss!4}2.4 & \cellcolor{loss!14}7.9 & \cellcolor{loss!10}5.6 & 25.6 & \cellcolor{loss!27}14.6 & \cellcolor{loss!6}3.4 & \cellcolor{loss!5}2.8 \\
+Yoruba (church) & 15.1 & \cellcolor{loss!15}8.3 & \cellcolor{loss!16}8.9 & \cellcolor{loss!11}6.0 & 60.1 & \cellcolor{loss!56}30.7 & \cellcolor{loss!15}8.3 & \cellcolor{loss!10}5.6 \\
+Zulu (FLORES+) & 15.1 & \cellcolor{loss!5}2.7 & \cellcolor{loss!10}5.2 & \cellcolor{loss!8}4.6 & 33.9 & \cellcolor{loss!32}17.7 & \cellcolor{loss!12}6.5 & \cellcolor{loss!11}5.9 \\
+Zulu (church) & 15.4 & \cellcolor{loss!13}7.4 & \cellcolor{loss!8}4.6 & \cellcolor{loss!6}3.3 & 56.5 & \cellcolor{loss!36}19.8 & \cellcolor{loss!12}6.5 & \cellcolor{loss!9}5.2 \\
+Swahili (FLORES+) & 37.4 & \cellcolor{loss!50}27.6 & \cellcolor{loss!35}19.0 & \cellcolor{loss!34}18.9 & 47.2 & \cellcolor{loss!45}24.7 & \cellcolor{loss!13}7.3 & \cellcolor{loss!12}6.3 \\
+Swahili (church) & 37.0 & \cellcolor{loss!46}25.1 & \cellcolor{loss!32}17.4 & \cellcolor{loss!30}16.6 & 66.7 & \cellcolor{loss!45}24.8 & \cellcolor{loss!12}6.4 & \cellcolor{loss!10}5.5 \\
+Amharic (FLORES+) & 6.5 & \cellcolor{loss!11}6.1 & \cellcolor{loss!9}5.2 & \cellcolor{loss!9}5.0 & 19.5 & \cellcolor{loss!32}17.4 & \cellcolor{loss!22}12.0 & \cellcolor{loss!17}9.4 \\
+Amharic (church) & 6.3 & \cellcolor{loss!10}5.7 & \cellcolor{loss!9}4.9 & \cellcolor{loss!8}4.5 & 38.5 & \cellcolor{loss!60}32.8 & \cellcolor{loss!36}19.9 & \cellcolor{loss!20}11.0 \\
+\midrule \multicolumn{9}{l}{\textit{Latin American}} \\
+Kekchi (MayanV) & 7.9 & \cellcolor{loss!2}0.8 & \cellcolor{loss!5}2.7 & \cellcolor{loss!8}4.2 & 18.5 & \cellcolor{loss!8}4.3 & \cellcolor{loss!3}1.6 & \cellcolor{loss!2}1.3 \\
+Kekchi (church) & 13.7 & \cellcolor{loss!4}2.3 & \cellcolor{loss!5}2.7 & \cellcolor{loss!3}1.6 & 61.6 & \cellcolor{loss!23}12.5 & \cellcolor{loss!6}3.0 & \cellcolor{loss!6}3.4 \\
+Guarani (FLORES+) & 14.4 & \cellcolor{loss!6}3.5 & \cellcolor{loss!6}3.4 & \cellcolor{loss!12}6.3 & 33.5 & \cellcolor{loss!14}7.9 & \cellcolor{loss!5}3.0 & \cellcolor{loss!6}3.4 \\
+Guarani (church) & 11.3 & \cellcolor{loss!1}0.8 & \cellcolor{loss!5}2.7 & \cellcolor{loss!3}1.6 & 51.9 & \cellcolor{loss!25}13.4 & \cellcolor{loss!7}4.0 & \cellcolor{loss!7}4.0 \\
+Quichua (Ecuador) (church) & 13.1 & \cellcolor{loss!5}2.5 & -0.8 & \cellcolor{loss!0}0.1 & 57.4 & \cellcolor{loss!52}28.3 & \cellcolor{loss!15}7.9 & \cellcolor{loss!16}8.9 \\
+Nahuatl (AmericasNLP) & 13.2 & \cellcolor{loss!8}4.5 & \cellcolor{loss!6}3.5 & \cellcolor{loss!5}3.0 & 13.4 & \cellcolor{loss!5}3.0 & \cellcolor{loss!4}2.4 & \cellcolor{loss!5}2.6 \\
+Bribri (AmericasNLP) & 7.7 & -0.8 & \cellcolor{loss!1}0.3 & \cellcolor{loss!4}2.0 & 11.7 & \cellcolor{loss!5}2.6 & \cellcolor{loss!3}1.8 & \cellcolor{loss!5}2.5 \\
+\midrule \multicolumn{9}{l}{\textbf{X$\rightarrow$English}} \\ \midrule
+\multicolumn{9}{l}{\textit{High-resource}} \\
+French (FLORES+) & 64.4 & \cellcolor{loss!11}8.1 & \cellcolor{loss!3}1.9 & \cellcolor{loss!2}1.6 & 65.4 & \cellcolor{loss!11}8.0 & \cellcolor{loss!3}1.8 & \cellcolor{loss!3}2.4 \\
+French (church) & 61.6 & \cellcolor{loss!9}6.6 & \cellcolor{loss!5}3.8 & \cellcolor{loss!3}2.4 & 69.1 & \cellcolor{loss!14}10.0 & \cellcolor{loss!4}2.8 & \cellcolor{loss!4}3.2 \\
+Spanish (FLORES+) & 57.2 & \cellcolor{loss!9}6.7 & \cellcolor{loss!2}1.7 & \cellcolor{loss!3}1.9 & 58.1 & \cellcolor{loss!10}6.9 & \cellcolor{loss!3}1.8 & \cellcolor{loss!3}2.2 \\
+Spanish (church) & 70.0 & \cellcolor{loss!12}8.4 & \cellcolor{loss!6}4.1 & \cellcolor{loss!5}3.4 & 77.0 & \cellcolor{loss!9}6.8 & \cellcolor{loss!3}2.1 & \cellcolor{loss!3}2.5 \\
+Portuguese (FLORES+) & 68.8 & \cellcolor{loss!19}13.8 & \cellcolor{loss!4}2.6 & \cellcolor{loss!3}2.2 & 68.7 & \cellcolor{loss!13}9.0 & \cellcolor{loss!3}2.0 & \cellcolor{loss!3}2.3 \\
+Portuguese (church) & 69.6 & \cellcolor{loss!14}9.9 & \cellcolor{loss!6}4.3 & \cellcolor{loss!5}3.7 & 76.1 & \cellcolor{loss!11}8.2 & \cellcolor{loss!3}2.4 & \cellcolor{loss!3}2.3 \\
+\midrule \multicolumn{9}{l}{\textit{African}} \\
+Yoruba (FLORES+) & 28.3 & \cellcolor{loss!14}9.9 & \cellcolor{loss!10}7.4 & \cellcolor{loss!7}5.1 & 33.3 & \cellcolor{loss!20}14.5 & \cellcolor{loss!6}4.6 & \cellcolor{loss!6}4.5 \\
+Yoruba (church) & 29.9 & \cellcolor{loss!22}15.7 & \cellcolor{loss!15}11.1 & \cellcolor{loss!12}9.0 & 70.1 & \cellcolor{loss!60}43.3 & \cellcolor{loss!14}10.0 & \cellcolor{loss!11}7.6 \\
+Zulu (FLORES+) & 31.1 & \cellcolor{loss!18}12.8 & \cellcolor{loss!13}9.1 & \cellcolor{loss!9}6.2 & 41.6 & \cellcolor{loss!27}19.8 & \cellcolor{loss!8}5.6 & \cellcolor{loss!8}6.1 \\
+Zulu (church) & 34.4 & \cellcolor{loss!27}19.6 & \cellcolor{loss!19}13.5 & \cellcolor{loss!13}9.4 & 68.1 & \cellcolor{loss!51}36.6 & \cellcolor{loss!13}9.4 & \cellcolor{loss!11}8.1 \\
+Swahili (FLORES+) & 53.6 & \cellcolor{loss!48}34.5 & \cellcolor{loss!26}18.6 & \cellcolor{loss!22}16.0 & 54.2 & \cellcolor{loss!42}30.6 & \cellcolor{loss!11}8.3 & \cellcolor{loss!12}8.9 \\
+Swahili (church) & 60.3 & \cellcolor{loss!58}41.8 & \cellcolor{loss!31}22.5 & \cellcolor{loss!25}18.3 & 75.2 & \cellcolor{loss!57}41.1 & \cellcolor{loss!9}6.5 & \cellcolor{loss!8}5.6 \\
+Amharic (FLORES+) & 28.7 & \cellcolor{loss!19}14.0 & \cellcolor{loss!18}13.2 & \cellcolor{loss!16}11.4 & 36.1 & \cellcolor{loss!29}20.7 & \cellcolor{loss!15}10.7 & \cellcolor{loss!9}6.8 \\
+Amharic (church) & 27.4 & \cellcolor{loss!36}26.0 & \cellcolor{loss!24}17.5 & \cellcolor{loss!19}13.4 & 59.1 & \cellcolor{loss!58}42.2 & \cellcolor{loss!30}21.4 & \cellcolor{loss!13}9.6 \\
+\midrule \multicolumn{9}{l}{\textit{Latin American}} \\
+Kekchi (MayanV) & 9.5 & \cellcolor{loss!5}3.4 & \cellcolor{loss!1}0.4 & -0.0 & 25.8 & \cellcolor{loss!18}13.2 & \cellcolor{loss!8}6.1 & \cellcolor{loss!4}2.7 \\
+Kekchi (church) & 22.6 & \cellcolor{loss!13}9.5 & \cellcolor{loss!7}5.2 & \cellcolor{loss!4}2.7 & 60.8 & \cellcolor{loss!31}22.1 & \cellcolor{loss!6}4.0 & \cellcolor{loss!5}3.9 \\
+Guarani (FLORES+) & 30.5 & \cellcolor{loss!16}11.4 & \cellcolor{loss!7}5.2 & \cellcolor{loss!6}4.1 & 41.7 & \cellcolor{loss!19}13.5 & \cellcolor{loss!5}3.6 & \cellcolor{loss!5}3.8 \\
+Guarani (church) & 30.6 & \cellcolor{loss!19}13.7 & \cellcolor{loss!12}8.4 & \cellcolor{loss!7}4.9 & 64.8 & \cellcolor{loss!37}26.4 & \cellcolor{loss!9}6.2 & \cellcolor{loss!8}6.1 \\
+Quichua (Ecuador) (church) & 23.1 & \cellcolor{loss!2}1.8 & \cellcolor{loss!1}1.1 & \cellcolor{loss!1}0.7 & 56.5 & \cellcolor{loss!47}34.1 & \cellcolor{loss!15}10.9 & \cellcolor{loss!15}10.6 \\
+Nahuatl (AmericasNLP) & 18.0 & \cellcolor{loss!6}4.7 & \cellcolor{loss!4}2.9 & \cellcolor{loss!2}1.1 & 20.1 & \cellcolor{loss!10}6.9 & \cellcolor{loss!3}2.0 & \cellcolor{loss!4}2.6 \\
+Bribri (AmericasNLP) & 17.3 & \cellcolor{loss!6}4.4 & \cellcolor{loss!2}1.1 & \cellcolor{loss!1}0.7 & 20.1 & \cellcolor{loss!7}5.2 & \cellcolor{loss!2}1.8 & \cellcolor{loss!2}1.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{Increase in sentence NLL per byte, X side (quantized minus FP), 3-bit.}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+ & \multicolumn{4}{c}{Llama} & \multicolumn{4}{c}{LoRA} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Language (test set) & FP & RTN & GPTQ & AWQ & FP & RTN & GPTQ & AWQ \\
+\midrule
+\multicolumn{9}{l}{\textit{High-resource}} \\
+French (FLORES+) & 0.63 & \cellcolor{loss!11}0.200 & \cellcolor{loss!5}0.096 & \cellcolor{loss!4}0.068 & 0.70 & \cellcolor{loss!20}0.370 & \cellcolor{loss!8}0.150 & \cellcolor{loss!6}0.110 \\
+French (church) & 0.81 & \cellcolor{loss!13}0.240 & \cellcolor{loss!6}0.116 & \cellcolor{loss!4}0.080 & 0.84 & \cellcolor{loss!22}0.410 & \cellcolor{loss!9}0.156 & \cellcolor{loss!6}0.116 \\
+Spanish (FLORES+) & 0.69 & \cellcolor{loss!11}0.200 & \cellcolor{loss!6}0.104 & \cellcolor{loss!4}0.070 & 0.76 & \cellcolor{loss!17}0.320 & \cellcolor{loss!7}0.132 & \cellcolor{loss!5}0.092 \\
+Spanish (church) & 0.84 & \cellcolor{loss!13}0.240 & \cellcolor{loss!7}0.132 & \cellcolor{loss!4}0.080 & 0.82 & \cellcolor{loss!17}0.320 & \cellcolor{loss!7}0.122 & \cellcolor{loss!5}0.086 \\
+Portuguese (FLORES+) & 0.73 & \cellcolor{loss!13}0.240 & \cellcolor{loss!7}0.126 & \cellcolor{loss!4}0.078 & 0.80 & \cellcolor{loss!21}0.380 & \cellcolor{loss!9}0.174 & \cellcolor{loss!7}0.122 \\
+Portuguese (church) & 0.90 & \cellcolor{loss!15}0.270 & \cellcolor{loss!9}0.164 & \cellcolor{loss!5}0.090 & 0.90 & \cellcolor{loss!20}0.370 & \cellcolor{loss!9}0.162 & \cellcolor{loss!6}0.108 \\
+\midrule \multicolumn{9}{l}{\textit{African}} \\
+Yoruba (FLORES+) & 1.40 & \cellcolor{loss!33}0.610 & \cellcolor{loss!26}0.472 & \cellcolor{loss!17}0.312 & 1.61 & \cellcolor{loss!30}0.550 & \cellcolor{loss!14}0.258 & \cellcolor{loss!9}0.166 \\
+Yoruba (church) & 1.36 & \cellcolor{loss!37}0.670 & \cellcolor{loss!28}0.514 & \cellcolor{loss!18}0.326 & 1.25 & \cellcolor{loss!38}0.700 & \cellcolor{loss!21}0.378 & \cellcolor{loss!13}0.236 \\
+Zulu (FLORES+) & 1.45 & \cellcolor{loss!37}0.680 & \cellcolor{loss!27}0.502 & \cellcolor{loss!20}0.358 & 1.77 & \cellcolor{loss!26}0.470 & \cellcolor{loss!16}0.292 & \cellcolor{loss!11}0.200 \\
+Zulu (church) & 1.60 & \cellcolor{loss!34}0.630 & \cellcolor{loss!25}0.460 & \cellcolor{loss!17}0.310 & 1.65 & \cellcolor{loss!31}0.560 & \cellcolor{loss!18}0.326 & \cellcolor{loss!10}0.192 \\
+Swahili (FLORES+) & 1.16 & \cellcolor{loss!40}0.740 & \cellcolor{loss!26}0.476 & \cellcolor{loss!18}0.338 & 1.43 & \cellcolor{loss!44}0.810 & \cellcolor{loss!17}0.304 & \cellcolor{loss!13}0.242 \\
+Swahili (church) & 1.32 & \cellcolor{loss!39}0.710 & \cellcolor{loss!26}0.470 & \cellcolor{loss!19}0.348 & 1.41 & \cellcolor{loss!47}0.870 & \cellcolor{loss!17}0.314 & \cellcolor{loss!12}0.228 \\
+Amharic (FLORES+) & 0.85 & \cellcolor{loss!52}0.960 & \cellcolor{loss!46}0.846 & \cellcolor{loss!33}0.600 & 1.12 & \cellcolor{loss!44}0.810 & \cellcolor{loss!22}0.408 & \cellcolor{loss!22}0.406 \\
+Amharic (church) & 0.89 & \cellcolor{loss!51}0.940 & \cellcolor{loss!45}0.828 & \cellcolor{loss!32}0.580 & 0.91 & \cellcolor{loss!51}0.940 & \cellcolor{loss!29}0.534 & \cellcolor{loss!20}0.370 \\
+\midrule \multicolumn{9}{l}{\textit{Latin American}} \\
+Kekchi (MayanV) & 3.21 & \cellcolor{loss!14}0.260 & \cellcolor{loss!12}0.216 & \cellcolor{loss!8}0.148 & 2.44 & \cellcolor{loss!60}1.100 & \cellcolor{loss!22}0.408 & \cellcolor{loss!10}0.184 \\
+Kekchi (church) & 2.47 & \cellcolor{loss!15}0.280 & \cellcolor{loss!11}0.210 & \cellcolor{loss!7}0.122 & 1.14 & \cellcolor{loss!47}0.860 & \cellcolor{loss!16}0.290 & \cellcolor{loss!11}0.198 \\
+Guarani (FLORES+) & 1.74 & \cellcolor{loss!51}0.930 & \cellcolor{loss!30}0.556 & \cellcolor{loss!23}0.414 & 1.56 & \cellcolor{loss!38}0.690 & \cellcolor{loss!14}0.254 & \cellcolor{loss!10}0.188 \\
+Guarani (church) & 1.91 & \cellcolor{loss!44}0.800 & \cellcolor{loss!27}0.500 & \cellcolor{loss!20}0.362 & 1.47 & \cellcolor{loss!41}0.760 & \cellcolor{loss!15}0.284 & \cellcolor{loss!12}0.212 \\
+Quichua (Ecuador) (church) & 2.05 & \cellcolor{loss!23}0.430 & \cellcolor{loss!11}0.200 & \cellcolor{loss!8}0.138 & 1.96 & \cellcolor{loss!27}0.490 & \cellcolor{loss!9}0.172 & \cellcolor{loss!7}0.132 \\
+Nahuatl (AmericasNLP) & 2.50 & \cellcolor{loss!22}0.400 & \cellcolor{loss!14}0.248 & \cellcolor{loss!11}0.194 & 2.42 & \cellcolor{loss!34}0.620 & \cellcolor{loss!12}0.228 & \cellcolor{loss!12}0.214 \\
+Bribri (AmericasNLP) & 3.02 & \cellcolor{loss!17}0.310 & \cellcolor{loss!8}0.142 & \cellcolor{loss!5}0.088 & 2.32 & \cellcolor{loss!31}0.570 & \cellcolor{loss!9}0.160 & \cellcolor{loss!10}0.192 \\
+\bottomrule
+\end{tabular}
+\end{table}

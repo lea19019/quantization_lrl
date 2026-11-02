@@ -1,0 +1,159 @@
+# Notes under each figure in the Figures section of results/analysis/summary.md, in the
+# order shown there (written by python -m qlrl.analysis configs/analysis/all.yaml).
+# "how": what the figure shows and how to read it. Never what the results say.
+
+results_gap:
+  title: Likelihood gap per language
+  how: >-
+    The gap measures how much more quantization hurts a language than English. For each
+    sentence, damage is how much less likely the quantized model finds the reference text
+    than the full-precision model does (nats per byte). The gap is the damage on the
+    language's text minus the damage on its English translation, so a positive gap means
+    the language loses more than English on the same content. One row per language and
+    test set. Each dot is one method (blue RTN, orange GPTQ, green AWQ) and the horizontal
+    line through it is its 95% bootstrap interval. The vertical line is zero. Columns are
+    the four models, the top row is 4 bits and the bottom row 3 bits. The two rows have
+    different x scales.
+
+results_gap_heatmap:
+  title: Likelihood gap, every configuration at once
+  how: >-
+    The same gap as the figure above, as colours instead of dots. Rows are languages and
+    test sets, columns are model and method, and white lines separate the four models. Left
+    panel 4 bits, right panel 3 bits. Red means the language loses more than its English
+    side, blue means it loses less, and near white means about the same. The colour bar
+    gives the value, and both panels use the same scale. No intervals are shown here.
+
+results_bits_slope:
+  title: From 4 to 3 bits
+  how: >-
+    One panel per model. Each line is one language on its first test set (FLORES+ where
+    there is one). The left end is the gap at 4 bits and the right end the gap at 3 bits,
+    both under GPTQ. A steeper line means the language loses more when going from 4 to 3
+    bits. Colour is the language group (blue high-resource, orange African, green Latin
+    American), and the name of each language is written at the right end of its line.
+
+results_gap_vs_fp:
+  title: Gap against full-precision fit
+  how: >-
+    The x axis is the negative log-likelihood per byte of the full-precision model on the
+    language's text. Higher means the model predicts the language worse, so it knows it
+    less. The y axis is the gap. Each point is one model, language and test set. Blue
+    circles are Llama, orange squares Qwen, and a hollow mark is the LoRA version. The
+    three-letter codes label the points of base Llama. Columns are the methods, the top row
+    is 4 bits and the bottom row 3 bits. The horizontal line is zero gap.
+
+results_gap_vs_translation:
+  title: Likelihood gap against translation drop
+  how: >-
+    Compares the two ways of measuring damage. The x axis is the likelihood gap and the y
+    axis the chrF++ drop (full-precision score minus quantized score). Each point is one
+    model, method, language and test set, with the same markers as the figure above.
+    Columns are 4 and 3 bits, the top row is English into the language and the bottom row
+    the language into English. Points where the full-precision model scores no better than
+    the floor (defined under the chrF++ drop figures) are left out.
+
+results_finetune_gap:
+  title: Gap before and after fine-tuning (Llama)
+  how: >-
+    Each point is one language, test set and method. The x axis is its gap in base Llama
+    3.1 8B and the y axis its gap in the LoRA fine-tuned version. A point on the dashed
+    diagonal has the same gap in both, below it the gap is smaller after fine-tuning, above
+    it larger. Colour is the language group, shape the method (circle RTN, square GPTQ,
+    triangle AWQ). Left panel 4 bits, right panel 3 bits.
+
+results_chrf_drop_eng-x:
+  title: chrF++ drop, English into the language
+  how: >-
+    chrF++ scores a translation from 0 to 100 by how many character sequences (and word
+    pairs) it shares with the reference translation. The drop is the full-precision score
+    minus the quantized score, so a positive drop is points lost. One row per language and
+    test set, a dot per method (blue RTN, orange GPTQ, green AWQ) with its 95% bootstrap
+    interval. Columns are models, the top row 4 bits and the bottom row 3 bits, each row
+    with its own x scale. A hollow dot is "at floor". The floor is the score of the
+    reference sentences shuffled, which are in the right language but say the wrong thing.
+    If the full-precision model does not score clearly above that, it does not translate,
+    so its drop is not interpreted.
+
+results_chrf_drop_x-eng:
+  title: chrF++ drop, language into English
+  how: >-
+    chrF++ drop for translation from the language into English. The drop is the
+    full-precision chrF++ minus the quantized chrF++, in points. One row per language and
+    test set, a dot per method (blue RTN, orange GPTQ, green AWQ) with its 95% bootstrap
+    interval. Columns are models, the top row 4 bits and the bottom row 3 bits. A hollow
+    dot is at the floor (the full-precision model scores no better than shuffled
+    references), so its drop is not interpreted.
+
+results_africomet_drop_eng-x:
+  title: AfriCOMET drop, English into the language
+  how: >-
+    AfriCOMET is a learned metric: a neural model trained on human judgements of
+    translation quality for African languages. It compares the output with the source and
+    the reference and gives a score where higher is better. Only French and the four
+    African languages are scored. The drop is the full-precision score minus the quantized
+    score. One row per language and test set, a dot per method (blue RTN, orange GPTQ,
+    green AWQ) with its 95% bootstrap interval. Columns are models, the top row 4 bits and
+    the bottom row 3 bits. A hollow dot is at the floor, the AfriCOMET score of shuffled
+    references, so its drop is not interpreted.
+
+results_africomet_drop_x-eng:
+  title: AfriCOMET drop, language into English
+  how: >-
+    AfriCOMET drop for translation from the language into English, for French and the four
+    African languages. The drop is the full-precision score minus the quantized score. One
+    row per language and test set, a dot per method (blue RTN, orange GPTQ, green AWQ) with
+    its 95% bootstrap interval. Columns are models, the top row 4 bits and the bottom row 3
+    bits. A hollow dot is at the floor, so its drop is not interpreted.
+
+results_chrf_scores_eng-x:
+  title: chrF++ before and after, English into the language
+  how: >-
+    The scores behind the drop. One row per language and test set. The blue dot is the
+    full-precision chrF++, the orange dot the GPTQ chrF++ (mean over the five calibration
+    seeds), and the gray bar between them is the change. The gray tick is the floor, the
+    score of shuffled references. A blue dot at or left of the tick means the
+    full-precision model does not translate that language. Columns are models, the top row
+    4 bits and the bottom row 3 bits.
+
+results_chrf_scores_x-eng:
+  title: chrF++ before and after, language into English
+  how: >-
+    chrF++ for translation into English. Blue is full precision, orange GPTQ (mean over
+    seeds), the gray bar the change between them, and the gray tick the floor (shuffled
+    references). A blue dot at or left of the tick means the full-precision model does not
+    translate. Columns are models, the top row 4 bits and the bottom row 3 bits.
+
+results_africomet_scores_eng-x:
+  title: AfriCOMET before and after, English into the language
+  how: >-
+    AfriCOMET for French and the four African languages, English into the language. Blue
+    is full precision, orange GPTQ (mean over seeds), the gray bar the change, and the gray
+    tick the floor (AfriCOMET of shuffled references). Columns are models, the top row 4
+    bits and the bottom row 3 bits.
+
+results_africomet_scores_x-eng:
+  title: AfriCOMET before and after, language into English
+  how: >-
+    AfriCOMET for French and the four African languages, translated into English. Blue is
+    full precision, orange GPTQ (mean over seeds), the gray bar the change, and the gray
+    tick the floor. Columns are models, the top row 4 bits and the bottom row 3 bits.
+
+results_chrf_drop_heatmap:
+  title: chrF++ drop, every configuration at once
+  how: >-
+    The chrF++ drops of the drop figures, as colours. Rows are languages and test sets,
+    columns model and method, white lines separate the models. One panel per direction
+    (top English into the language, bottom into English) and bit width (left 4, right 3).
+    Red is chrF++ points lost, blue points gained, near white no change. Dark gray cells
+    are at the floor, where the drop is not interpreted. All panels share one colour scale.
+
+results_off_target:
+  title: Output in the wrong language
+  how: >-
+    The share of translations written in the wrong language, detected with GlotLID, a
+    language identifier. Translating into the language, an output counts as wrong if it is
+    identified as English. Translating into English, it counts as wrong if it is not
+    identified as English. One row per language and test set. Blue is full precision,
+    orange 4 bits and green 3 bits, both GPTQ mean over seeds. No intervals. Columns are
+    models, the top row English into the language and the bottom row into English.

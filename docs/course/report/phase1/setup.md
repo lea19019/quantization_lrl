@@ -76,7 +76,7 @@ Rows in `data/processed` (git `f2c22d93`):
 | Fine-tune dev loss | 400 seeded random dev pairs per language from church + AmericasNLP dev (kek: church only; grn: church + AmericasNLP; nah, bzd: AmericasNLP) |
 | Prompt examples | first 3 rows of the dev split of the same corpus as the test set; identical for every model |
 | Generation cap | all dev pairs of that corpus (mean target/source token ratio) |
-| Test, main eval (`results/eval_v2`) | FLORES+ devtest: fra, spa, por, yor, zul, swh, amh, grn. MayanV test: kek. AmericasNLP test: nah, bzd. Church test: qug |
+| Test, main eval (`results/eval`) | FLORES+ devtest: fra, spa, por, yor, zul, swh, amh, grn. MayanV test: kek. AmericasNLP test: nah, bzd. Church test: qug |
 | Test, church eval (`results/eval_church`) | church test of fra, spa, por, yor, zul, swh, amh, kek, grn |
 | Calibration | C4, 128 windows × 2,048 tokens, seeds 0–4 |
 | Validation | WikiText-2 test, non-overlapping 2,048-token windows (Llama 141, Qwen 146) |
@@ -165,7 +165,7 @@ WikiText-2 check (perplexity; all seeds in the Quantized models sheet):
 
 ## 8. Analysis
 
-`python -m qlrl.analysis configs/analysis/{eval_v2,eval_church}.yaml`, math in `qlrl/stats.py`.
+`python -m qlrl.analysis configs/analysis/all.yaml`, math in `qlrl/analysis/stats.py`.
 
 - **Damage:** d(i) = log p_full(i) − log p_quant(i) of each bare sentence, averaged over seeds;
   D = Σd / Σbytes (also per word). **Gap** = D(language side) − D(English side).
