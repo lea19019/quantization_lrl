@@ -8,7 +8,6 @@ Only the weights that train are saved (LoRA's A and B, or every weight in full m
 the optimizer's m and v, the learning-rate schedule, the position in the data and the random
 states. The frozen base is loaded from the original model again on resume.
 '''
-# Written by Claude Code at Adrian's request, 2026-10-20.
 from pathlib import Path
 
 import torch

@@ -1,6 +1,5 @@
 '''
 Calibration data for the quantizers. Description only, no code yet.
-Written by Claude Code on 2026-10-15 at Adrian's request.
 
 • What calibration data is
   RTN looks only at the weights. GPTQ, AWQ and SmoothQuant also look at the activations: the

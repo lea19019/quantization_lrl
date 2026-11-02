@@ -1,7 +1,6 @@
 # Tokenizer and token files of the from-scratch model (docs/project/pretraining_model.md §1).
-#   python -m qlrl.data.tokenizer configs/data/tokenizer.yaml [--test]        trains models/<name>/
-#   sbatch --array=0-245 --gpus=0 --cpus-per-task=8 slurm/run.sh qlrl.data.tokens configs/data/tokenizer.yaml
-#                                                                              one corpus per task
+#   python -m qlrl.pretraining configs/pretrain/tokenizer.yaml [--test]           trains models/<name>/
+#   python -m qlrl.pretraining configs/pretrain/tokenizer.yaml <index> [--test]   one corpus's token files
 # Read from <freetext>/<source>/<folder>/{train,valid}.parquet (qlrl/data/freetext.py, monolingual.py).
 freetext: /home/vacl2/nobackup/archive/freetext
 dev_splits: data/processed_pretrain     # valid text of the parallel-only corpora: <lang>/dev.jsonl

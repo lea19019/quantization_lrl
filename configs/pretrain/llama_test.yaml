@@ -1,8 +1,8 @@
 # Test of the pretraining loop: llama_576m.yaml with a tiny model on the --test token files.
-#   python -m qlrl.pretrain configs/pretrain/llama_test.yaml                         CPU
-#   sbatch --gpus=2 slurm/pretrain.sh configs/pretrain/llama_test.yaml               2 GPUs
-# Needs: python -m qlrl.data.tokenizer configs/data/tokenizer.yaml --test, then
-#        python -m qlrl.data.tokens configs/data/tokenizer.yaml <index> --test for some corpora.
+#   python -m qlrl.pretraining configs/pretrain/llama_test.yaml                   CPU
+#   bash slurm/pretrain.sh configs/pretrain/llama_test.yaml --gpus=2 --time=00:15:00   2 GPUs
+# Needs: python -m qlrl.pretraining configs/pretrain/tokenizer.yaml --test, then
+#        python -m qlrl.pretraining configs/pretrain/tokenizer.yaml <index> --test for some corpora.
 name: llama-test
 seed: 0
 tokenizer: models/tokenizer-64k_test
@@ -48,6 +48,5 @@ train:
   log_every: 20
   eval_every: 200
   valid_windows: 2
-  save_every: 200
-  resume_every: 100
+  save_every: 100
   branch_at: [0.5]

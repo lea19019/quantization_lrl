@@ -16,7 +16,6 @@ Fine-tuning notes (no code yet): python -m qlrl.finetune configs/finetune.yaml, 
 
 
 # Fine-tuning: python -m qlrl.finetune configs/finetune/lora.yaml (or full, or test on CPU).
-# Written by Claude Code at Adrian's request, 2026-10-19.
 import json
 import math
 import subprocess

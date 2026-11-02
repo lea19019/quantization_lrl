@@ -7,7 +7,7 @@ are in [pretraining_model.md](pretraining_model.md).
 
 | Setting | Value |
 |---|---|
-| Config | `configs/data/tokenizer.yaml`, code at commit `cdcf5fe` |
+| Config | `configs/pretrain/tokenizer.yaml`, run at commit `cdcf5fe` |
 | Algorithm | byte-level BPE, HF `tokenizers` 0.23.2 |
 | Vocabulary | 65,536; `<s>` 0, `</s>` 1, `<pad>` 2 |
 | Split before BPE | GPT-4o (o200k) pattern |

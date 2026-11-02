@@ -9,12 +9,11 @@ import torch
 import yaml
 from tokenizers import Regex, pre_tokenizers
 
-from qlrl.data.tokenizer import build, sampling_rates, save
-from qlrl.data.tokens import TokenData
-from qlrl.pretrain import Pretraining
-from qlrl.recipe import learning_rate
+from qlrl.pretrain import Pretraining, TokenData
+from qlrl.pretrain.tokenizer import build, sampling_rates, save
+from qlrl.pretrain.train import learning_rate
 
-CONFIG = yaml.safe_load(Path("configs/data/tokenizer.yaml").read_text())
+CONFIG = yaml.safe_load(Path("configs/pretrain/tokenizer.yaml").read_text())
 TEST = yaml.safe_load(Path("configs/pretrain/llama_test.yaml").read_text())
 TEXTS = ["The cat sat on the mat.", "Le chat est assis sur le tapis.", "नमस्ते दुनिया",
          "ကမ္ဘာ မင်္ဂလာပါ", "我们在这里。", "Ẹ kú àárọ̀, ẹ ṣé o.", "Sawubona mhlaba 2026!"] * 20
@@ -100,7 +99,7 @@ def tiny_run(root: Path, name: str, max_steps: int | None) -> Pretraining:
     config["model"]["vocab_size"] = 300
     config["train"] |= {"seq_len": 31, "batch_tokens": 248, "micro_batch": 2, "warmup_steps": 2,
                         "max_steps": max_steps, "eval_every": 3, "save_every": 2,
-                        "resume_every": 2, "log_every": 2}
+                        "log_every": 2}
     config |= {"tokenizer": str(root / "tokenizer"), "tokens": str(root / "tokens")}
     for key in ("checkpoints", "output", "results"):
         config[key] = str(root / name / key)

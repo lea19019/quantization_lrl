@@ -1,7 +1,6 @@
 '''
 Where things live inside GPT-2 and Llama 3.1 8B. Description only, no code yet.
-Written by Claude Code on 2026-10-15 at Adrian's request, from what the archived code
-(branch archive/before-reset) had to know about each model.
+From what the archived code (branch archive/before-reset) had to know about each model.
 
 • Why this file exists
   RTN and GPTQ only need to find every weight matrix and round it. AWQ also

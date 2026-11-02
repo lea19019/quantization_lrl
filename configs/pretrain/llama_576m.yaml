@@ -1,5 +1,6 @@
 # The from-scratch model (docs/project/pretraining_model.md): one pass over every token file.
-#   sbatch slurm/pretrain.sh configs/pretrain/llama_576m.yaml     (repeat with --dependency=singleton)
+#   bash slurm/pretrain.sh configs/pretrain/llama_576m.yaml [--gpus=2]    1 GPU by default; each job
+#   queues the next until the pass is done (slurm/pretrain.sh).
 # Settings marked "proposed" are starting points from the papers, not measured here.
 name: llama-576m
 seed: 0                    # model init and the order of the windows
@@ -47,6 +48,5 @@ train:
   log_every: 10
   eval_every: 1000         # steps between validation losses (and at 0 and the end)
   valid_windows: 16        # per language: up to 16 x 2049 validation tokens
-  save_every: 500          # steps between bf16 weights (262M tokens): the learning curve
-  resume_every: 250        # steps between resume states (overwritten)
+  save_every: 500          # steps between bf16 weights (262M tokens) and resume.pt
   branch_at: [0.25, 0.5, 0.75]   # fractions of the run whose full state is kept, for cooldowns

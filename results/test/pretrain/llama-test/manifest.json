@@ -47,8 +47,7 @@
       "log_every": 20,
       "eval_every": 200,
       "valid_windows": 2,
-      "save_every": 200,
-      "resume_every": 100,
+      "save_every": 100,
       "branch_at": [
         0.5
       ]
@@ -67,7 +66,7 @@
     "spa": 1731185,
     "nep": 459125
   },
-  "git_sha": "cdcf5fe9aab782a7d249b6bd837b87ca2e0c78ff",
+  "git_sha": "99d7776996f5a23cdd9a1ccfbc41fd1571d2bd77",
   "torch": "2.11.0+cu128",
   "transformers": "5.19.0"
 }

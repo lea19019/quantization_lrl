@@ -9,7 +9,6 @@ TrainingData: ParallelData's pairs turned into fine-tuning batches.
 
 Every row is an evaluation prompt followed by its answer, and only the answer is graded.
 '''
-# Written by Claude Code at Adrian's request, 2026-10-20.
 import random
 from collections import Counter
 

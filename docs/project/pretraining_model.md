@@ -14,7 +14,7 @@ non-diagonal optimizers reduce outlier features (He 2024). None of them is used.
 
 ## 1. Tokenizer
 
-`qlrl/data/tokenizer.py`, `configs/data/tokenizer.yaml`; output `models/tokenizer-64k/`.
+`qlrl/pretrain/tokenizer.py`, `configs/pretrain/tokenizer.yaml`; output `models/tokenizer-64k/`.
 
 | Choice | Value | Why |
 |---|---|---|
@@ -56,8 +56,8 @@ outside the two embedding matrices.
 
 ## 3. Training recipe
 
-`qlrl/pretrain.py` (loop, checkpoints), `qlrl/recipe.py` (schedule, optimizer, loss, GPUs),
-`qlrl/data/tokens.py` (token files and windows).
+`qlrl/pretrain/train.py` (schedule, optimizer, loss, loop, checkpoints),
+`qlrl/pretrain/data.py` (the training windows); entry point `qlrl/pretraining.py`.
 
 - **Data: one pass, natural mix.** Every train token of every corpus once, in its natural
   proportion; no upsampling. The stream is cut into windows of 2,049 tokens (input plus
@@ -85,7 +85,7 @@ outside the two embedding matrices.
 |---|---|
 | `nobackup/archive/pretrain_tokens/<source>/<folder>/` | `train.bin`, `valid.bin` (uint16), `manifest.json` (language, documents, tokens) |
 | `nobackup/archive/pretrain/<name>/step-<n>/` | bf16 weights every 500 steps (262M tokens): the learning curve, about 1.2 GB each |
-| `nobackup/archive/pretrain/<name>/resume.pt` | fp32 weights, AdamW state, step; the next job resumes from it |
+| `nobackup/archive/pretrain/<name>/resume.pt` | fp32 weights, AdamW state, step; written every 500 steps and before a job stops; the next job resumes from it |
 | `nobackup/archive/pretrain/<name>/state-<n>.pt` | copies of `resume.pt` at 25%, 50%, 75% of the run, about 7 GB each: cooldowns branch from them (Hägele 2024) |
 | `results/pretrain/<name>/history.jsonl` | learning rate, train loss, tokens per second, validation loss per language |
 | `models/<name>/` | the final model, its tokenizer, `manifest.json` (config, tokens per language, git sha) |
@@ -99,15 +99,15 @@ Tests first: `pytest tests/test_pretrain.py` (CPU, under a minute: tokenizer rou
 windows, schedule, training lowers the loss, a resumed run equals an uninterrupted one).
 
 1. Tokenizer, one CPU job:
-   `sbatch --gpus=0 --cpus-per-task=16 --mem=200G --time=08:00:00 slurm/run.sh qlrl.data.tokenizer configs/data/tokenizer.yaml`
+   `sbatch --gpus=0 --cpus-per-task=16 --mem=200G --time=08:00:00 slurm/run.sh qlrl.pretraining configs/pretrain/tokenizer.yaml`
 2. Token files, one task per corpus (246):
-   `sbatch --array=0-245 --gpus=0 --cpus-per-task=8 --mem=32G --time=02:00:00 slurm/run.sh qlrl.data.tokens configs/data/tokenizer.yaml`
+   `sbatch --array=0-245 --gpus=0 --cpus-per-task=8 --mem=32G --time=02:00:00 slurm/run.sh qlrl.pretraining configs/pretrain/tokenizer.yaml`
 3. Cluster test of the training loop on two GPUs (tiny model on the `--test` token files):
-   `sbatch -J llama-test --gpus=2 --time=00:15:00 slurm/pretrain.sh configs/pretrain/llama_test.yaml`
-4. Training, eight GPUs of one node. The qos stops a job at 24 h; the run saves after 23 h
-   and the next job with the same name resumes:
-   `for i in 1 2 3 4; do sbatch -J llama-576m --dependency=singleton slurm/pretrain.sh configs/pretrain/llama_576m.yaml; done`.
-   The first job's tokens per second and memory set the real count.
+   `bash slurm/pretrain.sh configs/pretrain/llama_test.yaml --gpus=2 --time=00:15:00`
+4. Training in the background, one GPU (at most two), one job at a time, on the fastest free
+   type (B200, H100, A100). The qos stops a job at 24 h; the run saves after 23 h and the job
+   submits the next one, which resumes, until the model is trained:
+   `bash slurm/pretrain.sh configs/pretrain/llama_576m.yaml` (add `--gpus=2` for two).
 
 Steps 1–2 and the CPU half of 3 also run with `--test` (first 200 documents of each corpus,
 2,048-token vocabulary) into `models/tokenizer-64k_test` and `pretrain_tokens_test`.
