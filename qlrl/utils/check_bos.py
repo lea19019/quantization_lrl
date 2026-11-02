@@ -3,7 +3,7 @@ Diagnostic: is GPTQ's extra damage tied to the BOS token? GPTQ and AWQ calibrate
 C4 windows, which almost never start with BOS; every evaluation sentence does.
 Scores tokens 2..n of 300 FLORES devtest sentences per language twice: after BOS (as in
 the evaluation) and with no BOS. Prints negative log p per word, per model.
-Run: python scripts/check_bos.py
+Run: python -m qlrl.utils.check_bos
 '''
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer

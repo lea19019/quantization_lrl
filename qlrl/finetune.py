@@ -33,10 +33,10 @@ from transformers import (
     get_cosine_schedule_with_warmup,
 )
 
-from qlrl.checkpoint import load as checkpoint_load
-from qlrl.checkpoint import save as checkpoint_save
 from qlrl.data.dataset import ParallelData
 from qlrl.data.training import TrainingData
+from qlrl.utils.checkpoint import load as checkpoint_load
+from qlrl.utils.checkpoint import save as checkpoint_save
 
 # ---- Model: load it, choose what trains (full or lora) ----
 

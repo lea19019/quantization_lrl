@@ -10,7 +10,7 @@ AdamW, warmup-stable-decay. Under torchrun each GPU trains a copy on its own win
 DistributedDataParallel averages the gradients. A job saves and stops after train.hours; the
 next job with the same config resumes. Writes, under <checkpoints>/<name>/:
 - step-<n>/: bf16 weights every save_every steps, the learning curve;
-- resume.pt: fp32 weights, AdamW state and step (qlrl/checkpoint.py);
+- resume.pt: fp32 weights, AdamW state and step (qlrl/utils/checkpoint.py);
 - state-<n>.pt: copies of resume.pt at the branch_at fractions of the run, for later cooldowns;
 and <results>/<name>/history.jsonl (learning rate, train loss, validation loss per language),
 and the final model, tokenizer and manifest.json in <output>/<name>/.
@@ -30,10 +30,10 @@ import transformers
 from torch.nn.parallel import DistributedDataParallel
 from transformers import AutoTokenizer, LlamaConfig, LlamaForCausalLM
 
-from qlrl.checkpoint import load as checkpoint_load
-from qlrl.checkpoint import save as checkpoint_save
 from qlrl.pretrain.data import TokenData
 from qlrl.pretrain.tokenizer import git_sha
+from qlrl.utils.checkpoint import load as checkpoint_load
+from qlrl.utils.checkpoint import save as checkpoint_save
 
 
 def learning_rate(step: int, steps: int, settings: dict) -> float:

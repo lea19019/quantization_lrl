@@ -72,7 +72,7 @@ again.
 - Model weights are read once per job from the shared cache. Do not copy models around.
 - No recursive scans of large trees (`find`, `du -a`, `ls -lR`) on shared storage.
 - Job-local scratch goes on the node's `/tmp` and is removed at the end of the job.
-- Ad-hoc logic goes in a script file in `scripts/`, never in a one-line `ssh python`.
+- Ad-hoc logic goes in a script file in `qlrl/utils/`, never in a one-line `ssh python`.
 
 ## 6. Never
 

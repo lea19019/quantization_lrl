@@ -67,7 +67,6 @@ quantization_lrl/
   qlrl/              the package, one module per concept (see §4); Adrian's code
   examples/          example implementations written on request, for learning only
   configs/           one YAML per run; nothing else
-  scripts/           entry points; each is a thin wrapper around package functions
   slurm/             job scripts; each calls one script with one config
   tests/             CPU-only tests; run before every submission
   results/           one folder per run, named by config; see §5
@@ -113,7 +112,7 @@ Tests are CPU-only, run in under two minutes, and run before every SLURM submiss
 
 **Fitness functions** (tests that enforce these conventions on the code itself):
 
-- every `.py` file under `qlrl/`, `scripts/`, `tests/` is under 200 lines;
+- every `.py` file under `qlrl/`, `tests/` is under 200 lines;
 - every function is under 40 lines and has at most five parameters;
 - every public function has a docstring and type hints;
 - no file in `qlrl/` imports from more than three sibling modules;
