@@ -20,6 +20,6 @@ docs/course/report/*.synctex.gz
 /results/**/perplexity/
 /results/**/translation/
 examples/
-papers/
+/papers/
 .python-version
 .venv-comet/

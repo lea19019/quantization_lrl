@@ -1,7 +1,13 @@
 \documentclass[11pt]{article}
 
 \usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
 \usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage[table]{xcolor}
+\definecolor{loss}{HTML}{2A78D6}  % shading of the loss cells in the summary tables
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 
@@ -10,25 +16,130 @@
 \date{Fall 2026}
 
 \begin{document}
+\emergencystretch=3em
 
 \maketitle
 
-\begin{abstract}
-\end{abstract}
-
-\section{Introduction}
-
-\section{Background}
-
-\section{Method}
-
 \section{Experimental Setup}
 
-\section{Results}
+\paragraph{Research question.} Why does post-training quantization remove more of a multilingual LLM's ability to predict the next word in low-resource languages than in high-resource languages?
 
-\section{Discussion}
+\paragraph{H1, under-fitted languages.} The model's weights are tuned for its training data as a whole, which is mostly high-resource text. A language it saw little of is fitted less well: the weights are roughly right for it but not quite, so its loss is still sensitive to small changes. Rounding moves every weight by about the same small amount, and that move costs more for a language whose fit was already loose (Tran et al., 2022, Zeng et al., 2024). If H1 is true, how sensitive each language's loss is to small weight changes should predict how much it loses, and in a model where we set how much text each language gets, the languages with less text should lose more.
 
-\section{Conclusion}
+\paragraph{H2, where the damage lives.} Rounding error is not spread evenly across the model. It concentrates in a few places, such as certain layers, a small set of unusually large weights, and the few internal dimensions that encode which language is being read (Chang, 2025, An et al., 2025, Zhong et al., 2025). If low-resource languages rely more on those places, they lose more. If H2 is true, rounding one part of the model at a time should show each language's loss coming from different parts, or from the same parts to different degrees, and restoring those parts to full precision should recover the low-resource loss.
+
+\paragraph{Null hypothesis.} The gap is not about the language at all. It comes from the choice of model, quantization method, bit width, metric, and the random sample used to calibrate the quantization. Published studies measure damage in many different ways and none repeats its runs, and changing the calibration sample alone moves results by as much as many reported gaps (Williams et al., 2024). If the null is true, the language difference at 4 bits stays within that noise across repeated calibration samples and two model families, and H1 and H2 can only be studied at 3 bits.
+
+\paragraph{Models.} We evaluate two base (not instruction-tuned) models: Llama 3.1 8B (\nolinkurl{meta-llama/Llama-3.1-8B}, Grattafiori et al., 2024), our core model, and Qwen 2.5 7B (\nolinkurl{Qwen/Qwen2.5-7B}, Qwen Team, 2024), a second model family used to check that results are not specific to Llama. We also evaluate a LoRA fine-tune of Llama 3.1 8B on the project language. The quantization code was developed and tested on GPT-2 small (\nolinkurl{openai-community/gpt2}, Radford et al., 2019).
+
+\paragraph{Quantization.} We apply weight-only post-training quantization at 4 and 3 bits to every linear layer in the decoder blocks. Embeddings, \texttt{lm\_head} and normalization layers stay in bf16, and activations are not quantized. Weights use an asymmetric uniform grid with one scale and zero-point per group of 128 consecutive input columns within each row. We compare three methods. Round-to-nearest (RTN) applies the grid directly and needs no calibration. GPTQ (Frantar et al., 2023) runs in natural column order, without act-order. AWQ (Lin et al., 2024) searches the activation-aware scale per linear layer and divides it back into the weights, without the clipping search.
+GPTQ and AWQ are calibrated on 128 windows of 2,048 tokens, each from a random position in a random English C4 document (Raffel et al., 2020). For Llama each window is preceded by the BOS token, as at inference (Qwen has none). GPTQ and AWQ are each run with five calibration seeds (0–4) that draw different windows, and the spread across seeds is our noise baseline. RTN needs no calibration and is run once. Each model therefore has 11 quantized versions per bit width (1 RTN + 5 GPTQ + 5 AWQ), 22 across 4 and 3 bits. With its full-precision original, each of the three models (Llama, Qwen, Llama + LoRA) has 23 versions, and all 69 are evaluated on the same test sets. 
+We simulate quantization (fake quantization): weights are rounded to the grid and stored back in bf16. Since weight-only kernels dequantize weights to 16-bit before the matrix product, this produces the same outputs as packed inference. We do not measure memory or speed. As a check on our implementations, we report perplexity on the WikiText-2 test set (raw v1, Merity et al., 2017) over non-overlapping 2,048-token windows.
+
+\begin{table}[htbp]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrr}
+\toprule
+Model & FP & RTN 4 & GPTQ 4 & AWQ 4 & RTN 3 & GPTQ 3 & AWQ 3 \\
+\midrule
+Llama 3.1 8B & 6.24 & 6.93 & 7.18 $\pm$ 0.03 & 6.65 $\pm$ 0.01 & 14.98 & 22.81 $\pm$ 2.84 & 8.61 $\pm$ 0.03 \\
+Qwen 2.5 7B & 6.85 & 7.21 & 7.11 $\pm$ 0.02 & 7.10 $\pm$ 0.01 & 8.98 & 8.19 $\pm$ 0.05 & 8.32 $\pm$ 0.01 \\
+Llama 3.1 8B + LoRA & 8.84 & 9.94 & 10.27 $\pm$ 0.05 & 9.42 $\pm$ 0.03 & 22.04 & 34.12 $\pm$ 7.26 & 12.15 $\pm$ 0.06 \\
+\bottomrule
+\end{tabular}}
+\caption{WikiText-2 test perplexity (lower is better). FP is the full-precision model. GPTQ and AWQ show the mean $\pm$ standard deviation over the five calibration seeds. FP and RTN are run once.}
+\end{table}
+
+\paragraph{Languages.} English is the anchor and the other side of every translation pair. The other twelve languages fall into three groups. The first is three high-resource Romance languages. Two of them are high-resource controls, and the third, French, is the forgetting control: it is left out of fine-tuning, so any change on French shows what fine-tuning costs a language the model was not trained on. The second group is four African languages from two families, Niger-Congo and Afro-Asiatic, one of them written in the Ge'ez script. All four are covered by FLORES+ and by AfriCOMET (Wang et al., 2024), a COMET metric trained on African languages, so their translations can be scored with a learned metric and not only with string overlap. The third group is five Latin American Indigenous languages from five unrelated families (Mayan, Tupian, Uto-Aztecan, Quechuan and Chibchan). These are very low-resource, and only one of them is in FLORES+. None of the nine low-resource languages is among the eight languages Llama 3.1 officially supports. Table 2 lists every language with its code and corpora.
+
+\paragraph{Datasets.} We use five parallel corpora. The church corpus holds English–X human translations of religious text, it covers every language except Nahuatl and Bribri, is our main training set. We use FLORES+ (NLLB Team, 2022) as our main test set for eight of the languages it covers. We also used the AmericasNLP 2021 (Mager et al., 2021) dataset (Spanish–x) for Guarani, Nahuatl and Bribri. We also used MayanV that holds Spanish–Kekchi corpus. The Napo Kichwa dataset for Spanish-Quichua (Eciador). Two datasets were used for quantization calibration and perplexity evaluation, C4 (Raffel et al., 2020) web text for GPTQ and AWQ calibration, and WikiText-2 (Merity et al., 2017) for the perplexity check in Table 1.
+
+AmericasNLP, MayanV and the Kichwa datasets pair each language with Spanish, not English. We translated their Spanish side to English with Qwen3-32B (\nolinkurl{Qwen/Qwen3-32B}), using greedy decoding, three FLORES+ Spanish–English examples in the prompt and thinking mode off. This covered 47,913 distinct sentences, and 115 sentences over 1,000 characters were dropped. The X side stays human-written, but for kek, nah and bzd the English side of the test sets is machine-translated.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+Language & Code & Corpora \\
+\midrule
+French & fra & church, FLORES+ \\
+Spanish & spa & church, FLORES+ \\
+Portuguese & por & church, FLORES+ \\
+Yoruba & yor & church, FLORES+ \\
+Zulu & zul & church, FLORES+ \\
+Swahili & swh & church, FLORES+ \\
+Amharic & amh & church, FLORES+ \\
+Kekchi & kek & church, MayanV \\
+Guarani & grn & church, FLORES+, AmericasNLP \\
+Nahuatl & nah & AmericasNLP \\
+Bribri & bzd & AmericasNLP \\
+Quichua (Ecuador) & qug & church, Kichwa lexicon \\
+\bottomrule
+\end{tabular}
+\caption{Languages, codes and the corpora each one uses.}
+\end{table}
+
+\paragraph{Splits.} We used the data to fine-tune Llama 3.1 8B and to evaluate translation. We keep the published train, dev and test splits when a dataset has them. For FLORES+ we use dev as our dev and devtest as our test. For the church corpus we shuffle each language's pairs with a fixed seed and take 1,000 for dev, 1,000 for test and the rest for train. For the external we ran a cleaning pipeline, which removes [what it removes, to check]. Finally, we remove any train pair that also appears in a dev or test set of any language.
+
+Fine-tuning uses the train splits of every language except French, with Spanish, Portuguese and Swahili capped at a random 100,000 pairs. To track fine-tuning, we compute the loss every 500 steps on 400 random dev pairs per language, from the church dev set, or the AmericasNLP dev set for Nahuatl and Bribri (Guarani uses both). The fine-tuned model is then evaluated on the same test sets as the base models. The dev splits are also used in evaluation. The three few-shot examples in each prompt are the first three dev pairs of the same corpus as the test set, and the dev pairs set the generation length limit. We evaluate every model on two groups of test sets, the public ones (FLORES+, MayanV and AmericasNLP) and the church ones, each where it covers the language. Quichua (Ecuador) has only a church test set, and Nahuatl and Bribri only AmericasNLP. Table 3 gives the sizes.
+
+\begin{table}[htbp]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llll}
+\toprule
+Language & Fine-tune train & Fine-tune dev & Test \\
+\midrule
+French & — & — & FLORES+ (1,012), church (1,000) \\
+Spanish & church (100,000) & church & FLORES+ (1,012), church (1,000) \\
+Portuguese & church (100,000) & church & FLORES+ (1,012), church (1,000) \\
+Yoruba & church (89,832) & church & FLORES+ (1,012), church (1,000) \\
+Zulu & church (100,099) & church & FLORES+ (1,012), church (1,000) \\
+Swahili & church (100,000) & church & FLORES+ (1,012), church (1,000) \\
+Amharic & church (173,590) & church & FLORES+ (1,012), church (1,000) \\
+Kekchi & church (213,543), MayanV (1,965) & church & MayanV (1,000), church (1,000) \\
+Guarani & church (109,702), AmericasNLP (11,787) & church, AmericasNLP & FLORES+ (1,012), church (1,000) \\
+Quichua (Ecuador) & church (14,735), Kichwa lexicon (2,007) & church & church (1,000) \\
+Nahuatl & AmericasNLP (12,637) & AmericasNLP & AmericasNLP (995) \\
+Bribri & AmericasNLP (6,125) & AmericasNLP & AmericasNLP (1,003) \\
+\bottomrule
+\end{tabular}}
+\caption{Data per language. Fine-tune train gives the corpora and the number of pairs after cleaning, decontamination and the 100,000-pair cap. Fine-tune dev is the corpus of the 400 dev pairs used to track the fine-tuning loss.}
+\end{table}
+
+\paragraph{Fine-tuning.} We fine-tune Llama 3.1 8B with LoRA (Hu et al., 2022) on the train splits in Table 3. The adapters have rank 64, alpha 128 and dropout 0.05, and are applied to every linear layer of the decoder blocks. This trains 168M of the model's 8.2B parameters (2.05\%). Each training row is written exactly like an evaluation prompt, three example pairs followed by the pair to translate, in a random direction. The loss is computed only on the translation of the last pair. Rows longer than 1,024 tokens are dropped (4,987 of 259,003, mostly Amharic). We train for one epoch (7,938 steps) with AdamW, a learning rate of 2e-4 with 3\% linear warmup and cosine decay to 0, batches of 32 rows (128 pairs), gradient clipping at 1.0 and bf16. The dev loss is computed on 100 rows (400 pairs) per language and drops from 2.10 before training to 1.05 at the end. Finetuned model is then quantized and evaluated exactly like the base models.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../../../results/analysis/figures/finetune_loss.png}
+\caption{Fine-tuning loss of Llama 3.1 8B. (a) Training loss and dev loss averaged over languages. (b)–(d) Dev loss per language, by group, on the same scale. Losses are per token, so levels are not comparable across languages, only trends within one.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../../../results/analysis/figures/finetune_loss_overlap.png}
+\caption{The curves of Figure 1 in one panel. Colour is the language group and the marker the language.}
+\end{figure}
+
+\paragraph{Evaluation.} Every model translates every test set in both directions, English$\rightarrow$X and X$\rightarrow$English, and each direction is scored separately. The models are base models, so we prompt them without a chat template. The prompt has three example pairs from the dev split followed by the source sentence, \texttt{\textless{}eng\textgreater{}\ldots{}\textless{}/eng\textgreater{} \textless{}yor\textgreater{}\ldots{}\textless{}/yor\textgreater{}} three times, then \texttt{\textless{}eng\textgreater{}\{source\}\textless{}/eng\textgreater{} \textless{}yor\textgreater{}}. Decoding is greedy. Generation stops at the closing tag, or at twice the expected length of the translation, estimated from the source length and the average target/source token ratio of the dev pairs. All models run in bf16.
+
+\paragraph{Metrics.} For every model, test set and direction we record three groups of metrics. Translation quality: chrF++ (Popović, 2017) and BLEU (Papineni et al., 2002), computed with sacreBLEU (Post, 2018), AfriCOMET (Wang et al., 2024) for French and the four African languages, and the off-target rate measured with GlotLID (Kargaran et al., 2023). For English$\rightarrow$X the off-target rate is the share of outputs identified as English, and for X$\rightarrow$English the share not identified as English. The other two groups need no generation. Reference likelihood: the negative log-likelihood (NLL) the model gives the human reference translation after the prompt, per word and per byte, and its perplexity per token. Sentence likelihood: the perplexity of each test sentence on its own, after only a start-of-text token, for both its English and its X side, with its NLL per word and per byte. We report per-word and per-byte values because tokenizers split low-resource languages into many more tokens, so per-token values cannot be compared across languages.
+
+Tables 4 to 7 summarize how much each language loses with quantization. They show Llama 3.1 8B and its LoRA fine-tune. Qwen 2.5 7B is in the appendix. Languages are grouped by resource level. For each model, the first column is the full-precision score and the next three are the loss of RTN, GPTQ and AWQ, so a larger number means more degradation. Loss cells are shaded by their size. Tables 4 and 6 give the chrF++ drop at 4 and 3 bits, English$\rightarrow$X first and X$\rightarrow$English second. From English the base models translate most low-resource languages poorly, so their English$\rightarrow$X scores start low and have little room to drop. Tables 5 and 7 give the increase in sentence NLL per byte of the X side, which does not depend on generation. GPTQ and AWQ are the mean over the five calibration seeds. Every result is in the appendix.
+
+\input{../../../results/analysis/tables/summary_tables.tex}
+
+\clearpage
+\appendix
+\section{Full Results}
+
+Tables 8 to 13 give every metric for every language, model and method, 4 bits first. The translation tables, one for French and the African languages and one for Spanish, Portuguese and the Latin American languages, have one row per method under each language, English$\rightarrow$X first and X$\rightarrow$English second. Reference NLL (per word and per byte) and reference perplexity score the human reference given the prompt. The sentence tables give the perplexity and NLL of each test sentence on its own, for its English and its X side. Quantized cells are shaded by their loss from full precision, as in the summary tables, within each metric. GPTQ and AWQ are the mean over the five calibration seeds.
+
+\input{../../../results/analysis/tables/full_tables.tex}
 
 % Uncomment these when the report has its first citation.
 % \bibliographystyle{plain}

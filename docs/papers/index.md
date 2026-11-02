@@ -1,8 +1,11 @@
 # Papers: index of everything in `papers/`
 
-80 PDFs: 77 read (first 12 pages, more where a table was needed) on 2026-09-09, three
-method-background papers added and read on 2026-09-13; 24 tokenizer and architecture papers
-for the from-scratch model added and read on 2026-10-30. One
+121 PDFs, 111 indexed: 77 read (first 12 pages, more where a table was needed) on
+2026-09-09, three method-background papers added and read on 2026-09-13, 24 tokenizer and
+architecture papers for the from-scratch model added and read on 2026-10-30, seven
+interpretability and steering papers added and read on 2026-11-02. Ten fine-tuning and
+MT papers in the folder are not indexed yet (Alves 2024, Biderman 2024, Dettmers 2022,
+Dettmers 2023, Hu 2022, Ji 2024, Lin 2024 MaLA-500, Xu 2024, Zhao 2023, Zhu 2024). One
 line per paper here; full entries (venue as printed, what it does, what it finds, how
 this project uses it, caveats) are in the theme files in this folder. Codes E1–E7 refer to the explanations in
 [../concepts/explanations.md](../concepts/explanations.md). Venues
@@ -74,6 +77,13 @@ The nine the proposal rests on, in order:
 | [Timkey & van Schijndel 2021](../../papers/Timkey-vanSchijndel-2021-All-Bark-No-Bite-Rogue-Dimensions.pdf) | EMNLP 2021 | One to five rogue dimensions dominate cosine and norms; z-score per dimension first |
 | [Zhong 2025](../../papers/Zhong-2025-Language-Lives-in-Sparse-Dimensions.pdf) | preprint, venue unverified | Language identity lives in ~400 sparse residual dimensions; overwriting them switches output language |
 | [Dumas 2025](../../papers/Dumas-2025-Separating-Tongue-From-Thought.pdf) | ACL 2025 | Activation patching: language fixed by layer 12, concept by 16 in Llama-2-7B |
+| [Zou 2023](../../papers/Zou-2023-Representation-Engineering.pdf) | preprint | RepE: PCA on paired activation differences gives reading vectors. Honesty control lifts LLaMA-2-13B-Chat TruthfulQA MC1 from 35.9 to 54.0 |
+| [Wendler 2024](../../papers/Wendler-2024-Do-Llamas-Work-In-English.pdf) | ACL 2024 | Logit lens on Llama-2: middle layers decode the English word first, the target language wins only in the last layers (70B: 71–80) |
+| [Tang 2024](../../papers/Tang-2024-Language-Specific-Neurons.pdf) | ACL 2024 | LAPE language-specific FFN neurons sit in bottom and top layers. Turning off 1% hurts mainly that language (zh 4.30 -> 2.46) |
+| [Kramár 2024](../../papers/Kramar-2024-AtP-Attribution-Patching.pdf) | preprint | AtP∗: attribution patching scores every node with 2 forward + 1 backward pass. QK fix and GradDrop remove saturation and cancellation misses |
+| [Singh 2025](../../papers/Singh-2025-Interpreting-Effects-Quantization-LLMs.pdf) | preprint | bitsandbytes 4/8-bit barely moves calibration or dead-neuron counts on English tasks. Largest drop 4-bit Llama-2-7B toxicity −14% |
+| [Bhandari 2026](../../papers/Bhandari-2026-Steering-Under-Compression.pdf) | preprint | Steering vectors survive INT8/NF4 (cosine 0.989–0.998 and 0.945–0.990), cost of sentiment steering unchanged, English only |
+| [Varshney 2026](../../papers/Varshney-2026-Cosine-Similarity-Not-Evidence-Quantization.pdf) | preprint | Direction cosines have a sampling floor 1/(1+4/κ). Two runs agree at 0.978–0.994 by chance, INT4 still rotates (0.9647 vs null 0.9803) |
 
 ## Tokenizers, data, NMT ([papers/tokenizer_data_nmt.md](tokenizer_data_nmt.md))
 
