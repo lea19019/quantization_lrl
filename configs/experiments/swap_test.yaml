@@ -1,0 +1,25 @@
+# Short run of configs/experiments/swap.yaml. "none" must give the full model's log p and "all" the
+# quantized model's:
+#   sbatch --array=0-1 --gpus=a100:1 --time=00:20:00 slurm/run.sh qlrl.experiments.swap configs/experiments/swap_test.yaml
+model: models/Llama-3.1-8B-lora
+quantized:                 # the array index picks one
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-4bit-seed0
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed0
+dtype: bfloat16
+data: data/processed
+output: results/test/swap
+
+languages: [spa, fra, amh, swh]
+test_sets:                 # the one test set of each language
+  spa: church
+  fra: church
+  amh: church
+  swh: church
+max_sentences: 5
+examples: 3                # dev pairs in each prompt
+hybrids:                   # name: [first, last] layer using quantized weights, both included
+  none: [1, 0]
+  all: [0, 31]
+  early: [0, 5]
+  middle: [6, 19]
+  late: [20, 31]

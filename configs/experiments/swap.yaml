@@ -1,0 +1,23 @@
+# Mixed-precision swap on Llama-3.1-8B-lora, church test sets. One Slurm array task per quantized
+# model; both models sit on one GPU (about 30 GB):
+#   sbatch --array=0-1 --gpus=a100:1 --time=01:00:00 slurm/run.sh qlrl.experiments.swap configs/experiments/swap.yaml
+model: models/Llama-3.1-8B-lora
+quantized:                 # the array index picks one
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-4bit-seed0
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed0
+dtype: bfloat16
+data: data/processed
+output: results/swap
+
+languages: [spa, fra, amh, swh]
+test_sets:                 # the one test set of each language
+  spa: church
+  fra: church
+  amh: church
+  swh: church
+max_sentences: null        # null = the whole test set
+examples: 3                # dev pairs in each prompt
+hybrids:                   # name: [first, last] layer using quantized weights, both included
+  early: [0, 5]
+  middle: [6, 19]
+  late: [20, 31]

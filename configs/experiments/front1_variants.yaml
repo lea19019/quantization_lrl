@@ -1,0 +1,24 @@
+# Front 1 on other quantization methods and calibration seeds, for the languages of
+# configs/experiments/front1.yaml. One Slurm array task per quantized model:
+#   sbatch --array=0-7 --gpus=a100:1 slurm/run.sh qlrl.experiments.run configs/experiments/front1_variants.yaml
+model: models/Llama-3.1-8B-lora
+quantized:                 # the array index picks one
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-rtn-4bit
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-rtn-3bit
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-awq-4bit-seed0
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-awq-3bit-seed0
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-4bit-seed1
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed1
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-4bit-seed2
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed2
+dtype: bfloat16
+data: data/processed
+output: results/front1_variants
+
+languages: [spa, amh, swh]
+test_sets:                 # the one test set of each language
+  spa: church
+  amh: church
+  swh: church
+max_sentences: null        # null = the whole test set
+examples: 3                # dev pairs in each prompt

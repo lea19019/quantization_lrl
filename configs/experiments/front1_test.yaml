@@ -1,0 +1,19 @@
+# Small test of front1.yaml: Llama-3.1-8B-lora, church test sets: patching, logit lens, noise vs flatness and
+# activation change. One Slurm array task per quantized model. Both models sit on one GPU
+# (about 30 GB), so it needs more than a P100:
+#   sbatch --array=0-1 --gpus=a100:1 slurm/run.sh qlrl.experiments.run configs/experiments/front1.yaml
+model: models/Llama-3.1-8B-lora
+quantized:                 # the array index picks one
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-4bit-seed0
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed0
+dtype: bfloat16
+data: data/processed
+output: results/test/front1
+
+languages: [spa, amh, swh]
+test_sets:                 # the one test set of each language
+  spa: church
+  amh: church
+  swh: church
+max_sentences: 5
+examples: 3                # dev pairs in each prompt

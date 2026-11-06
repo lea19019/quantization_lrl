@@ -1,8 +1,8 @@
 # Experiments
 
-Four experiments in two fronts. Front 1 looks for clues about why quantization costs
-low-resource translations more confidence than English. Front 2 applies the lab peer's
-detection method to quantized models.
+Two fronts. Front 1 looks for clues about why quantization costs low-resource translations
+more confidence than high-resource ones. Front 2 applies the lab peer's detection method to
+quantized models.
 
 ## Front 1. Clues to the property P
 
@@ -18,26 +18,26 @@ damage so that hypotheses about P can be formed and tested.
   translation prompt the LoRA was trained on, with the human reference forced in after it.
   No text is generated. Damage is the rise in NLL of the reference tokens only, the prompt
   excluded.
-- **Gap.** How much more a low-resource language loses than English on the same parallel
-  sentences.
-- **Languages.** English (anchor), French (high-resource, not fine-tuned), Spanish
-  (high-resource, fine-tuned), and Amharic, Guarani, Yoruba and Swahili (low-resource,
-  fine-tuned, above the translation floor with a clear gap). Church is the main test set,
-  FLORES the check.
-- **Configurations.** RTN and GPTQ (one calibration seed), at 4 and 3 bits.
+- **Damage.** log p_full − log p_quant of the reference, in nats, summed over a language's
+  sentences. Compared across languages per byte or per word, never per token. English is only
+  the source side of the prompt and is not scored.
+- **Languages.** French (high-resource, not fine-tuned), Spanish and Portuguese (high-resource),
+  and Yoruba, Zulu, Swahili, Amharic, Q'eqchi', Guarani, Kichwa, Nahuatl and Bribri
+  (low-resource). Church is the test set; Nahuatl and Bribri have none, so they use AmericasNLP.
+- **Configurations.** GPTQ seed 0 at 4 and 3 bits on every language. RTN, AWQ seed 0 and GPTQ
+  seeds 1 and 2, at 4 and 3 bits, on Spanish, Amharic and Swahili. The YAMLs are listed at the
+  end of this front.
 
 ### Activation patching
 
 - **Question.** Where in the model does the extra low-resource damage come from?
 - **Method.** Feed the translation prompt with the reference forced in to the full and the
-  quantized model. Copy the full model's activation at one site (a layer, module or attention
-  head) into the quantized model and measure how much of the damage on the reference tokens
-  disappears. A first-order screen (attribution patching, Kramár 2024) scores every site from
-  one forward and one backward pass. Exact patching then confirms the top sites.
-- **Output.** A map of sites × languages, each cell the share of the gap recovered at that
-  site.
-- **Controls.** Random sites of the same size, the sites most damaged on English, and the
-  same sites on French.
+  quantized model. Copy the full model's output at one site, the attention or the MLP of one
+  layer, into the quantized model and measure how much of the damage on the reference tokens
+  disappears. One site at a time, 64 sites, exact patching on every sentence.
+- **Output.** A map of sites × languages, each cell the share of the damage recovered at that
+  site. Shares overlap, so they do not add up to 1.
+- **Controls.** Random sites of the same size, and the same sites on French.
 
 ### Logit lens
 
@@ -47,7 +47,7 @@ damage so that hypotheses about P can be formed and tested.
 - **Output.** Per language, the probability of the correct next token at each layer for both
   models. The layer where the quantized curve leaves the full one is where the damage starts.
   It narrows the layers that activation patching needs to search.
-- **Controls.** The same curves on English and French.
+- **Controls.** The same curves on French.
 
 ### Noise vs flatness
 
@@ -58,9 +58,69 @@ damage so that hypotheses about P can be formed and tested.
   distribution (second-order expansion of the log-softmax). Per token, measure σ² as the
   variance of z_quant − z_full and the flatness 1 − Σ_j p_j² from the full model, and see which
   of the two carries the gap between languages.
-- **Output.** Per language, the share of the gap explained by noise and by flatness. It says
+- **Output.** Per language, the share of the damage explained by noise and by flatness. It says
   which kind of cause to look for in the other experiments.
-- **Controls.** English and French, compared at matched full-precision confidence.
+- **Controls.** French, compared at matched full-precision confidence.
+
+### Activation change
+
+- **Question.** How far does rounding move the model's activations at each layer, and how large
+  are those activations?
+- **Method.** On the positions that predict reference tokens, measure ‖quant − full‖ and ‖full‖
+  for the residual stream, the attention and the MLP of every layer, and per attention head on
+  the input of `o_proj`. It uses the same forward passes as the logit lens.
+- **Output.** Per language and layer, both sizes and their ratio. The two are read apart: a ratio
+  can differ because the disturbance differs or because the activation does.
+
+### Mixed-precision swap
+
+- **Question.** Are the late layers damaged themselves, or do they amplify errors from earlier
+  layers?
+- **Method.** Take the full model and use the quantized weights for one range of layers only:
+  early (0–5), middle (6–19) or late (20–31). Measure the damage and the activation change.
+- **Output.** Per language, the share of the damage each range causes alone, what appears only
+  when they are combined, and how a disturbance from one range grows through the clean layers.
+- **Limit.** The hybrids are artificial: GPTQ quantized each layer on inputs from quantized
+  earlier layers.
+
+### Weight-space reading
+
+- **Question.** Can reading the weights show what is wrong with the quantized model, and why
+  its damage is larger for low-resource languages?
+- **Method.** Weight-space programming (Takehi, Teoh, Zhang and Khattab 2026, blog post), in
+  its large-network form. The weights do not fit in the model's context, so the AI agent reads
+  them through a Python kernel without a GPU. It chooses each query from what the last one
+  showed, and every query is logged. Forward passes are a separate resource with a budget fixed
+  before starting.
+- **Starting points.** The rounding error W_quant − W_full and the weights W_full of the late
+  layers, read through the final norm and the output head, which are not quantized.
+- **Rules.** Hypotheses are formed on dev. The test split stays untouched until the end and
+  judges each claim once.
+- **Proof.** A claim counts only if a weight edit changes the damage as it predicts, compared
+  with a random edit of the same size.
+- **Output.** A log of queries and hypotheses, and the claims that survived the proof.
+- **Open.** The size of the forward-pass budget.
+
+### Configs
+
+In `configs/experiments/`. Each one writes one folder per quantized model under its output.
+
+| YAML | Script | Languages | Quantized models | Output |
+|---|---|---|---|---|
+| `front1.yaml` | `run` | Spanish, Amharic, Swahili | GPTQ seed 0, 4 and 3 bits | `results/front1` |
+| `front1_fra.yaml` | `run` | French | GPTQ seed 0, 4 and 3 bits | `results/front1_fra` |
+| `front1_b.yaml` | `run` | Portuguese, Yoruba, Zulu, Q'eqchi' | GPTQ seed 0, 4 and 3 bits | `results/front1_b` |
+| `front1_c.yaml` | `run` | Guarani, Kichwa, Nahuatl, Bribri | GPTQ seed 0, 4 and 3 bits | `results/front1_c` |
+| `front1_variants.yaml` | `run` | Spanish, Amharic, Swahili | RTN; AWQ seed 0; GPTQ seeds 1, 2; 4 and 3 bits | `results/front1_variants` |
+| `front1_test.yaml` | `run` | Spanish, Amharic, Swahili, 5 sentences | GPTQ seed 0, 4 and 3 bits | `results/test/front1` |
+| `swap.yaml` | `swap` | Spanish, French, Amharic, Swahili | GPTQ seed 0, 4 and 3 bits | `results/swap` |
+| `swap_b.yaml` | `swap` | The other eight | GPTQ seed 0, 4 and 3 bits | `results/swap_b` |
+| `swap_test.yaml` | `swap` | Spanish, French, Amharic, Swahili, 5 sentences | GPTQ seed 0, 4 and 3 bits | `results/test/swap` |
+| `weights.yaml` | `weights` | None: weights only, `down_proj` of layers 20–31 | GPTQ seed 0, 3 and 4 bits | `results/weights` |
+
+`run` is `qlrl.experiments.run` (patching, logit lens, noise vs flatness, activation change),
+`swap` is `qlrl.experiments.swap`, `weights` is `qlrl.experiments.weights`, a fixed first pass over
+the rounding error. Every config uses Llama-LoRA.
 
 ## Front 2. Detection (lab peer's method)
 
