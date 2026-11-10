@@ -103,24 +103,22 @@ damage so that hypotheses about P can be formed and tested.
 
 ### Configs
 
-In `configs/experiments/`. Each one writes one folder per quantized model under its output.
+In `configs/experiments/`. Results go in `results/experiments/`, one folder per experiment
+(`patching`, `lens`, `noise`, `change`, `swap`) with one folder per quantized model inside; the
+5-sentence tests go in `results/experiments/test/`, the tables in `results/experiments/analysis/`.
 
-| YAML | Script | Languages | Quantized models | Output |
-|---|---|---|---|---|
-| `front1.yaml` | `run` | Spanish, Amharic, Swahili | GPTQ seed 0, 4 and 3 bits | `results/front1` |
-| `front1_fra.yaml` | `run` | French | GPTQ seed 0, 4 and 3 bits | `results/front1_fra` |
-| `front1_b.yaml` | `run` | Portuguese, Yoruba, Zulu, Q'eqchi' | GPTQ seed 0, 4 and 3 bits | `results/front1_b` |
-| `front1_c.yaml` | `run` | Guarani, Kichwa, Nahuatl, Bribri | GPTQ seed 0, 4 and 3 bits | `results/front1_c` |
-| `front1_variants.yaml` | `run` | Spanish, Amharic, Swahili | RTN; AWQ seed 0; GPTQ seeds 1, 2; 4 and 3 bits | `results/front1_variants` |
-| `front1_test.yaml` | `run` | Spanish, Amharic, Swahili, 5 sentences | GPTQ seed 0, 4 and 3 bits | `results/test/front1` |
-| `swap.yaml` | `swap` | Spanish, French, Amharic, Swahili | GPTQ seed 0, 4 and 3 bits | `results/swap` |
-| `swap_b.yaml` | `swap` | The other eight | GPTQ seed 0, 4 and 3 bits | `results/swap_b` |
-| `swap_test.yaml` | `swap` | Spanish, French, Amharic, Swahili, 5 sentences | GPTQ seed 0, 4 and 3 bits | `results/test/swap` |
-| `weights.yaml` | `weights` | None: weights only, `down_proj` of layers 20–31 | GPTQ seed 0, 3 and 4 bits | `results/weights` |
+| YAML | Script | Languages | Quantized models |
+|---|---|---|---|
+| `run.yaml` | `run` | All twelve | GPTQ seed 0, 4 and 3 bits |
+| `run_variants.yaml` | `run` | Spanish, Amharic, Swahili | RTN; AWQ seed 0; GPTQ seeds 1, 2; 4 and 3 bits |
+| `run_test.yaml` | `run` | Spanish, Amharic, Swahili, 5 sentences | GPTQ seed 0, 4 and 3 bits |
+| `swap.yaml` | `swap` | All twelve | GPTQ seed 0, 4 and 3 bits |
+| `swap_variants.yaml` | `swap` | Spanish, Q'eqchi', Swahili, Yoruba, Amharic | RTN, AWQ seed 0, GPTQ seed 1; 3 bits |
+| `swap_test.yaml` | `swap` | Spanish, French, Amharic, Swahili, 5 sentences | GPTQ seed 0, 4 and 3 bits |
+| `analyze.yaml` | `analyze` | Whatever has finished | All |
 
 `run` is `qlrl.experiments.run` (patching, logit lens, noise vs flatness, activation change),
-`swap` is `qlrl.experiments.swap`, `weights` is `qlrl.experiments.weights`, a fixed first pass over
-the rounding error. Every config uses Llama-LoRA.
+`swap` is `qlrl.experiments.swap`, `analyze` is `qlrl.experiments.analyze`. Every config uses Llama-LoRA.
 
 ## Front 2. Detection (lab peer's method)
 

@@ -1,0 +1,11 @@
+{
+  "config": {
+    "experiments": "results/experiments",
+    "output": "results/experiments/analysis",
+    "reference": "spa",
+    "samples": 1000,
+    "seed": 0,
+    "level": 0.95
+  },
+  "git_sha": "a66714e91d9b3d1189877c8d54f178d54c4f5927"
+}

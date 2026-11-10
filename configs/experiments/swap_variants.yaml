@@ -1,0 +1,25 @@
+# Mixed-precision swap on other methods and a second seed, 3 bits. RTN quantizes each weight on its
+# own, so its hybrids are not artificial the way GPTQ's are. One Slurm array task per quantized model:
+#   sbatch --array=0-2 --gpus=a100:1 --time=03:00:00 --job-name=swap-var slurm/run.sh qlrl.experiments.swap configs/experiments/swap_variants.yaml
+model: models/Llama-3.1-8B-lora
+quantized:                 # the array index picks one
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-rtn-3bit
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-awq-3bit-seed0
+  - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed1
+dtype: bfloat16
+data: data/processed
+output: results/experiments/swap
+
+languages: [spa, kek, swh, yor, amh]
+test_sets:                 # the one test set of each language
+  spa: church
+  kek: church
+  swh: church
+  yor: church
+  amh: church
+max_sentences: null        # null = the whole test set
+examples: 3                # dev pairs in each prompt
+hybrids:                   # name: [first, last] layer using quantized weights, both included
+  early: [0, 5]
+  middle: [6, 19]
+  late: [20, 31]

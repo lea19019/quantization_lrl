@@ -1,0 +1,8 @@
+# Tables of the Front 1 results. Runs on whatever has finished, so it can be repeated:
+#   python -m qlrl.experiments.analyze configs/experiments/analyze.yaml
+experiments: results/experiments   # reads patching, lens, noise, change and swap in it
+output: results/experiments/analysis
+reference: spa             # noise.csv also gives the damage at this language's flatness mix
+samples: 1000              # bootstrap resamples of sentences
+seed: 0
+level: 0.95

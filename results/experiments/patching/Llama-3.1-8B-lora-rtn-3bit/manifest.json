@@ -1,0 +1,26 @@
+{
+  "runs": [
+    {
+      "config": {
+        "model": "models/Llama-3.1-8B-lora",
+        "quantized": "/nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-rtn-3bit",
+        "dtype": "bfloat16",
+        "data": "data/processed",
+        "output": "results/front1_variants",
+        "languages": [
+          "spa",
+          "amh",
+          "swh"
+        ],
+        "test_sets": {
+          "spa": "church",
+          "amh": "church",
+          "swh": "church"
+        },
+        "max_sentences": null,
+        "examples": 3
+      },
+      "git_sha": "a66714e91d9b3d1189877c8d54f178d54c4f5927"
+    }
+  ]
+}

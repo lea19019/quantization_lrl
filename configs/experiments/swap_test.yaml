@@ -7,7 +7,7 @@ quantized:                 # the array index picks one
   - /nobackup/autodelete/usr/vacl2/quantization_lrl/models/Llama-3.1-8B-lora-gptq-3bit-seed0
 dtype: bfloat16
 data: data/processed
-output: results/test/swap
+output: results/experiments/test/swap
 
 languages: [spa, fra, amh, swh]
 test_sets:                 # the one test set of each language
